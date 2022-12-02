@@ -295,7 +295,7 @@ draw = function() {
         if(word[i].move) {
             word[i].moveTo();
         }
-        word[i].display(time > 0, i);
+        word[i].display(time > 0, i + 1);
     }
     
     rectMode(CORNER);
