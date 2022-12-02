@@ -127,7 +127,7 @@ function shuffleIcon(x, y, s) {
 
 }
 
-let right, wrong;
+let right, wrong, tick;
 let a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z;
 let a1, b1, c1, d1, e1, f1, g1, h1, i1, j1, k1, l1, m1, n1, o1, p1, q1, r1, s1, t1, u1, v1, w1, x1, y1, z1;
 let lists;
@@ -197,6 +197,7 @@ function preload() {
     //}
     right = loadSound('http://anagrams.ddns.net/metal-small2.wav');
     wrong = loadSound('http://anagrams.ddns.net/interface1.wav');
+    tick = loadSound('http://anagrams.ddns.net/interface6.wav');
 }
 
 function allAnagrams(word) {
@@ -263,6 +264,7 @@ var isError;
 let answers;
 let pointsPossible;
 let foundWords;
+let floorTime;
 
 function setup() {
     createCanvas(document.body.clientWidth, window.innerHeight); 
@@ -303,6 +305,7 @@ function setup() {
     time = 60;
     time2 = 0;
     time3 = 255;
+    floorTime = 60;
     notifText = "";
     isError = true;
     endCard = -3/4*height;
@@ -382,8 +385,12 @@ draw = function() {
     
     fill(0);
     if(time < 6) {
+        if(Math.floor(time) < floorTime) {
+            tick.play();
+        }
         fill(255, 0, 0);
     }
+    floorTime = Math.floor(time);
     
     textSize(30);
     textAlign(LEFT, TOP);
