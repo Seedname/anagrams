@@ -629,3 +629,6 @@ function keyPressed() {
     }
 }
 
+function windowResized() {
+  resizeCanvas(document.body.clientWidth, window.innerHeight);
+}
