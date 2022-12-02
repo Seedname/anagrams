@@ -318,6 +318,7 @@ draw = function() {
     text("Enter", width/2, height/2-35*s/100 + 175 +  (35 * s/50) + 5);
     
     fill(0);
+    textSize(25 * s/50);
     textAlign(CENTER, TOP);
     text(points + " points", width/2, height/2-100);
     
@@ -340,7 +341,7 @@ draw = function() {
     textAlign(CENTER, TOP);
     textSize(s/5);
     fill(128);
-    text("Shift", width/2-(s+7)*3-40, height/2+100 + 20);
+    text("Shift", width/2-(s+7)*3-40-30/12, height/2+100 + 20);
     
     noStroke();
 
