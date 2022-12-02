@@ -336,6 +336,12 @@ draw = function() {
     }
     
     shuffleIcon(width/2-(s+7)*3-40, height/2+100, 30);
+    
+    textAlign(CENTER, TOP);
+    textSize(s/5);
+    fill(128);
+    text("Shift", width/2-(s+7)*3-40, height/2+100 + 20);
+    
     noStroke();
 
     if(time <= 0) {
