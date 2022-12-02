@@ -1,7 +1,6 @@
-var sketchProc = function(processingInstance) {
-    with (processingInstance) {
-        size(screen.width, screen.height); 
-        frameRate(60);
+function setup() {
+    createCanvas(screen.width, screen.height); 
+}
 var word = [];
 
 //words{
@@ -175,7 +174,7 @@ function scramble(word) {
     return scrambled;
 }
 function shuffle(x, y, s) {
-    pushMatrix();
+    push();
     translate(x-s/8, y);
     
     s = s/3;
@@ -201,7 +200,7 @@ function shuffle(x, y, s) {
     fill(0);
     triangle(s, -s/2-s/8, s+s/4, -s/2, s, -s/2+s/8);
     triangle(s, s/2+s/8, s+s/4, s/2, s, s/2-s/8);
-    popMatrix();
+    pop();
 
 }
 
@@ -361,7 +360,7 @@ function triggerShake(error) {
     //playSound(getSound("retro/hit1"));
 }
 
-mouseClicked = function() {
+function mouseClicked() {
     if(time > 0) {
         for(var i = 0; i < word.length; i++) {
             if(word[i].click()) {
@@ -480,8 +479,8 @@ mouseClicked = function() {
     } else if(time2 > 60) {
         reset();
     }
-};
-keyPressed = function() {
+}
+function keyPressed() {
     console.log(keyCode);
     if(time > 0) {
         if (keyCode >= 65 && keyCode <= 90 || keyCode === 8) {
@@ -614,12 +613,5 @@ keyPressed = function() {
     } else if(time2 > 60) {
         reset();
     }
-};
+}
 
-
-
-}};
-
-var canvas = document.getElementById("canvas"); 
-
-var processingInstance = new Processing(canvas, sketchProc);
