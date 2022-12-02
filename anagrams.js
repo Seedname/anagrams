@@ -128,6 +128,10 @@ function shuffleIcon(x, y, s) {
 }
 
 let right, wrong;
+let a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z;
+let a1, b1, c1, d1, e1, f1, g1, h1, i1, j1, k1, l1, m1, n1, o1, p1, q1, r1, s1, t1, u1, v1, w1, x1, y1, z1;
+let lists;
+let lists2;
 
 function preload() {
     //words{
@@ -187,15 +191,58 @@ function preload() {
     y1 = ["yabbas", "yabber", "yabbie", "yaccas", "yachts", "yackas", "yacked", "yacker", "yaffed", "yaffle", "yagers", "yagger", "yahoos", "yairds", "yakkas", "yakked", "yakker", "yakows", "yakuza", "yamens", "yammer", "yamuns", "yanked", "yankee", "yanker", "yankie", "yanqui", "yantra", "yaourt", "yapock", "yapoks", "yapons", "yapped", "yapper", "yappie", "yaqona", "yaraks", "yarcos", "yarded", "yarder", "yarely", "yarest", "yarfas", "yarked", "yarned", "yarner", "yarpha", "yarran", "yarred", "yarrow", "yartas", "yartos", "yasmak", "yatter", "yauped", "yauper", "yaupon", "yawier", "yawing", "yawled", "yawned", "yawner", "yawped", "yawper", "yblent", "ybound", "ybrent", "yclept", "yealms", "yeaned", "yeards", "yearly", "yearns", "yeasts", "yeasty", "yecchs", "yeding", "yeelin", "yelled", "yeller", "yellow", "yelmed", "yelped", "yelper", "yemmer", "yenned", "yentas", "yentes", "yeoman", "yeomen", "yerbas", "yerded", "yerked", "yesked", "yessed", "yesses", "yessir", "yessum", "yester", "yettie", "yeuked", "yeving", "yexing", "yferes", "yicker", "yidaki", "yields", "yiking", "yikker", "yilled", "yindie", "yipped", "yippee", "yipper", "yippie", "yirded", "yirked", "yirred", "yirths", "yities", "yitten", "ymping", "ynambu", "yobbos", "yocked", "yodels", "yodled", "yodler", "yodles", "yogees", "yogini", "yogins", "yogism", "yogurt", "yoicks", "yojana", "yojans", "yokels", "yokers", "yoking", "yokked", "yolked", "yomped", "yonder", "yonker", "yonnie", "yopper", "yorked", "yorker", "yorkie", "yorped", "youked", "youngs", "youpon", "yourts", "youths", "youthy", "yowies", "yowing", "yowled", "yowler", "yowley", "ypight", "yplast", "yrnehs", "yshend", "yshent", "yttria", "yttric", "yuccas", "yucked", "yucker", "yukata", "yukier", "yuking", "yukked", "yulans", "yumped", "yumpie", "yunxes", "yupons", "yuppie", "yurtas", "yutzes", "ywroke"];
     z1 = ["zabeta", "zabras", "zaddik", "zaffar", "zaffer", "zaffir", "zaffre", "zaftig", "zagged", "zaidas", "zaideh", "zaires", "zakats", "zamang", "zamans", "zambos", "zambuk", "zamias", "zanana", "zander", "zanied", "zanier", "zanies", "zanily", "zanjas", "zantes", "zanzas", "zanzes", "zapata", "zapped", "zapper", "zarape", "zareba", "zariba", "zarnec", "zayins", "zazens", "zealot", "zeatin", "zebeck", "zebecs", "zebras", "zebubs", "zechin", "zelant", "zeloso", "zenana", "zendik", "zendos", "zenith", "zephyr", "zerdas", "zereba", "zeriba", "zeroed", "zeroes", "zeroth", "zested", "zester", "zeugma", "zhomos", "zhoosh", "zibeth", "zibets", "zigans", "zigged", "zigzag", "zillah", "zillas", "zimbis", "zinced", "zincic", "zincky", "zincos", "zinebs", "zinged", "zingel", "zinger", "zinked", "zinkes", "zinnia", "zipola", "zipped", "zipper", "zippos", "ziptop", "zirams", "zircon", "zither", "zizels", "zizith", "zizzed", "zizzes", "zizzle", "zlotys", "zocalo", "zoccos", "zodiac", "zoetic", "zoftig", "zoisms", "zoists", "zombie", "zombis", "zonary", "zonate", "zondas", "zoners", "zoning", "zonked", "zonoid", "zonula", "zonule", "zonure", "zooids", "zoomed", "zoonal", "zooned", "zoonic", "zorils", "zorino", "zorros", "zoster", "zounds", "zoysia", "zufoli", "zufolo", "zupans", "zuppas", "zuzzim", "zydeco", "zygoid", "zygoma", "zygose", "zygote", "zymase", "zymite", "zymoid", "zymome", "zythum"];
 
+
+    lists = [a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z];
+    lists2 = [a1, b1, c1, d1, e1, f1, g1, h1, i1, j1, k1, l1, m1, n1, o1, p1, q1, r1, s1, t1, u1, v1, w1, x1, y1, z1];
     //}
     right = loadSound('http://anagrams.ddns.net/metal-small2.wav');
     wrong = loadSound('http://anagrams.ddns.net/interface1.wav');
 }
 
-let a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z;
-let a1, b1, c1, d1, e1, f1, g1, h1, i1, j1, k1, l1, m1, n1, o1, p1, q1, r1, s1, t1, u1, v1, w1, x1, y1, z1;
-let lists;
-let lists2;
+function allAnagrams(word) {
+    var anaWord = word;
+    var count = 0;
+    
+    var all = [];
+    for(var i = 0; i < lists.length; i++) {
+        for(var j = 0; j < lists[i].length; j++) {
+            var currentWord = lists[i][j];
+            anaWord = word;
+            
+            if(currentWord.length <= anaWord.length) {
+                var isAnagram = true;
+                for(var k = 0; k < currentWord.length; k++) {
+                    var current = currentWord.substring(k, k+1);
+                    var indOf = anaWord.indexOf(current);
+                    
+                    
+                    if(indOf > -1) {
+                        anaWord = anaWord.split("");
+                        anaWord.splice(indOf, 1);
+                        anaWord = anaWord.join('');
+                    } else {
+                        isAnagram = false;
+                    }
+                }
+                    
+                if (isAnagram) {
+                    all.push(currentWord);
+                }
+            }
+        }
+    }
+    return all;
+}
+function totalPoints(words) {
+    var points = 0;
+    for(var i = 0; i < words.length; i++) {
+        points += words[i].length * 100;
+    }
+    return points;
+}
+
+
+
 let choices;
 let word;
 let alphabet;
@@ -212,12 +259,12 @@ var time2;
 var time3;
 var notifText;
 var isError;
+let answers;
+let pointsPossible;
 
 function setup() {
     createCanvas(document.body.clientWidth, window.innerHeight); 
-
-    lists = [a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z];
-    lists2 = [a1, b1, c1, d1, e1, f1, g1, h1, i1, j1, k1, l1, m1, n1, o1, p1, q1, r1, s1, t1, u1, v1, w1, x1, y1, z1];
+    
     choices = [];
     word = [];
     for(let i = 0; i < lists2.length; i++) {
@@ -231,6 +278,8 @@ function setup() {
     s = 55;
     locations = [];
     w = choices[floor(random(choices.length))];
+    answers = allAnagrams(w);
+    pointsPossible = totalPoints(answers);
     w = scramble(w).split("");
     
 
@@ -254,6 +303,7 @@ function setup() {
     time3 = 255;
     notifText = "";
     isError = true;
+    
 }
 
 function joinAnswer() {
@@ -359,7 +409,7 @@ draw = function() {
         text("TIME'S UP!", width/2, height/2-50);
         fill(255);
         textSize(30);
-        text("Points: " + points, width/2, height/2+25);
+        text("Points: " + points + "/" + pointsPossible, width/2, height/2+25);
         textSize(20);
         text("Press anything to continue", width/2, height/2+100);
         
@@ -475,8 +525,8 @@ function mousePressed() {
             if(answer.length > 2) {
                 var j = alphabet.indexOf(answer.substring(0, 1));
                 var exists = false;
-                for(var i = 0; i < lists[j].length; i++) {
-                    if (answer === lists[j][i]) {
+                for(var i = 0; i < answers.length; i++) {
+                    if(answer === answers[i]) {
                         exists = true;
                     }
                 }
@@ -610,8 +660,8 @@ function keyPressed() {
             if(answer.length > 2) {
                 var j = alphabet.indexOf(answer.substring(0, 1));
                 var exists = false;
-                for(var i = 0; i < lists[j].length; i++) {
-                    if (answer === lists[j][i]) {
+                for(var i = 0; i < answers.length; i++) {
+                    if(answer === answers[i]) {
                         exists = true;
                     }
                 }
