@@ -374,7 +374,7 @@ draw = function() {
     let s5 = textAscent();
     textSize(s/5);
      fill(128);
-    text(points + " points", width/2, height/2-100+s5*2);
+    text(pointsPossible + " possible", width/2, height/2-100+s5+5);
     
     fill(0);
     if(time < 6) {
