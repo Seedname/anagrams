@@ -631,4 +631,8 @@ function keyPressed() {
 
 function windowResized() {
   resizeCanvas(document.body.clientWidth, window.innerHeight);
+    for(let i = 0; i < 6; i++) {
+        locations[i] = (i*(s+10)+width/2-(5*(s+10))/2);
+        words[i].x = locations[i];
+    }
 }
