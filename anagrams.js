@@ -313,6 +313,12 @@ draw = function() {
     text("Submit", width/2,height/2-35*s/100 + 175 + 35 * s/100);
     
     textAlign(CENTER, TOP);
+    textSize(s/5);
+    fill(128);
+    text("Enter", width/2, height/2-35*s/100 + 175 +  (35 * s/50)/2);
+    
+    fill(0);
+    textAlign(CENTER, TOP);
     text(points + " points", width/2, height/2-100);
     
     fill(0);
@@ -397,7 +403,6 @@ function mousePressed() {
                     answerArray[answerLetters] = i;
                     answerLetters ++;
                 } else {
-                    
                     answerLetters --;
                     word[i].newPos.set(locations[i], height/2+100);
     
