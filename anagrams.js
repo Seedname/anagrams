@@ -385,7 +385,7 @@ draw = function() {
     
     fill(0);
     if(time < 6) {
-        if(Math.floor(time) < floorTime) {
+        if(Math.floor(time) < floorTime && time > 0) {
             tick.play();
         }
         fill(255, 0, 0);
