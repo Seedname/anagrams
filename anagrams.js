@@ -354,7 +354,7 @@ function triggerShake(error) {
     time3 = 254;
     notifText = error;
     isError = true;
-    playSound(getSound("retro/hit1"));
+    //playSound(getSound("retro/hit1"));
 }
 
 mouseClicked = function() {
@@ -448,7 +448,7 @@ mouseClicked = function() {
                     if(!inList) {
                         used.push(answer);
                         points += answer.length*100;
-                        playSound(getSound("rpg/metal-clink"));
+                        //playSound(getSound("rpg/metal-clink"));
                         time3 = 254;
                         notifText = "+" + answer.length*100 + " points";
                         isError = false;
@@ -581,7 +581,7 @@ keyPressed = function() {
                     if(!inList) {
                         used.push(answer);
                         points +=  answer.length*100;
-                        playSound(getSound("rpg/metal-clink"));
+                        //playSound(getSound("rpg/metal-clink"));
                         time3 = 254;
                         notifText = "+" + answer.length*100 + " points";
                         isError = false;
