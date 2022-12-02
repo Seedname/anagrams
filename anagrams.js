@@ -514,11 +514,11 @@ function keyPressed() {
                     }
                 }
                 
-                if (word[i].letter === letter && !use || keyCode === 8) {
+                if (word[i].letter === letter && !use || keyCode === 8 || (keyCode >= 49 && keyCode <= 54)) {
                     if (keyCode === 8) {
                         i = answerArray[answerLetters - 1];
                     } else if(keyCode >= 49 && keyCode <= 54) {
-                        i = answerArray[keyCode - 49];
+                        i = keyCode - 49;
                     }
                     word[i].move = true;
                     if(word[i].newPos.y === height/2+100) {
