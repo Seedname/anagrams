@@ -331,7 +331,6 @@ draw = function() {
         fill(255, 0, 0, 150);
         textSize(100);
         textAlign(CENTER, CENTER);
-        textFont(createFont("impact"));
         text("TIME'S UP!", width/2, height/2-50);
         fill(255);
         textFont(createFont(""));
@@ -498,7 +497,6 @@ function mouseClicked() {
     }
 }
 function keyPressed() {
-    console.log(keyCode);
     if(time > 0) {
         if (keyCode >= 65 && keyCode <= 90 || keyCode === 8) {
             var letter = letters[keyCode - 65];
@@ -582,7 +580,7 @@ function keyPressed() {
                 word[i].newPos.set(locations[i], height/2 + 100);
             }
         }
-        if(keyCode === 10) {
+        if(keyCode === 13) {
             answer = joinAnswer(); 
             if(answer.length > 2) {
                 var j = alphabet.indexOf(answer.substring(0, 1));
