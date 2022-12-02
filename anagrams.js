@@ -440,7 +440,7 @@ draw = function() {
         if(endCard >= height/8) {
             time2 ++;
             
-            pushMatrix();
+            push();
             translate(0, 7);
             textSize(18);
             fill(255-130, 232-130, 130-130);
@@ -492,7 +492,7 @@ draw = function() {
                 rect(width/2-140, height/8+260 - 30/2, 280, 30);
             }
 
-            popMatrix();
+            pop();
             
             fill(255-130, 232-130, 130-130);
             textAlign(CENTER, BOTTOM);
