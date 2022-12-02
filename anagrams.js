@@ -293,11 +293,11 @@ draw = function() {
     text("Time: " + time.toFixed(2), 0, 0);
     
     fill(255);
-    if(inCircle(75, height/2+100, 30) && time > 0) {
+    if(inCircle(width/2-(s+7)*3-40, height/2+100, 30) && time > 0) {
         fill(200);
     }
     
-    shuffle(75, height/2+100, 30);
+    shuffle(width/2-(s+7)*3-40, height/2+100, 30);
     noStroke();
 
     if(time <= 0) {
@@ -393,7 +393,7 @@ mouseClicked = function() {
             }
         }
     
-        if(inCircle(75, height/2+100, 30)){
+        if(inCircle(width/2-(s+7)*3-40, height/2+100, 30)){
 
             for(var k = 0; k < answerArray.length; k++) {
                 if(answerArray[k] >= 0) {
@@ -406,18 +406,18 @@ mouseClicked = function() {
             answer = "";
             answerLetters = 0;
             
-            var letters = [];
+            var letters1 = [];
             for(var i = 0; i < word.length; i++) {
-                letters.push(word[i]);
+                letters1.push(word[i]);
             }
             
             var scrambled = [];
-            var len = letters.length;
+            var len = letters1.length;
             
             for(var i = 0; i < len; i++) {
-                var j = floor(Math.random() * letters.length);
-                scrambled.push(letters[j]);
-                letters.splice(j, 1);
+                var j = floor(Math.random() * letters1.length);
+                scrambled.push(letters1[j]);
+                letters1.splice(j, 1);
             }
             
             word = scrambled;
@@ -477,7 +477,6 @@ mouseClicked = function() {
         reset();
     }
 };
-        
 keyPressed = function() {
     if(time > 0) {
         if (keyCode >= 65 && keyCode <= 90 || keyCode === 8) {
@@ -541,18 +540,18 @@ keyPressed = function() {
             answer = "";
             answerLetters = 0;
             
-            var letters = [];
+            var letters1 = [];
             for(var i = 0; i < word.length; i++) {
-                letters.push(word[i]);
+                letters1.push(word[i]);
             }
             
             var scrambled = [];
-            var len = letters.length;
+            var len = letters1.length;
             
             for(var i = 0; i < len; i++) {
-                var j = floor(Math.random() * letters.length);
-                scrambled.push(letters[j]);
-                letters.splice(j, 1);
+                var j = floor(Math.random() * letters1.length);
+                scrambled.push(letters1[j]);
+                letters1.splice(j, 1);
             }
             
             word = scrambled;
@@ -611,6 +610,7 @@ keyPressed = function() {
         reset();
     }
 };
+
 
 }};
 
