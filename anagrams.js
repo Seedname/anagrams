@@ -89,7 +89,7 @@ function scramble(word) {
     }
     return scrambled;
 }
-function shuffle(x, y, s) {
+function shuffleIcon(x, y, s) {
     push();
     translate(x-s/8, y);
     
@@ -317,7 +317,7 @@ draw = function() {
         fill(200);
     }
     
-    shuffle(width/2-(s+7)*3-40, height/2+100, 30);
+    shuffleIcon(width/2-(s+7)*3-40, height/2+100, 30);
     noStroke();
 
     if(time <= 0) {
@@ -333,7 +333,6 @@ draw = function() {
         textAlign(CENTER, CENTER);
         text("TIME'S UP!", width/2, height/2-50);
         fill(255);
-        textFont(createFont(""));
         textSize(30);
         text("Points: " + points, width/2, height/2+25);
         textSize(20);
