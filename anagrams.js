@@ -643,6 +643,26 @@ function windowResized() {
         }
     }
 
+    answerArray = [];
+    answer = "";
+    answerLetters = 0;
+
+    var letters1 = [];
+    for(var i = 0; i < word.length; i++) {
+        letters1.push(word[i]);
+    }
+
+    var scrambled = [];
+    var len = letters1.length;
+
+    for(var i = 0; i < len; i++) {
+        var j = floor(Math.random() * letters1.length);
+        scrambled.push(letters1[j]);
+        letters1.splice(j, 1);
+    }
+
+    word = scrambled;
+
     for(var i = 0; i < len; i++) {
         word[i].move = true;
         word[i].newPos.set(locations[i], height/2 + 100);
