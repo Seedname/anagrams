@@ -201,6 +201,7 @@ var time2;
 var time3;
 var notifText;
 var isError;
+let right, wrong;
 function setup() {
     createCanvas(document.body.clientWidth, window.innerHeight); 
 
@@ -242,6 +243,9 @@ function setup() {
     time3 = 255;
     notifText = "";
     isError = true;
+    
+    right = loadSound('metal-small2.wav');
+    wrong = loudSound('interface1.wav');
 }
 
 function joinAnswer() {
@@ -372,7 +376,7 @@ function triggerShake(error) {
     time3 = 254;
     notifText = error;
     isError = true;
-    //playSound(getSound("retro/hit1"));
+    wrong.play();
 }
 
 function mouseClicked() {
@@ -466,7 +470,7 @@ function mouseClicked() {
                     if(!inList) {
                         used.push(answer);
                         points += answer.length*100;
-                        //playSound(getSound("rpg/metal-clink"));
+                        right.play();
                         time3 = 254;
                         notifText = "+" + answer.length*100 + " points";
                         isError = false;
@@ -599,7 +603,7 @@ function keyPressed() {
                     if(!inList) {
                         used.push(answer);
                         points +=  answer.length*100;
-                        //playSound(getSound("rpg/metal-clink"));
+                        right.play();
                         time3 = 254;
                         notifText = "+" + answer.length*100 + " points";
                         isError = false;
