@@ -380,7 +380,7 @@ function triggerShake(error) {
     wrong.play();
 }
 
-function mouseClicked() {
+function mousePressed() {
     if(time > 0) {
         for(var i = 0; i < word.length; i++) {
             if(word[i].click()) {
