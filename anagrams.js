@@ -41,7 +41,7 @@ function Letter(letter, x, y, s) {
         if(this.shake) {
             this.animation();
         }
-        pushMatrix();
+        push();
         translate(this.x, this.y);
         rotate(radians(this.angle));
         rect(-this.s/2, -this.s/2, this.s, this.s, 5);
@@ -49,7 +49,7 @@ function Letter(letter, x, y, s) {
         fill(255-130, 232-130, 130-130);
         textAlign(CENTER, CENTER);
         text(this.letter.toUpperCase(), 0, 0);
-        popMatrix();
+        pop();
     };
     
     this.click = function() {
