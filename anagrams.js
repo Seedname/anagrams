@@ -553,7 +553,7 @@ function keyPressed() {
                 }
             }
         }
-        if(keyCode === 48 || (keyCode >= 55 && keyCode <= 57)) {
+        if(keyCode === 48 || (keyCode >= 55 && keyCode <= 57) || keyCode === 16) {
             for(var k = 0; k < answerArray.length; k++) {
                 if(answerArray[k] >= 0) {
                     word[answerArray[k]].move = true;
