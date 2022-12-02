@@ -182,8 +182,8 @@ function preload() {
 
     //}
     
-    right = loadSound('https://seedname.github.io/anagrams/metal-small2.wav');
-    wrong = loudSound('https://seedname.github.io/anagrams/interface1.wav');
+    right = loadSound('https://seedname.github.io/anagrams/metal-small2.mp3');
+    wrong = loudSound('https://seedname.github.io/anagrams/interface1.mp3');
 }
 
 let a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z;
