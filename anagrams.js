@@ -482,6 +482,7 @@ mouseClicked = function() {
     }
 };
 keyPressed = function() {
+    console.log(keyCode);
     if(time > 0) {
         if (keyCode >= 65 && keyCode <= 90 || keyCode === 8) {
             var letter = letters[keyCode - 65];
