@@ -181,8 +181,8 @@ function preload() {
     z1 = ["zabeta", "zabras", "zaddik", "zaffar", "zaffer", "zaffir", "zaffre", "zaftig", "zagged", "zaidas", "zaideh", "zaires", "zakats", "zamang", "zamans", "zambos", "zambuk", "zamias", "zanana", "zander", "zanied", "zanier", "zanies", "zanily", "zanjas", "zantes", "zanzas", "zanzes", "zapata", "zapped", "zapper", "zarape", "zareba", "zariba", "zarnec", "zayins", "zazens", "zealot", "zeatin", "zebeck", "zebecs", "zebras", "zebubs", "zechin", "zelant", "zeloso", "zenana", "zendik", "zendos", "zenith", "zephyr", "zerdas", "zereba", "zeriba", "zeroed", "zeroes", "zeroth", "zested", "zester", "zeugma", "zhomos", "zhoosh", "zibeth", "zibets", "zigans", "zigged", "zigzag", "zillah", "zillas", "zimbis", "zinced", "zincic", "zincky", "zincos", "zinebs", "zinged", "zingel", "zinger", "zinked", "zinkes", "zinnia", "zipola", "zipped", "zipper", "zippos", "ziptop", "zirams", "zircon", "zither", "zizels", "zizith", "zizzed", "zizzes", "zizzle", "zlotys", "zocalo", "zoccos", "zodiac", "zoetic", "zoftig", "zoisms", "zoists", "zombie", "zombis", "zonary", "zonate", "zondas", "zoners", "zoning", "zonked", "zonoid", "zonula", "zonule", "zonure", "zooids", "zoomed", "zoonal", "zooned", "zoonic", "zorils", "zorino", "zorros", "zoster", "zounds", "zoysia", "zufoli", "zufolo", "zupans", "zuppas", "zuzzim", "zydeco", "zygoid", "zygoma", "zygose", "zygote", "zymase", "zymite", "zymoid", "zymome", "zythum"];
 
     //}
-    right = loadSound('https://seedname.github.io/anagrams/metal-small2.wav');
-    wrong = loadSound('https://seedname.github.io/anagrams/interface1.wav');
+    right = loadSound('metal-small2.wav');
+    wrong = loadSound('interface1.wav');
 }
 
 let a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z;
