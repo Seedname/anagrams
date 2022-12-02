@@ -502,7 +502,7 @@ function mousePressed() {
 }
 function keyPressed() {
     if(time > 0) {
-        if (keyCode >= 65 && keyCode <= 90 || keyCode === 8) {
+        if (keyCode >= 65 && keyCode <= 90 || keyCode === 8 || (keyCode >= 49 && keyCode <= 54)) {
             var letter = letters[keyCode - 65];
             for (var i = 0; i < word.length; i++) {
                 var use = false;
@@ -517,6 +517,8 @@ function keyPressed() {
                 if (word[i].letter === letter && !use || keyCode === 8) {
                     if (keyCode === 8) {
                         i = answerArray[answerLetters - 1];
+                    } else if(keyCode >= 49 && keyCode <= 54) {
+                        i = answerArray[keyCode - 49];
                     }
                     word[i].move = true;
                     if(word[i].newPos.y === height/2+100) {
@@ -551,7 +553,7 @@ function keyPressed() {
                 }
             }
         }
-        if(keyCode >= 48 && keyCode <= 57) {
+        if(keyCode === 48 || (keyCode >= 55 && keyCode <= 57)) {
             for(var k = 0; k < answerArray.length; k++) {
                 if(answerArray[k] >= 0) {
                     word[answerArray[k]].move = true;
