@@ -4,7 +4,7 @@ function Letter(letter, x, y, s) {
     this.y = y;
     this.s = s;
     
-    this.newPos = new PVector(0, height/2 + 100);
+    this.newPos = createVector(0, height/2 + 100);
     this.move = false;
     this.shake = false;
     this.angle = 0;
