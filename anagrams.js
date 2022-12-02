@@ -257,10 +257,12 @@ var startTime;
 var time;
 var time2;
 var time3;
+let endCard;
 var notifText;
 var isError;
 let answers;
 let pointsPossible;
+let foundWords;
 
 function setup() {
     createCanvas(document.body.clientWidth, window.innerHeight); 
@@ -303,6 +305,8 @@ function setup() {
     time3 = 255;
     notifText = "";
     isError = true;
+    endCard = -3/4*height;
+    foundWords = 0;
     
 }
 
@@ -404,22 +408,104 @@ draw = function() {
     }
     
     if(time <= 0) {
-        time2 ++;
         time = 0;
-        fill(0, 0, 0, 200);
-        noStroke();
-        rect(-1, -1, width + 1, height + 1);
-        stroke(0);
         
-        fill(255, 0, 0, 150);
-        textSize(100);
+        if(endCard <= height/8) {
+            endCard += 15;
+        } 
+        
+        stroke(255-130, 232-130, 130-130);
+        strokeWeight(4);
+        fill(255, 232, 130);
+        rect(width/2-150, endCard, 300, 3/4*height, 5);
+        
+        noStroke();
+        strokeWeight(2);
+        textSize(45);
+        fill(255-130, 232-130, 130-130);
+        textAlign(CENTER, TOP);
+        text("Time's Up!", width/2, endCard + 30);
+
         textAlign(CENTER, CENTER);
-        text("TIME'S UP!", width/2, height/2-50);
-        fill(255);
-        textSize(30);
-        text("Points: " + points + "/" + pointsPossible, width/2, height/2+25);
-        textSize(20);
-        text("Press anything to continue", width/2, height/2+100);
+        
+        textSize(27);
+        fill(255-170, 232-170, 0);
+        text("Stats", width/2, endCard + 110);
+        
+        stroke(255-130, 232-130, 130-130);
+        line(width/2-35, endCard+125, width/2+35, endCard+125);
+        
+        noStroke();
+        
+        if(endCard >= height/8) {
+            time2 ++;
+            
+            pushMatrix();
+            translate(0, 7);
+            textSize(18);
+            fill(255-130, 232-130, 130-130);
+            text("Score: " + points, width/2, height/8+160);
+            text("Possible Score: " + pointsPossible, width/2, height/8+185);
+            text("Words Found: " + foundWords + "/" + answers.length, width/2, height/8+210);
+            
+            var ratio = points/pointsPossible;
+            
+            var display = "";
+            if (ratio <= 0.25) {
+                display = "Nice Job!";
+            } else if(ratio <= 0.5) {
+                display = "Good Job!";
+            } else if(ratio <= 0.75) {
+                display = "Great Job!";
+            } else if(ratio <= 1) {
+                display = "Amazing!";
+            }
+            textSize(30);
+            text(display, width/2, height/8+260);
+
+            fill(255, 232, 130);
+            if(time2 > 0 && time2 < 280/4) {
+                rect(width/2-140, height/8+160-20/2, 280 - 4*(time2), 20);
+            } 
+        
+            if(time2 >= 280/4 && time2 < 2*280/4) {
+                rect(width/2-140, height/8+160-20/2+25, 280 - 4*(time2 - 280/4), 20);
+            } else if(time2 < 280/4) {
+                rect(width/2-140, height/8+160-20/2+25, 280, 20);
+            }
+            
+            if(time2 >= 280/4 && time2 < 2*280/4) {
+                rect(width/2-140, height/8+160-20/2+25, 280 - 4*(time2 - 280/4), 20);
+            } else if(time2 < 280/4) {
+                rect(width/2-140, height/8+160-20/2+25, 280, 20);
+            }
+            
+            if(time2 >= 2*280/4 && time2 < 3*280/4) {
+                rect(width/2-140, height/8+160-20/2+50, 280 - 4*(time2 - 2*280/4), 20);
+            } else if(time2 < 2*280/4) {
+                rect(width/2-140, height/8+160-20/2+50, 280, 20);
+            }
+
+            if(time2 >= 3*280/4 && time2 < 4*280/4) {
+                rect(width/2-140, height/8+260 - 30/2, 280 - 4*(time2 - 3*280/4), 30);
+            } else if(time2 < 3*280/4) {
+                rect(width/2-140, height/8+260 - 30/2, 280, 30);
+            }
+
+            popMatrix();
+            
+            fill(255-130, 232-130, 130-130);
+            textAlign(CENTER, BOTTOM);
+            textSize(10);
+            text("Press anything to continue", width/2, height/2+3/8*height);
+            
+            fill(255, 232, 130);
+            if(time2 >= 4*280/4 && time2 < 5*280/4) {
+                rect(width/2-140, height/2+3/8*height - 10, 280 - 4*(time2 - 4*280/4), 10);
+            } else if(time2 < 5*280/4) {
+                rect(width/2-140, height/2+3/8*height - 10, 280, 10);
+            }
+        }
         
     } else {
         time = 60 - (Date.now()/1000 - startTime/1000);
@@ -442,6 +528,8 @@ function reset() {
     time2 = 0;
     time3 = 255;
     startTime = Date.now();
+    endCard = -3/4*height;
+    foundWords = 0;
     for(var i = 0; i < 6; i++) {
         word.push(new Letter(w[i], i*(s+10)+width/2-(5*(s+10))/2, height/2 + 100, s));
     }
@@ -552,6 +640,7 @@ function mousePressed() {
                         points += answer.length*100;
                         right.play();
                         time3 = 254;
+                        foundWords ++;
                         notifText = "+" + answer.length*100 + " points";
                         isError = false;
                         for(var k = 0; k < answerArray.length; k++) {
@@ -687,6 +776,7 @@ function keyPressed() {
                         points +=  answer.length*100;
                         right.play();
                         time3 = 254;
+                        foundWords ++;
                         notifText = "+" + answer.length*100 + " points";
                         isError = false;
                         for(var k = 0; k < answerArray.length; k++) {
