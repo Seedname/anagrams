@@ -186,7 +186,7 @@ let a1, b1, c1, d1, e1, f1, g1, h1, i1, j1, k1, l1, m1, n1, o1, p1, q1, r1, s1, 
 let lists;
 let lists2;
 let choices;
-let word = [];
+let word;
 let alphabet;
 let letters;
 let locations;
@@ -206,6 +206,8 @@ function setup() {
 
     lists = [a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z];
     lists2 = [a1, b1, c1, d1, e1, f1, g1, h1, i1, j1, k1, l1, m1, n1, o1, p1, q1, r1, s1, t1, u1, v1, w1, x1, y1, z1];
+    choices = [];
+    word = [];
     for(let i = 0; i < lists2.length; i++) {
         for(let j = 0; j < lists2[i].length; j++) {
             choices.push(lists2[i][j]);
