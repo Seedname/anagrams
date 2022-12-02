@@ -395,6 +395,10 @@ draw = function() {
     
     noStroke();
 
+    if(points >= pointsPossible) {
+        time = 0;
+    }
+    
     if(time <= 0) {
         time2 ++;
         time = 0;
