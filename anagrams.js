@@ -315,7 +315,7 @@ draw = function() {
     textAlign(CENTER, TOP);
     textSize(s/5);
     fill(128);
-    text("Enter", width/2, height/2-35*s/100 + 175 +  (35 * s/50)/2);
+    text("Enter", width/2, height/2-35*s/100 + 175 +  (35 * s/50) + 5);
     
     fill(0);
     textAlign(CENTER, TOP);
