@@ -31,7 +31,7 @@ function Letter(letter, x, y, s) {
         
     };
     
-    this.display = function(hover) {
+    this.display = function(hover, num) {
         noStroke();
         fill(255, 232, 130);
         if(this.click() && hover) {
@@ -49,6 +49,13 @@ function Letter(letter, x, y, s) {
         fill(255-130, 232-130, 130-130);
         textAlign(CENTER, CENTER);
         text(this.letter.toUpperCase(), 0, 0);
+        
+        textAlign(CENTER, TOP);
+        fill(128);
+        textSize(1/5 * this.s);
+        text(num, 0, this.s/2+5);
+        
+        textAlign(CENTER, CENTER);
         pop();
     };
     
@@ -288,7 +295,7 @@ draw = function() {
         if(word[i].move) {
             word[i].moveTo();
         }
-        word[i].display(time > 0);
+        word[i].display(time > 0, i);
     }
     
     rectMode(CORNER);
