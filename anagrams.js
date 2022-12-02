@@ -631,8 +631,39 @@ function keyPressed() {
 
 function windowResized() {
   resizeCanvas(document.body.clientWidth, window.innerHeight);
-    for(let i = 0; i < 6; i++) {
-        words[i].x = i*(s+10)+width/2-(5*(s+10))/2;
-        words[i].y = height/2 + 100;
+    
+    for(let i = 0; i < 6; i++) { 
+        locations[i] = (i*(s+10)+width/2-(5*(s+10))/2);
+    }
+    for(var k = 0; k < answerArray.length; k++) {
+        if(answerArray[k] >= 0) {
+            word[answerArray[k]].move = true;
+            word[answerArray[k]].newPos.set(locations[answerArray[k]], height/2 + 100);
+        }
+    }
+
+    answerArray = [];
+    answer = "";
+    answerLetters = 0;
+
+    var letters1 = [];
+    for(var i = 0; i < word.length; i++) {
+        letters1.push(word[i]);
+    }
+
+    var scrambled = [];
+    var len = letters1.length;
+
+    for(var i = 0; i < len; i++) {
+        var j = floor(Math.random() * letters1.length);
+        scrambled.push(letters1[j]);
+        letters1.splice(j, 1);
+    }
+
+    word = scrambled;
+
+    for(var i = 0; i < len; i++) {
+        word[i].move = true;
+        word[i].newPos.set(locations[i], height/2 + 100);
     }
 }
