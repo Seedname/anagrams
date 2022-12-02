@@ -421,6 +421,8 @@ draw = function() {
 
 function reset() {
     var w = choices[floor(random(choices.length))];
+    answers = allAnagrams(w);
+    pointsPossible = totalPoints(answers);
     w = scramble(w).split("");
     word = [];
     answerArray = [];
