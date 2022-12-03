@@ -573,14 +573,18 @@ function triggerShake(error) {
     wrong.play();
 }
 
+function mouseClicked() {
+    if(isInside(width/2-(5*(s+10))/2 - s/2, height/2 - s/2, 4*(s+10)+width/2-(5*(s+10))/2 - s/2, s)) {
+        mobileType = true;
+        document.getElementById("textField").focus();
+        document.getElementById("textField").click();
+    } else {
+        mobileType = false;
+    }
+}
+
 function mousePressed() {
     if(time > 0) {
-        if(isInside(width/2-(5*(s+10))/2 - s/2, height/2 - s/2, 4*(s+10)+width/2-(5*(s+10))/2 - s/2, s)) {
-            mobileType = true;
-            document.getElementById("textField").focus();
-        } else {
-            mobileType = false;
-        }
         for(var i = 0; i < word.length; i++) {
             if(word[i].click()) {
                 word[i].move = true;
