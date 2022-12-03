@@ -266,7 +266,6 @@ let pointsPossible;
 let foundWords;
 let floorTime;
 let reason;
-let mobileType;
 
 function setup() {
     createCanvas(document.body.clientWidth, window.innerHeight); 
@@ -313,7 +312,6 @@ function setup() {
     endCard = -3/4*height;
     foundWords = 0;
     reason = "Time's Up!";
-    mobileType = false;
 }
 
 function joinAnswer() {
@@ -355,13 +353,6 @@ draw = function() {
     for(var i = 0; i < word.length; i++) {
         fill(100);
         rect(i*(s+10)+width/2-(5*(s+10))/2 - s/2, height/2 - s/2, s, s, 5);
-    }
-
-    if(mobileType) {
-        fill(255);
-        if(0.03*frameCount % 2 < 1 && answerLetters < 6) {
-        rect(answerLetters*(s+10)+width/2-(5*(s+10))/2 - s/2 + 5, height/2 - s/2 + 15/2, 5, s-15); 
-        }
     }
     
     for(var i = 0; i < word.length; i++) {
@@ -571,16 +562,6 @@ function triggerShake(error) {
     notifText = error;
     isError = true;
     wrong.play();
-}
-
-function mouseClicked() {
-    if(isInside(width/2-(5*(s+10))/2 - s/2, height/2 - s/2, 4*(s+10)+width/2-(5*(s+10))/2 - s/2, s)) {
-        mobileType = true;
-        document.getElementById("textField").focus();
-        document.getElementById("textField").click();
-    } else {
-        mobileType = false;
-    }
 }
 
 function mousePressed() {
