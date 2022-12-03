@@ -577,7 +577,7 @@ function mousePressed() {
     if(time > 0) {
         if(isInside(width/2-(5*(s+10))/2 - s/2, height/2 - s/2, 4*(s+10)+width/2-(5*(s+10))/2 - s/2, s)) {
             mobileType = true;
-            prompt();
+            document.getElementById("textField").focus();
         } else {
             mobileType = false;
         }
