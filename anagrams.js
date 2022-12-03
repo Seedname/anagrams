@@ -1,3 +1,11 @@
+window.addEventListener('focus', function (event) {
+    console.log('has focus');
+});
+
+window.addEventListener('blur', function (event) {
+    console.log('lost focus');
+});
+
 function Letter(letter, x, y, s) {
     this.letter = letter;
     this.x = x;
