@@ -1,11 +1,3 @@
-window.addEventListener('focus', function (event) {
-    console.log('has focus');
-});
-
-window.addEventListener('blur', function (event) {
-    console.log('lost focus');
-});
-
 function Letter(letter, x, y, s) {
     this.letter = letter;
     this.x = x;
@@ -273,6 +265,7 @@ let answers;
 let pointsPossible;
 let foundWords;
 let floorTime;
+let reason;
 
 function setup() {
     createCanvas(document.body.clientWidth, window.innerHeight); 
@@ -318,7 +311,7 @@ function setup() {
     isError = true;
     endCard = -3/4*height;
     foundWords = 0;
-    
+    reason = "Time's Up!";
 }
 
 function joinAnswer() {
@@ -331,6 +324,10 @@ function joinAnswer() {
     return s;
 }
 
+window.addEventListener('blur', function (event) {
+    time = 0;
+    reason = "Lost Focus!";
+});
 
 draw = function() {
     background(220);
@@ -420,6 +417,7 @@ draw = function() {
 
     if(points >= pointsPossible) {
         time = 0;
+        reason = "You Won!";
     }
     
     if(time <= 0) {
@@ -439,7 +437,7 @@ draw = function() {
         textSize(45);
         fill(255-130, 232-130, 130-130);
         textAlign(CENTER, TOP);
-        text("Time's Up!", width/2, endCard + 30);
+        text(reason, width/2, endCard + 30);
 
         textAlign(CENTER, CENTER);
         
@@ -545,6 +543,7 @@ function reset() {
     startTime = Date.now();
     endCard = -3/4*height;
     foundWords = 0;
+    reason = "Time's Up!";
     for(var i = 0; i < 6; i++) {
         word.push(new Letter(w[i], i*(s+10)+width/2-(5*(s+10))/2, height/2 + 100, s));
     }
