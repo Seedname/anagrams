@@ -324,9 +324,11 @@ function joinAnswer() {
     return s;
 }
 
-window.addEventListener('blur', function (event) {
-    time = 0;
-    reason = "Lost Focus!";
+document.addEventListener('visibilitychange', function (event) {
+    if (document.hidden) {
+        time = 0;
+        reason = "Lost Focus!";
+    }
 });
 
 draw = function() {
