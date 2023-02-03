@@ -33,10 +33,12 @@ function Letter(letter, x, y, s) {
     
     this.display = function(hover, num) {
         noStroke();
-        fill(255, 232, 130);
-        if(this.click() && hover) {
-            fill(255-20, 232-20, 130-20);
-        }
+        // fill(255, 232, 130);
+        // if(this.click() && hover) {
+            // fill(255-20, 232-20, 130-20);
+        // }
+        noFill();
+        stroke(255);
         
         if(this.shake) {
             this.animation();
@@ -46,7 +48,8 @@ function Letter(letter, x, y, s) {
         rotate(radians(this.angle));
         rect(-this.s/2, -this.s/2, this.s, this.s, 5);
         textSize(3/5 * this.s);
-        fill(255-130, 232-130, 130-130);
+        // fill(255-130, 232-130, 130-130);
+        fill(255);
         textAlign(CENTER, CENTER);
         text(this.letter.toUpperCase(), 0, 0);
         
@@ -327,7 +330,7 @@ function Rocket(type, x, y, s) {
             
             for(let i = 0; i < this.boosterPoses.length; i++) {
                 let pos = this.boosterPoses[i];
-                this.boosters[i] = new RocketNode(pos[0], pos[1], 20);
+                this.boosters[i] = new RocketNode(pos[0], pos[1], 10);
             }
             // this.boosters = [new RocketNode(this.x-100, this.y-s, 20)];
 
@@ -341,7 +344,7 @@ function Rocket(type, x, y, s) {
             
             for(let i = 0; i < this.boosterPoses.length; i++) {
                 let pos = this.boosterPoses[i];
-                this.boosters[i] = new RocketNode(pos[0], pos[1], 20);
+                this.boosters[i] = new RocketNode(pos[0], pos[1], 10);
             }
 
             this.parts = rocket1;
@@ -354,7 +357,7 @@ function Rocket(type, x, y, s) {
             
             for(let i = 0; i < this.boosterPoses.length; i++) {
                 let pos = this.boosterPoses[i];
-                this.boosters[i] = new RocketNode(pos[0], pos[1], 20);
+                this.boosters[i] = new RocketNode(pos[0], pos[1], 10);
             }
 
             this.parts = rocket2;
@@ -369,9 +372,25 @@ function Rocket(type, x, y, s) {
     }
 
     this.phase2 = true;
+    // let offsets2 = new Array(this.boosters.length);
+    // for (let i = 0; i < this.boosters.length; i++) {
+    //     offsets2[i] = [0, 0];
+    // }
+    var vx = [];
+    var vy = [];
+    var va = [0];
+    for(let i = 0; i < this.parts.length-1; i++) {
+        vx.push(random(10, 15));
+        vy.push(10);
+        va.push(0);
+    }
+
     this.animation = function() {
+        
         if(this.type == 0) {
             this.offsets[1][1] ++;
+            va[i] += 0.1;
+            vy[i-1] += 6/60;
             if(this.boosters.length > 1) {
                 this.boosters.pop();
             }
@@ -382,7 +401,10 @@ function Rocket(type, x, y, s) {
             this.boosters[0].y = this.y-s;
         } else if(this.type == 1) {
             for(let i = 1; i < this.offsets.length; i++) {
-                this.offsets[i][1] ++;
+                this.offsets[i][1] += vx[i-1];
+                this.offsets[i][1] += vy[i-1];
+                va[i] += 0.1;
+                vy[i-1] += 6/60;
             }
             
             if(this.boosters.length > 3) {
@@ -396,11 +418,12 @@ function Rocket(type, x, y, s) {
         }
     };
 
+    let strength = 2;
     this.display = function() {
-        if(this.phase2) {
-            this.animation();
+        // if(this.phase2) {
+        //     this.animation();
 
-        } 
+        // } 
         for(let i = 0; i < this.boosters.length; i++) {
             this.boosters[i].run();
         }
@@ -416,7 +439,13 @@ function Rocket(type, x, y, s) {
                 const ratio = w/this.minWidth;
 
                 // image(p, this.offsets[i][0]*ratio +this.x - s*ratio/2, this.offsets[i][1]*ratio +  this.y-this.s/2, s * ratio, s*h/w*ratio);
-                image(p, this.offsets[i][0] +this.x - s*ratio/2, this.offsets[i][1] + this.y, s * ratio, s*h/w*ratio);
+                push();
+                    translate(this.offsets[i][0] +this.x - s*ratio/2, this.offsets[i][1] + this.y);
+                    if(this.phase2) {
+                        rotate(va[i]);
+                    }
+                    image(p, random(-strength, strength), random(-strength, strength), s * ratio, s*h/w*ratio);
+                pop();
             }
         } else {
             for(let i = this.parts.length-1; i >= 0; i--) {
@@ -427,7 +456,13 @@ function Rocket(type, x, y, s) {
                     
                     const ratio = w/this.minWidth;
     
-                    image(p, this.offsets[i][0] +this.x - s*ratio/2, this.offsets[i][1] + this.y, s * ratio, s*h/w*ratio);
+                    push();
+                        translate(this.offsets[i][0] +this.x - s*ratio/2, this.offsets[i][1] + this.y);
+                        if(this.phase2) {
+                            rotate(va[i]);
+                        }
+                        image(p, random(-strength, strength), random(-strength, strength), s * ratio, s*h/w*ratio);
+                    pop();
                     
                 }
         }
@@ -530,7 +565,7 @@ document.addEventListener('visibilitychange', function (event) {
 
 
 draw = function() {
-    background(220);
+    background(0);
     
 
     if(time3 < 255) {
