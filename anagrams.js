@@ -1,3 +1,4 @@
+//<a href="https://www.freepik.com/free-vector/underground-with-lawn-dirt_4931663.htm#query=earth%20crust&position=28&from_view=search&track=sph">Image by brgfx</a> on Freepik
 function Letter(letter, x, y, s) {
     this.letter = letter;
     this.x = x;
@@ -145,7 +146,8 @@ function preload() {
     rocket0 = [loadImage('assets/rocket0-t.png'), loadImage('assets/rocket0-b.png')]
     rocket1 = [loadImage('assets/rocket1-m.png'), loadImage('assets/rocket1-m2.png'), loadImage('assets/rocket1-l.png'), loadImage('assets/rocket1-r.png')]
     rocket2 = [loadImage('assets/rocket2-m.png'), loadImage('assets/rocket2-l.png'), loadImage('assets/rocket2-r.png')]
-    parachute = loadImage('assets/parachute.png');
+    ground = [loadImage('assets/earth-crust-10x.png')];
+
     //words{
     a = ["aah", "aahed", "aahing", "aahs", "aal", "aalii", "aaliis", "aals", "aargh", "aarrgh", "aarti", "aartis", "aas", "aba", "abac", "abaca", "abacas", "abaci", "aback", "abacs", "abacus", "abaft", "abaka", "abakas", "abamp", "abamps", "aband", "abands", "abas", "abase", "abased", "abaser", "abases", "abash", "abasia", "abask", "abate", "abated", "abater", "abates", "abatis", "abator", "abattu", "abaya", "abayas", "abb", "abba", "abbacy", "abbas", "abbe", "abbed", "abbes", "abbess", "abbey", "abbeys", "abbot", "abbots", "abbs", "abcee", "abcees", "abdabs", "abduce", "abduct", "abeam", "abear", "abears", "abed", "abeigh", "abele", "abeles", "abelia", "aber", "abers", "abet", "abets", "abhor", "abhors", "abid", "abide", "abided", "abider", "abides", "abies", "abitur", "abject", "abjure", "ablate", "ablaut", "ablaze", "able", "abled", "abler", "ables", "ablest", "ablet", "ablets", "abling", "ablins", "abloom", "ablow", "ablush", "ably", "abmho", "abmhos", "abo", "aboard", "abode", "aboded", "abodes", "abohm", "abohms", "aboil", "abolla", "aboma", "abomas", "aboon", "aboral", "abord", "abords", "abore", "aborne", "abort", "aborts", "abos", "abound", "about", "abouts", "above", "aboves", "abrade", "abraid", "abram", "abray", "abrays", "abrazo", "abrege", "abri", "abrim", "abrin", "abrins", "abris", "abroad", "abrupt", "abs", "abseil", "absent", "absey", "abseys", "absit", "absits", "absorb", "absurd", "abulia", "abulic", "abuna", "abunas", "abune", "aburst", "abuse", "abused", "abuser", "abuses", "abut", "abuts", "abuzz", "abvolt", "abwatt", "aby", "abye", "abyes", "abying", "abys", "abysm", "abysms", "abyss", "acacia", "acai", "acais", "acajou", "acanth", "acari", "acarid", "acarus", "acater", "acates", "acca", "accas", "accede", "accend", "accent", "accept", "access", "accite", "accloy", "accoil", "accord", "accost", "accoy", "accoys", "accrew", "accrue", "accuse", "ace", "aced", "acedia", "acer", "acerb", "acers", "aces", "aceta", "acetal", "acetic", "acetin", "acetum", "acetyl", "ach", "achage", "achar", "achars", "ache", "ached", "achene", "aches", "achier", "aching", "achkan", "achoo", "achoos", "achy", "acid", "acider", "acidic", "acidly", "acids", "acidy", "acinar", "acing", "acini", "acinic", "acinus", "ackee", "ackees", "acker", "ackers", "acknew", "acknow", "acme", "acmes", "acmic", "acmite", "acne", "acned", "acnes", "acnode", "acock", "acold", "acorn", "acorns", "acquis", "acquit", "acrawl", "acre", "acred", "acres", "acrid", "acro", "acros", "across", "act", "acta", "actant", "acted", "actin", "acting", "actins", "action", "active", "acton", "actons", "actor", "actors", "acts", "actual", "acture", "acuate", "acuity", "aculei", "acumen", "acute", "acuter", "acutes", "acyl", "acyls", "adage", "adages", "adagio", "adapt", "adapts", "adaw", "adawed", "adaws", "adays", "adbot", "adbots", "add", "addax", "added", "addeem", "addend", "adder", "adders", "addict", "addies", "adding", "addio", "addios", "addle", "addled", "addles", "addoom", "adds", "adduce", "adduct", "addy", "adeem", "adeems", "adenyl", "adept", "adepts", "adhan", "adhans", "adhere", "adieu", "adieus", "adieux", "adios", "adipic", "adit", "adits", "adjigo", "adjoin", "adjure", "adjust", "adland", "adman", "admass", "admen", "admin", "admins", "admire", "admit", "admits", "admix", "admixt", "adnate", "adnexa", "adnoun", "ado", "adobe", "adobes", "adobo", "adobos", "adonis", "adoors", "adopt", "adopts", "adore", "adored", "adorer", "adores", "adorn", "adorns", "ados", "adown", "adoze", "adrad", "adrate", "adread", "adred", "adrift", "adroit", "adry", "ads", "adsorb", "adsuki", "adsum", "aduki", "adukis", "adult", "adults", "adunc", "adust", "adusts", "advect", "advene", "advent", "adverb", "advert", "advew", "advews", "advice", "advise", "adward", "adware", "adyta", "adytum", "adz", "adze", "adzed", "adzes", "adzing", "adzuki", "aecia", "aecial", "aecium", "aedes", "aedile", "aedine", "aefald", "aegis", "aemule", "aeneus", "aeon", "aeonic", "aeons", "aerate", "aerial", "aerie", "aeried", "aerier", "aeries", "aerify", "aerily", "aero", "aerobe", "aeros", "aerugo", "aery", "aesc", "aesces", "aesir", "aether", "afald", "afar", "afara", "afaras", "afars", "afawld", "afear", "afeard", "afears", "aff", "affair", "affear", "affect", "affeer", "affied", "affies", "affine", "affirm", "affix", "afflux", "afford", "affrap", "affray", "affret", "affy", "affyde", "afghan", "afield", "afire", "aflaj", "aflame", "afloat", "afocal", "afoot", "afore", "afoul", "afraid", "afreet", "afresh", "afrit", "afrits", "afro", "afront", "afros", "aft", "after", "afters", "aftosa", "aga", "again", "agama", "agamas", "agami", "agamic", "agamid", "agamis", "agapae", "agapai", "agape", "agapes", "agar", "agaric", "agars", "agas", "agast", "agasts", "agate", "agates", "agave", "agaves", "agaze", "agazed", "age", "aged", "agedly", "agee", "ageing", "ageism", "ageist", "agen", "agency", "agenda", "agene", "agenes", "agent", "agents", "ager", "agers", "ages", "aggada", "agger", "aggers", "aggie", "aggies", "aggri", "aggro", "aggros", "aggry", "agha", "aghas", "aghast", "agila", "agilas", "agile", "agiler", "agin", "aging", "agings", "agio", "agios", "agism", "agisms", "agist", "agists", "agita", "agitas", "aglare", "agleam", "aglee", "aglet", "aglets", "agley", "agloo", "agloos", "aglow", "aglu", "aglus", "agly", "agma", "agmas", "agnail", "agname", "agnate", "agnise", "agnize", "ago", "agog", "agoge", "agoges", "agogic", "agoing", "agon", "agonal", "agone", "agones", "agonic", "agons", "agony", "agood", "agora", "agorae", "agoras", "agorot", "agouta", "agouti", "agouty", "agrafe", "agree", "agreed", "agrees", "agrege", "agria", "agrias", "agrin", "agrins", "agrise", "agrize", "agro", "agros", "agryze", "ags", "ague", "agued", "agues", "aguise", "aguish", "aguize", "aguna", "agunah", "agunot", "aguti", "agutis", "agyria", "aha", "ahchoo", "ahead", "aheap", "ahed", "ahem", "ahent", "ahi", "ahigh", "ahimsa", "ahind", "ahing", "ahint", "ahis", "ahold", "aholds", "ahorse", "ahoy", "ahs", "ahull", "ahuru", "ahurus", "aia", "aias", "aid", "aida", "aidant", "aidas", "aide", "aided", "aider", "aiders", "aides", "aidful", "aiding", "aidman", "aidmen", "aidoi", "aidos", "aids", "aiery", "aiga", "aigas", "aight", "aiglet", "aigret", "aikido", "aikona", "ail", "ailed", "ailing", "ails", "aim", "aimed", "aimer", "aimers", "aimful", "aiming", "aims", "ain", "aine", "ainee", "ainga", "aingas", "ains", "aioli", "aiolis", "air", "airbag", "airbus", "aircon", "aired", "airer", "airers", "airest", "airgap", "airgun", "airier", "airily", "airing", "airman", "airmen", "airn", "airned", "airns", "airs", "airt", "airted", "airth", "airths", "airts", "airvac", "airway", "airy", "ais", "aisle", "aisled", "aisles", "ait", "aitch", "aits", "aitu", "aitus", "aiver", "aivers", "aiyee", "aizle", "aizles", "ajar", "ajee", "aji", "ajies", "ajis", "ajiva", "ajivas", "ajowan", "ajuga", "ajugas", "ajwan", "ajwans", "aka", "akas", "akatea", "ake", "akeake", "akebia", "aked", "akedah", "akee", "akees", "akela", "akelas", "akene", "akenes", "akes", "akhara", "akimbo", "akin", "aking", "akita", "akitas", "akkas", "ala", "alaap", "alaaps", "alack", "alae", "alalia", "alamo", "alamos", "alan", "aland", "alands", "alane", "alang", "alangs", "alanin", "alans", "alant", "alants", "alanyl", "alap", "alapa", "alapas", "alaps", "alar", "alarm", "alarms", "alarum", "alary", "alas", "alaska", "alate", "alated", "alates", "alay", "alayed", "alays", "alb", "alba", "albas", "albata", "albe", "albedo", "albee", "albeit", "albert", "albino", "albite", "albs", "albugo", "album", "albums", "alcade", "alcaic", "alcid", "alcids", "alco", "alcool", "alcos", "alcove", "aldea", "aldeas", "alder", "aldern", "alders", "aldol", "aldols", "aldose", "aldrin", "ale", "alec", "aleck", "alecks", "alecs", "alee", "alef", "alefs", "aleft", "alegar", "alegge", "aleph", "alephs", "alerce", "alert", "alerts", "ales", "alevin", "alew", "alews", "alexia", "alexic", "alexin", "aleye", "aleyed", "aleyes", "alf", "alfa", "alfaki", "alfas", "alfs", "alga", "algae", "algal", "algas", "algate", "algid", "algin", "algins", "algoid", "algor", "algors", "algum", "algums", "alias", "alibi", "alibis", "alible", "alidad", "alien", "aliens", "alif", "alifs", "alight", "align", "aligns", "alike", "aline", "alined", "aliner", "alines", "aliped", "alisma", "alison", "alist", "alit", "alive", "aliya", "aliyah", "aliyas", "aliyos", "aliyot", "alkali", "alkane", "alkene", "alkie", "alkies", "alkine", "alko", "alkos", "alkoxy", "alky", "alkyd", "alkyds", "alkyl", "alkyls", "alkyne", "all", "allay", "allays", "allee", "allees", "allege", "allel", "allele", "allels", "alley", "alleys", "alliak", "allice", "allied", "allies", "allis", "allium", "allod", "allods", "allons", "allot", "allots", "allow", "allows", "alloy", "alloys", "alls", "allude", "allure", "ally", "allyl", "allyls", "allyou", "alma", "almah", "almahs", "almain", "almas", "alme", "almeh", "almehs", "almery", "almes", "almner", "almond", "almost", "almous", "alms", "almuce", "almud", "almude", "almuds", "almug", "almugs", "alnage", "alnico", "alod", "alodia", "alods", "aloe", "aloed", "aloes", "aloft", "alogia", "aloha", "alohas", "aloin", "aloins", "alone", "along", "aloo", "aloof", "aloos", "aloud", "alow", "alowe", "alp", "alpaca", "alpeen", "alpha", "alphas", "alphyl", "alpine", "alps", "als", "alsike", "also", "alsoon", "alt", "altar", "altars", "alter", "altern", "alters", "alteza", "althea", "altho", "alto", "altos", "alts", "alu", "aludel", "alula", "alulae", "alular", "alulas", "alum", "alumin", "alumna", "alumni", "alums", "alure", "alures", "alus", "alvar", "alvars", "alvine", "alway", "always", "ama", "amadou", "amah", "amahs", "amain", "amarna", "amas", "amass", "amate", "amated", "amates", "amatol", "amaut", "amauti", "amauts", "amaze", "amazed", "amazes", "amazon", "ambach", "ambage", "amban", "ambans", "ambari", "ambary", "ambeer", "amber", "ambers", "ambery", "ambit", "ambits", "amble", "ambled", "ambler", "ambles", "ambo", "ambos", "ambry", "ambush", "ame", "ameba", "amebae", "ameban", "amebas", "amebic", "ameer", "ameers", "amelia", "amen", "amend", "amende", "amends", "amene", "amened", "amens", "ament", "amenta", "aments", "amerce", "ames", "ami", "amia", "amias", "amice", "amices", "amici", "amicus", "amid", "amide", "amides", "amidic", "amidin", "amido", "amidol", "amids", "amidst", "amie", "amies", "amiga", "amigas", "amigo", "amigos", "amin", "amine", "amines", "aminic", "amino", "aminos", "amins", "amir", "amirs", "amis", "amises", "amiss", "amity", "amla", "amlas", "amman", "ammans", "ammine", "ammino", "ammo", "ammon", "ammono", "ammons", "ammos", "amnia", "amnic", "amnio", "amnion", "amnios", "amoeba", "amok", "amoks", "amole", "amoles", "amomum", "among", "amoove", "amoral", "amorce", "amoret", "amort", "amount", "amour", "amours", "amove", "amoved", "amoves", "amowt", "amowts", "amp", "amped", "ampere", "amping", "ample", "ampler", "amply", "amps", "ampul", "ampule", "ampuls", "amrit", "amrita", "amrits", "amtman", "amtrac", "amtrak", "amu", "amuck", "amucks", "amulet", "amus", "amuse", "amused", "amuser", "amuses", "amusia", "amusic", "amyl", "amylic", "amyls", "amylum", "amytal", "ana", "anabas", "anadem", "anagen", "anal", "anally", "analog", "anan", "anana", "ananas", "ananda", "ananke", "anarch", "anas", "anata", "anatas", "anatta", "anatto", "anbury", "ance", "ancho", "anchor", "anchos", "ancile", "ancle", "ancles", "ancome", "ancon", "ancone", "ancora", "and", "andro", "andros", "ands", "ane", "anear", "anears", "aneath", "anele", "aneled", "aneles", "anelli", "anemia", "anemic", "anenst", "anent", "anergy", "anerly", "anes", "anetic", "anew", "anga", "angary", "angas", "angel", "angels", "anger", "angers", "angico", "angina", "angle", "angled", "angler", "angles", "anglo", "anglos", "angola", "angora", "angry", "angst", "angsts", "angsty", "ani", "anicca", "anicut", "anigh", "anight", "anil", "anile", "anilin", "anils", "anima", "animal", "animas", "anime", "animes", "animi", "animis", "animus", "anion", "anions", "anis", "anise", "anises", "anisic", "anker", "ankers", "ankh", "ankhs", "ankle", "ankled", "ankles", "anklet", "ankus", "ankush", "anlace", "anlage", "anlas", "ann", "anna", "annal", "annals", "annas", "annat", "annats", "anneal", "annex", "annexe", "anno", "annona", "annoy", "annoys", "anns", "annual", "annul", "annuli", "annuls", "anoa", "anoas", "anodal", "anode", "anodes", "anodic", "anoint", "anole", "anoles", "anomic", "anomie", "anomy", "anon", "anonym", "anopia", "anorak", "anough", "anow", "anoxia", "anoxic", "ans", "ansa", "ansae", "ansate", "ansatz", "answer", "ant", "anta", "antae", "antar", "antara", "antars", "antas", "ante", "anted", "anteed", "antes", "anthem", "anther", "anthro", "anti", "antiar", "antic", "antick", "antics", "antifa", "anting", "antis", "antler", "antlia", "antra", "antral", "antre", "antres", "antrum", "ants", "antsy", "anura", "anural", "anuran", "anuria", "anuric", "anus", "anuses", "anvil", "anvils", "any", "anyhow", "anyon", "anyone", "anyons", "anyway", "aorist", "aorta", "aortae", "aortal", "aortas", "aortic", "aoudad", "apace", "apache", "apage", "apaid", "apart", "apathy", "apay", "apayd", "apays", "ape", "apeak", "aped", "apedom", "apeek", "apeman", "apemen", "apepsy", "aper", "apercu", "apers", "apert", "apery", "apes", "apex", "apexes", "apgar", "aphid", "aphids", "aphis", "aphony", "aphtha", "apian", "apiary", "apical", "apices", "apiece", "aping", "apiol", "apiols", "apish", "apism", "apisms", "aplite", "aplomb", "apnea", "apneal", "apneas", "apneic", "apnoea", "apo", "apod", "apodal", "apode", "apodes", "apods", "apogee", "apollo", "apolog", "apoop", "aporia", "aport", "apos", "apozem", "app", "appaid", "appair", "appal", "appall", "appals", "appay", "appayd", "appays", "appeal", "appear", "appel", "appels", "append", "apple", "apples", "applet", "appley", "apply", "apport", "appose", "appro", "appros", "apps", "appui", "appuis", "appuy", "appuys", "apres", "apron", "aprons", "apse", "apses", "apsis", "apso", "apsos", "apt", "apted", "apter", "aptest", "apting", "aptly", "aptote", "apts", "aqua", "aquae", "aquas", "araara", "araba", "arabas", "arabic", "arabin", "arabis", "arable", "araise", "arak", "araks", "aralia", "arame", "arames", "aramid", "arar", "arars", "arayse", "arb", "arba", "arbas", "arbor", "arbors", "arbour", "arbs", "arbute", "arc", "arcade", "arcana", "arcane", "arced", "arch", "arched", "archei", "archer", "arches", "archi", "archil", "archly", "archon", "arcing", "arcked", "arcmin", "arco", "arcos", "arcs", "arcsec", "arctic", "arcus", "ard", "ardeb", "ardebs", "ardent", "ardor", "ardors", "ardour", "ardri", "ardris", "ards", "are", "area", "areach", "aread", "areads", "areae", "areal", "arear", "arears", "areas", "areca", "arecas", "ared", "aredd", "arede", "aredes", "arefy", "areg", "areic", "arena", "arenas", "arene", "arenes", "areola", "areole", "arepa", "arepas", "arere", "ares", "aret", "arete", "aretes", "arets", "arett", "aretts", "arew", "arf", "arfs", "argal", "argala", "argali", "argals", "argan", "argand", "argans", "argent", "argh", "arghan", "argil", "argils", "argle", "argled", "argles", "argol", "argols", "argon", "argons", "argosy", "argot", "argots", "argue", "argued", "arguer", "argues", "argufy", "arguli", "argus", "argute", "argyle", "argyll", "arhat", "arhats", "aria", "ariary", "arias", "arid", "arider", "aridly", "ariel", "ariels", "aright", "ariki", "arikis", "aril", "ariled", "arilli", "arils", "ariose", "ariosi", "arioso", "ariot", "aris", "arise", "arisen", "arises", "arish", "arista", "aristo", "ark", "arked", "arking", "arkite", "arkose", "arks", "arle", "arled", "arles", "arling", "arm", "armada", "armed", "armer", "armers", "armet", "armets", "armful", "armies", "armil", "armils", "arming", "armlet", "armor", "armors", "armory", "armour", "armpit", "arms", "armure", "army", "arna", "arnas", "arnica", "arnut", "arnuts", "aroba", "arobas", "aroha", "arohas", "aroid", "aroids", "aroint", "arolla", "aroma", "aromas", "arose", "around", "arouse", "arow", "aroynt", "arpa", "arpas", "arpen", "arpens", "arpent", "arrack", "arrah", "arrant", "arras", "array", "arrays", "arrear", "arrect", "arrest", "arret", "arrets", "arriba", "arride", "arris", "arrish", "arrive", "arroba", "arrow", "arrows", "arrowy", "arroyo", "arroz", "ars", "arse", "arsed", "arseno", "arses", "arsey", "arshin", "arsier", "arsine", "arsing", "arsino", "arsis", "arson", "arsons", "arsy", "art", "artal", "artel", "artels", "artery", "artful", "arti", "artic", "artics", "artier", "arties", "artigi", "artily", "artis", "artist", "arts", "artsie", "artsy", "arty", "aruana", "aruhe", "aruhes", "arum", "arums", "arval", "arvee", "arvees", "arvo", "arvos", "ary", "aryl", "aryls", "asana", "asanas", "asar", "asarum", "ascend", "ascent", "asci", "ascian", "ascon", "ascons", "ascot", "ascots", "ascus", "asdic", "asdics", "asea", "aseity", "ash", "ashake", "ashame", "ashcan", "ashed", "ashen", "ashery", "ashes", "ashet", "ashets", "ashier", "ashine", "ashing", "ashkey", "ashlar", "ashler", "ashman", "ashmen", "ashore", "ashpan", "ashraf", "ashram", "ashy", "asiago", "aside", "asides", "ask", "askant", "askari", "asked", "asker", "askers", "askew", "asking", "askoi", "askos", "asks", "aslake", "aslant", "asleep", "aslope", "aslosh", "asmear", "asp", "aspect", "aspen", "aspens", "asper", "aspers", "aspic", "aspick", "aspics", "aspie", "aspies", "aspine", "aspire", "aspis", "aspish", "asport", "aspout", "aspro", "aspros", "asps", "asquat", "asrama", "ass", "assai", "assail", "assais", "assam", "assams", "assart", "assay", "assays", "assent", "assert", "asses", "assess", "asset", "assets", "assez", "assign", "assist", "assize", "assoil", "assort", "assot", "assots", "assott", "assume", "assure", "astare", "astart", "astely", "aster", "astern", "asters", "astert", "asthma", "astir", "astone", "astony", "astoop", "astral", "astray", "astrut", "astun", "astuns", "astute", "asura", "asuras", "aswarm", "asway", "aswim", "aswing", "aswirl", "aswoon", "asyla", "asylee", "asylum", "ataata", "atabal", "atabeg", "atabek", "ataman", "atap", "ataps", "atavic", "ataxia", "ataxic", "ataxy", "ate", "atelic", "ates", "athame", "athrob", "atigi", "atigis", "atilt", "atimy", "atlas", "atlatl", "atma", "atman", "atmans", "atmas", "atmos", "atoc", "atocia", "atocs", "atok", "atokal", "atoke", "atokes", "atoks", "atoll", "atolls", "atom", "atomic", "atoms", "atomy", "atonal", "atone", "atoned", "atoner", "atones", "atonia", "atonic", "atony", "atop", "atopic", "atopy", "atria", "atrial", "atrip", "atrium", "ats", "att", "attach", "attack", "attain", "attap", "attaps", "attar", "attars", "attask", "attend", "attent", "attest", "attic", "attics", "attire", "attone", "attorn", "attrap", "attrit", "attune", "atua", "atuas", "atwain", "atweel", "atween", "atwixt", "atypic", "aua", "auas", "aubade", "auburn", "auceps", "aucuba", "audad", "audads", "audial", "audile", "auding", "audio", "audios", "audism", "audist", "audit", "audits", "aue", "auf", "aufs", "augend", "auger", "augers", "augh", "aught", "aughts", "augite", "augur", "augurs", "augury", "august", "auk", "auklet", "auks", "aula", "aulas", "auld", "aulder", "aulic", "auloi", "aulos", "aumail", "aumbry", "aumil", "aumils", "aune", "aunes", "aunt", "aunter", "auntie", "auntly", "aunts", "aunty", "aura", "aurae", "aural", "aurar", "auras", "aurate", "aurei", "aures", "aureus", "auric", "aurify", "auris", "aurist", "aurora", "aurous", "aurum", "aurums", "auspex", "ausubo", "auteur", "author", "autism", "autist", "auto", "autoed", "autos", "autumn", "auxin", "auxins", "ava", "avail", "availe", "avails", "aval", "avale", "avaled", "avales", "avant", "avanti", "avas", "avast", "avatar", "avaunt", "ave", "avel", "avels", "avenge", "avenir", "avens", "avenue", "aver", "avers", "averse", "avert", "averts", "aves", "avgas", "avian", "avians", "aviary", "aviate", "avid", "avider", "avidin", "avidly", "avine", "avion", "avions", "avise", "avised", "avises", "aviso", "avisos", "avital", "avize", "avized", "avizes", "avo", "avocet", "avoid", "avoids", "avos", "avoset", "avouch", "avoure", "avow", "avowal", "avowed", "avower", "avowry", "avows", "avoyer", "avruga", "avulse", "avyze", "avyzed", "avyzes", "awa", "await", "awaits", "awake", "awaked", "awaken", "awakes", "award", "awards", "aware", "awarer", "awarn", "awarns", "awash", "awatch", "awato", "awatos", "awave", "away", "awayes", "aways", "awdl", "awdls", "awe", "aweary", "awed", "awee", "aweel", "aweigh", "aweing", "awes", "aweto", "awetos", "awful", "awfy", "awhape", "awhato", "awheel", "awheto", "awhile", "awhirl", "awing", "awk", "awks", "awl", "awless", "awls", "awmous", "awmrie", "awmry", "awn", "awned", "awner", "awners", "awnier", "awning", "awns", "awny", "awoke", "awoken", "awol", "awols", "awork", "awrack", "awrong", "awry", "awsome", "axal", "axe", "axed", "axel", "axels", "axeman", "axemen", "axenic", "axes", "axial", "axil", "axile", "axilla", "axils", "axing", "axiom", "axioms", "axion", "axions", "axis", "axised", "axises", "axite", "axites", "axle", "axled", "axles", "axlike", "axman", "axmen", "axoid", "axoids", "axon", "axonal", "axone", "axones", "axonic", "axons", "axseed", "ayah", "ayahs", "ayaya", "ayayas", "aye", "ayelp", "ayes", "aygre", "ayin", "ayins", "ayont", "ayre", "ayres", "ayrie", "ayries", "ays", "ayu", "ayus", "ayword", "azalea", "azan", "azans", "azerty", "azide", "azides", "azido", "azine", "azines", "azione", "azlon", "azlons", "azo", "azoic", "azole", "azoles", "azolla", "azon", "azonal", "azonic", "azons", "azote", "azoted", "azotes", "azoth", "azoths", "azotic", "azuki", "azukis", "azure", "azures", "azurn", "azury", "azygos", "azygy", "azym", "azyme", "azymes", "azyms"];
     b = ["baa", "baaed", "baaing", "baal", "baalim", "baals", "baas", "baases", "baba", "babaco", "babacu", "babas", "babble", "babbly", "babe", "babel", "babels", "babes", "babied", "babier", "babies", "babka", "babkas", "bablah", "baboo", "babool", "baboon", "baboos", "babu", "babul", "babuls", "babus", "baby", "bac", "bacca", "baccae", "baccas", "bacco", "baccos", "baccy", "bach", "bacha", "bachas", "bached", "baches", "bachs", "back", "backed", "backer", "backet", "backie", "backra", "backs", "backup", "bacon", "bacons", "bacs", "bacula", "bad", "badass", "badder", "baddie", "baddy", "bade", "badge", "badged", "badger", "badges", "badly", "badman", "badmen", "bads", "bae", "bael", "baels", "baes", "baetyl", "baff", "baffed", "baffle", "baffs", "baffy", "baft", "bafts", "bag", "bagass", "bagel", "bagels", "bagful", "bagged", "bagger", "baggie", "baggit", "baggy", "bagh", "baghs", "bagie", "bagies", "bagman", "bagmen", "bagnio", "bags", "baguet", "baguio", "bagwig", "bah", "bahada", "baht", "bahts", "bahu", "bahus", "bahut", "bahuts", "baidar", "bail", "bailed", "bailee", "bailer", "bailey", "bailie", "bailli", "bailor", "bails", "bainin", "bairn", "bairns", "baisa", "baisas", "bait", "baited", "baiter", "baith", "baits", "baiza", "baizas", "baize", "baized", "baizes", "bajada", "bajan", "bajans", "bajra", "bajras", "bajree", "bajri", "bajris", "baju", "bajus", "bake", "baked", "baken", "baker", "bakers", "bakery", "bakes", "bakgat", "baking", "bakkie", "bakra", "bakras", "bal", "balas", "balata", "balboa", "bald", "balded", "balder", "baldie", "baldly", "balds", "baldy", "bale", "baled", "baleen", "baler", "balers", "bales", "baling", "balise", "balk", "balked", "balker", "balks", "balky", "ball", "ballad", "ballan", "ballat", "balled", "baller", "ballet", "ballon", "ballot", "ballow", "balls", "ballsy", "ballup", "bally", "balm", "balmed", "balms", "balmy", "baloo", "baloos", "bals", "balsa", "balsam", "balsas", "balti", "baltic", "baltis", "balu", "balun", "baluns", "balus", "bam", "bambi", "bambis", "bamboo", "bammed", "bammer", "bampot", "bams", "ban", "banak", "banaks", "banal", "banana", "banc", "banco", "bancos", "bancs", "band", "banda", "bandar", "bandas", "banded", "bander", "bandh", "bandhs", "bandit", "bandog", "bands", "bandy", "bane", "baned", "banes", "bang", "banged", "banger", "bangle", "bangs", "bani", "bania", "banian", "banias", "baning", "banish", "banjax", "banjo", "banjos", "bank", "banked", "banker", "banket", "bankit", "banks", "banned", "banner", "bannet", "banns", "bans", "bant", "bantam", "banted", "banter", "bants", "bantu", "bantus", "banty", "banya", "banyan", "banyas", "banzai", "bao", "baobab", "baos", "bap", "baps", "bapu", "bapus", "bar", "baraza", "barb", "barbal", "barbe", "barbed", "barbel", "barber", "barbes", "barbet", "barbie", "barbot", "barbs", "barbut", "barby", "barca", "barcas", "bard", "barde", "barded", "bardes", "bardic", "bardie", "bardo", "bardos", "bards", "bardy", "bare", "bared", "barege", "barely", "barer", "bares", "barest", "barf", "barfed", "barfi", "barfis", "barfly", "barfs", "barful", "barge", "barged", "bargee", "barges", "barhop", "baric", "baring", "barish", "barite", "barium", "bark", "barkan", "barked", "barken", "barker", "barks", "barky", "barley", "barlow", "barm", "barman", "barmen", "barmie", "barms", "barmy", "barn", "barned", "barnet", "barney", "barns", "barny", "barock", "barolo", "baron", "barong", "barons", "barony", "barp", "barps", "barque", "barra", "barras", "barrat", "barre", "barred", "barrel", "barren", "barres", "barret", "barrie", "barrio", "barro", "barrow", "barry", "bars", "barter", "barton", "barye", "baryes", "baryon", "baryta", "baryte", "bas", "basal", "basalt", "basan", "basans", "basant", "base", "based", "baseej", "basely", "basen", "baser", "bases", "basest", "bash", "bashaw", "bashed", "basher", "bashes", "basho", "basic", "basics", "basify", "basij", "basil", "basils", "basin", "basing", "basins", "basion", "basis", "bask", "basked", "basket", "basks", "basnet", "bason", "basons", "basque", "bass", "basse", "bassed", "basser", "basses", "basset", "bassi", "bassly", "basso", "bassos", "bassy", "bast", "basta", "baste", "basted", "baster", "bastes", "basti", "bastis", "bastle", "basto", "bastos", "basts", "basuco", "bat", "batard", "batata", "batboy", "batch", "bate", "bateau", "bated", "bates", "bath", "bathe", "bathed", "bather", "bathes", "bathos", "baths", "batik", "batiks", "bating", "batler", "batlet", "batman", "batmen", "baton", "batons", "batoon", "bats", "batt", "batta", "battas", "batted", "battel", "batten", "batter", "battik", "battle", "batts", "battu", "battue", "batty", "baubee", "bauble", "baud", "bauds", "bauera", "bauk", "bauked", "bauks", "baulk", "baulks", "baulky", "baur", "baurs", "bavin", "bavins", "bawbee", "bawble", "bawd", "bawdry", "bawds", "bawdy", "bawk", "bawks", "bawl", "bawled", "bawler", "bawley", "bawls", "bawn", "bawns", "bawr", "bawrs", "bawtie", "bawty", "baxter", "bay", "bayamo", "bayard", "baye", "bayed", "bayer", "bayes", "bayest", "baying", "bayle", "bayles", "bayman", "baymen", "bayou", "bayous", "bays", "bayt", "bayted", "bayts", "baywop", "bayyan", "bazaar", "bazar", "bazars", "bazazz", "bazoo", "bazoom", "bazoos", "bazz", "bazzed", "bazzes", "beach", "beachy", "beacon", "bead", "beaded", "beader", "beadle", "beads", "beady", "beagle", "beak", "beaked", "beaker", "beaks", "beaky", "beal", "beals", "beam", "beamed", "beamer", "beams", "beamy", "bean", "beaned", "beanie", "beano", "beanos", "beans", "beany", "bear", "beard", "beards", "beardy", "beare", "beared", "bearer", "beares", "bears", "beast", "beasts", "beat", "beaten", "beater", "beath", "beaths", "beats", "beaty", "beau", "beaus", "beaut", "beauts", "beauty", "beaux", "beaver", "bebop", "bebops", "bebung", "becall", "becalm", "became", "becap", "becaps", "beck", "becke", "becked", "beckes", "becket", "beckon", "becks", "beclog", "become", "becurl", "bed", "bedad", "bedamn", "bedash", "bedaub", "bedaze", "bedbug", "bedded", "bedder", "bede", "bedeck", "bedel", "bedell", "bedels", "bedes", "bedew", "bedews", "bedide", "bedim", "bedims", "bedlam", "bedpan", "bedral", "bedrid", "bedrop", "bedrug", "beds", "bedsit", "bedu", "beduck", "beduin", "bedumb", "bedung", "bedust", "bedyde", "bedye", "bedyed", "bedyes", "bee", "beebee", "beech", "beechy", "beedi", "beedie", "beef", "beefed", "beefs", "beefy", "beegah", "been", "beenah", "beento", "beep", "beeped", "beeper", "beeps", "beer", "beers", "beery", "bees", "beet", "beeted", "beetle", "beets", "beeves", "beezer", "befall", "befana", "befeld", "befell", "befit", "befits", "beflag", "beflea", "beflum", "befoam", "befog", "befogs", "befool", "before", "befoul", "befret", "beg", "begad", "begall", "began", "begar", "begars", "begat", "begaze", "begem", "begems", "beget", "begets", "beggar", "begged", "begift", "begild", "begilt", "begin", "begins", "begird", "begirt", "beglad", "begnaw", "bego", "begoes", "begone", "begot", "begrim", "begs", "beguin", "begulf", "begum", "begums", "begun", "begunk", "behalf", "behave", "behead", "beheld", "behest", "behind", "behold", "behoof", "behote", "behove", "behowl", "beige", "beigel", "beiger", "beiges", "beigne", "beigy", "bein", "beined", "being", "beings", "beins", "bejade", "bejant", "bekah", "bekahs", "bekiss", "beknot", "bel", "belace", "belady", "belah", "belahs", "belamy", "belar", "belars", "belate", "belaud", "belay", "belays", "belch", "beldam", "beleap", "belee", "beleed", "belees", "belfry", "belga", "belgas", "belie", "belied", "belief", "belier", "belies", "belike", "belive", "bell", "belle", "belled", "belles", "bellow", "bells", "belly", "belon", "belong", "belons", "belove", "below", "belows", "bels", "belt", "belted", "belter", "belts", "beluga", "bema", "bemad", "bemads", "bemas", "bemata", "bemaul", "bembex", "bembix", "bemean", "bemete", "bemire", "bemist", "bemix", "bemixt", "bemoan", "bemock", "bemoil", "bemud", "bemuds", "bemuse", "ben", "bename", "bench", "benchy", "bend", "benday", "bended", "bendee", "bender", "bends", "bendy", "bendys", "bene", "benes", "benet", "benets", "benga", "bengas", "beni", "benign", "benis", "benj", "benjes", "benne", "bennes", "bennet", "benni", "bennis", "benny", "bens", "bent", "bento", "bentos", "bents", "benty", "benumb", "benzal", "benzil", "benzin", "benzol", "benzyl", "bepat", "bepats", "bepelt", "bepity", "bepuff", "berake", "berate", "beray", "berays", "berber", "bere", "bereft", "beres", "beret", "berets", "berg", "bergen", "bergs", "berime", "berk", "berko", "berks", "berley", "berlin", "berm", "berme", "bermed", "bermes", "berms", "berob", "berobs", "berret", "berry", "berth", "bertha", "berthe", "berths", "beryl", "beryls", "bes", "besang", "besat", "besaw", "besee", "beseem", "beseen", "besees", "beses", "beset", "besets", "beside", "besigh", "besing", "besit", "besits", "besmut", "besnow", "besoin", "besom", "besoms", "besort", "besot", "besots", "bespat", "besped", "bespit", "bespot", "best", "bestad", "bestar", "bested", "besti", "bestie", "bestir", "bestis", "bestow", "bests", "bestud", "besung", "bet", "beta", "betake", "betas", "betcha", "bete", "beted", "beteem", "betel", "betels", "betes", "beth", "bethel", "beths", "betid", "betide", "betime", "beting", "betise", "betoil", "beton", "betons", "betony", "betook", "betoss", "betray", "betrim", "betrod", "bets", "betta", "bettas", "betted", "better", "bettor", "betty", "beurre", "bevel", "bevels", "bever", "bevers", "bevies", "bevor", "bevors", "bevue", "bevues", "bevvy", "bevy", "bewail", "beware", "beweep", "bewent", "bewept", "bewet", "bewets", "bewig", "bewigs", "beworm", "bewrap", "bewray", "bey", "beylic", "beylik", "beyond", "beys", "bez", "bezant", "bezazz", "bezel", "bezels", "bezes", "bezil", "bezils", "bezoar", "bezzie", "bezzle", "bezzy", "bhagee", "bhai", "bhais", "bhajan", "bhajee", "bhaji", "bhajia", "bhajis", "bhakta", "bhakti", "bhang", "bhangs", "bharal", "bhat", "bhats", "bhavan", "bhawan", "bhel", "bhels", "bhikhu", "bhindi", "bhisti", "bhoona", "bhoot", "bhoots", "bhuna", "bhunas", "bhut", "bhuts", "biach", "biali", "bialis", "bialy", "bialys", "bias", "biased", "biases", "biatch", "biaxal", "bib", "bibb", "bibbed", "bibber", "bibble", "bibbs", "bibe", "bibes", "bibful", "bible", "bibles", "bibs", "bicarb", "biccy", "bice", "bicep", "biceps", "bices", "bichir", "bicker", "bickie", "bicorn", "bicron", "bid", "bidden", "bidder", "biddy", "bide", "bided", "bident", "bider", "biders", "bides", "bidet", "bidets", "bidi", "biding", "bidis", "bidon", "bidons", "bids", "bield", "bields", "bieldy", "bien", "bier", "biers", "biface", "biff", "biffed", "biffer", "biffin", "biffo", "biffos", "biffs", "biffy", "bifid", "bifida", "biflex", "bifold", "biform", "biftah", "bifter", "big", "biga", "bigae", "bigamy", "bigeye", "bigg", "bigged", "bigger", "biggie", "biggin", "biggon", "biggs", "biggy", "bigha", "bighas", "bight", "bights", "bigly", "bigos", "bigot", "bigots", "bigs", "bigwig", "bijou", "bijous", "bijoux", "bike", "biked", "biker", "bikers", "bikes", "bikie", "bikies", "biking", "bikini", "bikkie", "bilbo", "bilboa", "bilbos", "bilby", "bile", "biled", "biles", "bilge", "bilged", "bilges", "bilgy", "bilian", "biling", "bilk", "bilked", "bilker", "bilks", "bill", "billed", "biller", "billet", "billie", "billon", "billow", "bills", "billy", "billyo", "bima", "bimah", "bimahs", "bimas", "bimble", "bimbo", "bimbos", "bimini", "bin", "binal", "binary", "binate", "bind", "binder", "bindhi", "bindi", "bindis", "bindle", "binds", "bine", "biner", "biners", "bines", "bing", "binge", "binged", "binger", "binges", "binghi", "bingle", "bingo", "bingos", "bings", "bingy", "biniou", "binit", "binits", "bink", "binks", "binman", "binmen", "binned", "binocs", "bins", "bint", "bints", "bio", "biodot", "biog", "biogas", "biogen", "biogs", "biome", "biomes", "bionic", "biont", "bionts", "biopic", "biopsy", "bios", "biota", "biotas", "biotic", "biotin", "bipack", "biped", "bipeds", "bipod", "bipods", "birch", "bird", "birded", "birder", "birdie", "birds", "bireme", "birk", "birken", "birkie", "birks", "birl", "birle", "birled", "birler", "birles", "birls", "biro", "biros", "birr", "birred", "birrs", "birse", "birsed", "birses", "birsle", "birsy", "birth", "births", "bis", "bise", "bisect", "bises", "bish", "bishes", "bishop", "bisk", "bisks", "bismar", "bisom", "bisoms", "bison", "bisons", "bisque", "bisson", "bist", "bister", "bistre", "bistro", "bit", "bitch", "bitchy", "bite", "biter", "biters", "bites", "biting", "bitmap", "bito", "bitos", "bitou", "bits", "bitser", "bitsy", "bitt", "bitte", "bitted", "bitten", "bitter", "bittie", "bittor", "bitts", "bittur", "bitty", "bivia", "bivium", "bivvy", "biz", "bizazz", "bize", "bizes", "bizjet", "bizone", "bizzes", "bizzo", "bizzos", "bizzy", "blab", "blabby", "blabs", "black", "blacks", "blad", "blade", "bladed", "blader", "blades", "blads", "blady", "blae", "blaer", "blaes", "blaest", "blaff", "blaffs", "blag", "blags", "blague", "blah", "blahed", "blaher", "blahs", "blain", "blains", "blaise", "blaize", "blam", "blame", "blamed", "blamer", "blames", "blams", "blanch", "blanco", "bland", "blands", "blank", "blanks", "blanky", "blare", "blared", "blares", "blart", "blarts", "blase", "blash", "blashy", "blast", "blasts", "blasty", "blat", "blate", "blated", "blater", "blates", "blats", "blatt", "blatts", "blaud", "blauds", "blaw", "blawed", "blawn", "blaws", "blay", "blays", "blazar", "blaze", "blazed", "blazer", "blazes", "blazon", "bleach", "bleak", "bleaks", "bleaky", "blear", "blears", "bleary", "bleat", "bleats", "bleb", "blebby", "blebs", "blech", "bled", "blee", "bleed", "bleeds", "bleep", "bleeps", "blees", "blench", "blend", "blende", "blends", "blenny", "blent", "blert", "blerts", "bless", "blest", "blet", "blets", "blew", "blewit", "bley", "bleys", "blight", "blimey", "blimp", "blimps", "blimy", "blin", "blind", "blinds", "bling", "blings", "blingy", "blini", "blinis", "blink", "blinks", "blins", "blintz", "bliny", "blip", "blips", "bliss", "blist", "blit", "blite", "blites", "blithe", "blits", "blitz", "blive", "bloat", "bloats", "blob", "blobby", "blobs", "bloc", "block", "blocks", "blocky", "blocs", "blog", "bloggy", "blogs", "bloke", "blokes", "blokey", "blond", "blonde", "blonds", "blood", "bloods", "bloody", "blooey", "blooie", "blook", "blooks", "bloom", "blooms", "bloomy", "bloop", "bloops", "bloopy", "blore", "blores", "blot", "blotch", "blots", "blotto", "blotty", "blouse", "blousy", "blow", "blowby", "blowed", "blower", "blowie", "blown", "blows", "blowse", "blowsy", "blowup", "blowy", "blowze", "blowzy", "blub", "blubs", "blud", "blude", "bludes", "bludge", "bludie", "bluds", "bludy", "blue", "blued", "bluely", "bluer", "blues", "bluest", "bluesy", "bluet", "bluets", "bluey", "blueys", "bluff", "bluffs", "bluggy", "bluid", "bluids", "bluidy", "bluier", "bluing", "bluish", "blume", "blumed", "blumes", "blunge", "blunk", "blunks", "blunt", "blunts", "blur", "blurb", "blurbs", "blurry", "blurs", "blurt", "blurts", "blush", "blype", "blypes", "boa", "boab", "boabs", "boak", "boaked", "boaks", "boar", "board", "boards", "boars", "boart", "boarts", "boas", "boast", "boasts", "boat", "boated", "boatel", "boater", "boatie", "boats", "bob", "boba", "bobac", "bobacs", "bobak", "bobaks", "bobas", "bobbed", "bobber", "bobbin", "bobble", "bobbly", "bobby", "bobcat", "boblet", "bobo", "bobol", "bobols", "bobos", "bobs", "bobwig", "bocage", "bocca", "boccas", "bocce", "bocces", "bocci", "boccia", "boccie", "boccis", "boche", "boches", "bock", "bocked", "bocks", "bod", "bodach", "boddle", "bode", "boded", "bodega", "bodes", "bodge", "bodged", "bodger", "bodges", "bodgie", "bodhi", "bodhis", "bodice", "bodied", "bodies", "bodily", "boding", "bodkin", "bodle", "bodles", "bodrag", "bods", "body", "boep", "boeps", "boet", "boets", "boeuf", "boeufs", "boff", "boffed", "boffin", "boffo", "boffos", "boffs", "bog", "bogan", "bogans", "bogart", "bogey", "bogeys", "bogged", "bogger", "boggle", "boggy", "bogie", "bogied", "bogies", "bogle", "bogled", "bogles", "bogman", "bogmen", "bogoak", "bogong", "bogs", "bogue", "bogues", "bogus", "bogy", "boh", "bohea", "boheas", "boho", "bohos", "bohs", "bohunk", "boi", "boil", "boiled", "boiler", "boils", "boing", "boings", "boink", "boinks", "bois", "boite", "boites", "bok", "boke", "boked", "bokeh", "bokehs", "bokes", "boking", "bokken", "boko", "bokos", "boks", "bola", "bolar", "bolas", "bold", "bolded", "bolden", "bolder", "boldly", "bolds", "bole", "bolero", "boles", "bolete", "boleti", "bolide", "boline", "bolix", "boll", "bolled", "bollen", "bollix", "bollox", "bolls", "bolo", "bolos", "bolshy", "bolson", "bolt", "bolted", "bolter", "bolts", "bolus", "boma", "bomas", "bomb", "bombax", "bombe", "bombed", "bomber", "bombes", "bombo", "bombos", "bombs", "bombyx", "bommie", "bon", "bona", "bonaci", "bonbon", "bonce", "bonces", "bond", "bonded", "bonder", "bonds", "bonduc", "bone", "boned", "boner", "boners", "bones", "boney", "bong", "bonged", "bongo", "bongos", "bongs", "bonham", "bonie", "bonier", "boning", "bonism", "bonist", "bonita", "bonito", "bonk", "bonked", "bonks", "bonne", "bonnes", "bonnet", "bonnie", "bonny", "bonobo", "bonsai", "bonus", "bonxie", "bony", "bonza", "bonze", "bonzer", "bonzes", "boo", "booai", "booais", "booay", "booays", "boob", "boobed", "boobie", "booboo", "boobs", "booby", "boocoo", "boodie", "boodle", "boody", "booed", "boofy", "booger", "boogey", "boogie", "boogy", "booh", "boohai", "boohed", "boohoo", "boohs", "booing", "boojum", "book", "booked", "booker", "bookie", "bookoo", "books", "booksy", "booky", "bool", "booled", "bools", "boom", "boomed", "boomer", "booms", "boomy", "boon", "booner", "boong", "boonga", "boongs", "boons", "boor", "boord", "boorde", "boords", "boorka", "boors", "boos", "boose", "boosed", "booses", "boost", "boosts", "boot", "booted", "bootee", "booth", "booths", "bootie", "boots", "booty", "booze", "boozed", "boozer", "boozes", "boozey", "boozy", "bop", "bopeep", "bopped", "bopper", "boppy", "bops", "bor", "bora", "borage", "borak", "boraks", "boral", "borals", "borane", "boras", "borate", "borax", "bord", "bordar", "borde", "bordel", "border", "bordes", "bords", "bore", "boreal", "boreas", "bored", "boree", "boreen", "borees", "borel", "borels", "borer", "borers", "bores", "borgo", "borgos", "boric", "boride", "boring", "bork", "borked", "borks", "borm", "bormed", "borms", "born", "borna", "borne", "bornyl", "boron", "borons", "borrel", "borrow", "bors", "borsch", "borsht", "borsic", "bort", "borts", "borty", "bortz", "borzoi", "bos", "bosbok", "bosche", "bosh", "boshes", "boshta", "bosie", "bosies", "bosk", "bosker", "bosket", "bosks", "bosky", "bosom", "bosoms", "bosomy", "boson", "bosons", "bosque", "boss", "bossed", "bosser", "bosses", "bosset", "bossy", "boston", "bosun", "bosuns", "bot", "bota", "botany", "botas", "botch", "botchy", "bote", "botel", "botels", "botes", "botfly", "both", "bothan", "bother", "bothie", "bothy", "botnet", "botone", "bots", "bott", "botte", "botted", "bottes", "bottle", "bottom", "botts", "botty", "boubou", "bouche", "boucle", "boudin", "bouffe", "bouge", "bouged", "bouges", "bouget", "bough", "boughs", "bought", "bougie", "bouk", "bouks", "boule", "boules", "boulle", "boult", "boults", "boun", "bounce", "bouncy", "bound", "bounds", "bouned", "bouns", "bounty", "bourd", "bourds", "bourg", "bourgs", "bourn", "bourne", "bourns", "bourse", "bouse", "boused", "bouses", "bousy", "bout", "bouton", "bouts", "bovate", "bovid", "bovids", "bovine", "bovver", "bow", "bowat", "bowats", "bowed", "bowel", "bowels", "bower", "bowers", "bowery", "bowes", "bowet", "bowets", "bowfin", "bowget", "bowie", "bowing", "bowl", "bowled", "bowleg", "bowler", "bowls", "bowman", "bowmen", "bowne", "bowned", "bownes", "bowpot", "bowr", "bowrs", "bows", "bowsaw", "bowse", "bowsed", "bowser", "bowses", "bowsey", "bowsie", "bowwow", "bowyer", "box", "boxcar", "boxed", "boxen", "boxer", "boxers", "boxes", "boxful", "boxier", "boxily", "boxing", "boxla", "boxlas", "boxty", "boxy", "boy", "boyar", "boyard", "boyars", "boyau", "boyaux", "boyed", "boyf", "boyfs", "boyg", "boygs", "boying", "boyish", "boykie", "boyla", "boylas", "boyo", "boyos", "boys", "boysy", "bozo", "bozos", "bra", "braai", "braais", "braata", "brace", "braced", "bracer", "braces", "brach", "brachs", "brack", "bracks", "bract", "bracts", "brad", "brads", "brae", "braes", "brag", "braggy", "bragly", "brags", "brahma", "braid", "braide", "braids", "brail", "brails", "brain", "brains", "brainy", "braird", "braise", "braize", "brak", "brake", "braked", "brakes", "braks", "braky", "brame", "brames", "bran", "branch", "brand", "brands", "brandy", "brane", "branes", "brank", "branks", "branky", "branle", "branny", "brans", "brant", "brants", "brap", "bras", "brasco", "brases", "brash", "brashy", "brasil", "brass", "brassy", "brast", "brasts", "brat", "brats", "bratty", "brava", "bravas", "brave", "braved", "braver", "braves", "bravi", "bravo", "bravos", "braw", "brawer", "brawl", "brawls", "brawly", "brawn", "brawns", "brawny", "braws", "braxy", "bray", "brayed", "brayer", "brays", "braza", "brazas", "braze", "brazed", "brazen", "brazer", "brazes", "brazil", "breach", "bread", "breads", "bready", "break", "breaks", "bream", "breams", "breare", "breast", "breath", "bred", "brede", "breded", "bredes", "bredie", "breds", "bree", "breech", "breed", "breeds", "breeks", "breem", "breer", "breers", "brees", "breese", "breest", "breeze", "breezy", "bregma", "brehon", "brei", "breid", "breids", "breis", "breist", "brekky", "breme", "bren", "brenne", "brens", "brent", "brents", "brer", "brere", "breres", "brers", "breton", "breve", "breves", "brevet", "brevis", "brew", "brewed", "brewer", "brewis", "brews", "brey", "breyed", "breys", "briar", "briard", "briars", "briary", "bribe", "bribed", "bribee", "briber", "bribes", "bricht", "brick", "bricks", "bricky", "bridal", "bride", "brided", "brides", "bridge", "bridie", "bridle", "brie", "brief", "briefs", "brier", "briers", "briery", "bries", "brig", "bright", "brigs", "brigue", "brik", "briki", "brikis", "briks", "brill", "brillo", "brills", "brim", "brims", "brin", "brine", "brined", "briner", "brines", "bring", "brings", "brink", "brinks", "brinny", "brins", "briny", "brio", "briony", "brios", "bris", "brise", "brises", "brisk", "brisks", "brisky", "briss", "brit", "brith", "briths", "brits", "britt", "britts", "brize", "brizes", "bro", "broach", "broad", "broads", "broast", "broch", "broche", "brocho", "brochs", "brock", "brocks", "brod", "brods", "brog", "brogan", "brogh", "broghs", "brogs", "brogue", "broil", "broils", "broke", "broked", "broken", "broker", "brokes", "brolga", "brolly", "bromal", "brome", "bromes", "bromic", "bromid", "bromin", "bromo", "bromos", "bronc", "bronco", "broncs", "brond", "bronde", "bronds", "bronze", "bronzy", "broo", "brooch", "brood", "broods", "broody", "brook", "brooks", "brool", "brools", "broom", "brooms", "broomy", "broos", "broose", "bros", "brose", "broses", "brosy", "broth", "brotha", "broths", "brothy", "brough", "brouze", "brow", "browed", "brown", "browns", "browny", "brows", "browse", "browst", "browsy", "brr", "brrr", "bru", "brucin", "brugh", "brughs", "bruin", "bruins", "bruise", "bruit", "bruits", "brule", "brules", "brulot", "brumal", "brumby", "brume", "brumes", "brunch", "brunet", "brung", "brunt", "brunts", "brus", "brush", "brushy", "brusk", "brust", "brusts", "brut", "brutal", "brute", "bruted", "bruter", "brutes", "bruts", "brux", "bruxed", "bruxes", "bryony", "buat", "buats", "buaze", "buazes", "bub", "buba", "bubal", "bubale", "bubals", "bubas", "bubba", "bubbas", "bubbe", "bubbes", "bubbie", "bubble", "bubbly", "bubby", "bubkes", "bubkis", "bubo", "buboed", "buboes", "bubs", "bubu", "bubus", "buccal", "buchu", "buchus", "buck", "bucked", "bucker", "bucket", "buckie", "buckle", "bucko", "buckos", "buckra", "bucks", "bucku", "buckus", "bud", "buda", "budas", "budded", "budder", "buddha", "buddle", "buddy", "budge", "budged", "budger", "budges", "budget", "budgie", "budi", "budis", "budo", "budos", "buds", "buff", "buffa", "buffas", "buffe", "buffed", "buffel", "buffer", "buffet", "buffi", "buffo", "buffos", "buffs", "buffy", "bufo", "bufos", "buftie", "bufty", "bug", "bugeye", "buggan", "bugged", "bugger", "buggin", "buggy", "bugle", "bugled", "bugler", "bugles", "buglet", "bugong", "bugout", "bugs", "bugsha", "buhl", "buhls", "buhr", "buhrs", "buhund", "buibui", "buik", "buiks", "build", "builds", "built", "buist", "buists", "buke", "bukes", "bukshi", "bulb", "bulbar", "bulbed", "bulbel", "bulbil", "bulbs", "bulbul", "bulgar", "bulge", "bulged", "bulger", "bulges", "bulgur", "bulgy", "bulimy", "bulk", "bulked", "bulker", "bulks", "bulky", "bull", "bulla", "bullae", "bulled", "buller", "bullet", "bulley", "bulls", "bully", "bulse", "bulses", "bum", "bumalo", "bumbag", "bumble", "bumbo", "bumbos", "bumboy", "bumf", "bumfs", "bumkin", "bummed", "bummel", "bummer", "bummle", "bump", "bumped", "bumper", "bumph", "bumphs", "bumps", "bumpy", "bums", "bumwad", "bun", "buna", "bunas", "bunce", "bunced", "bunces", "bunch", "bunchy", "bunco", "buncos", "bund", "bunde", "bunded", "bundh", "bundhs", "bundle", "bunds", "bundt", "bundts", "bundu", "bundus", "bundy", "bung", "bunged", "bungee", "bunger", "bungey", "bungie", "bungle", "bungs", "bungy", "bunia", "bunias", "bunion", "bunje", "bunjee", "bunjes", "bunjie", "bunjy", "bunk", "bunked", "bunker", "bunkie", "bunko", "bunkos", "bunks", "bunkum", "bunn", "bunnet", "bunnia", "bunns", "bunny", "buns", "bunsen", "bunt", "buntal", "bunted", "bunter", "bunts", "bunty", "bunya", "bunyas", "bunyip", "buoy", "buoyed", "buoys", "bupkes", "bupkis", "bupkus", "buppie", "buppy", "buqsha", "bur", "bura", "buran", "burans", "buras", "burb", "burble", "burbly", "burbot", "burbs", "burd", "burden", "burdie", "burds", "bureau", "buret", "burets", "burfi", "burfis", "burg", "burgee", "burger", "burgh", "burghs", "burgle", "burgoo", "burgs", "burhel", "burial", "buried", "burier", "buries", "burin", "burins", "buriti", "burk", "burka", "burkas", "burke", "burked", "burker", "burkes", "burkha", "burks", "burl", "burlap", "burled", "burler", "burley", "burls", "burly", "burn", "burned", "burner", "burnet", "burnie", "burns", "burnt", "buroo", "buroos", "burp", "burped", "burpee", "burps", "burqa", "burqas", "burr", "burred", "burrel", "burrer", "burro", "burros", "burrow", "burrs", "burry", "burs", "bursa", "bursae", "bursal", "bursar", "bursas", "burse", "burses", "burst", "bursts", "bursty", "burton", "bury", "bus", "busbar", "busboy", "busby", "bused", "busera", "buses", "bush", "bushed", "bushel", "busher", "bushes", "bushie", "bushwa", "bushy", "busied", "busier", "busies", "busily", "busing", "busk", "busked", "busker", "busket", "buskin", "busks", "busky", "busman", "busmen", "buss", "bussed", "busses", "bussu", "bussus", "bust", "busted", "bustee", "buster", "busti", "bustic", "bustis", "bustle", "busts", "busty", "busy", "but", "butane", "butch", "bute", "butene", "buteo", "buteos", "butes", "butle", "butled", "butler", "butles", "butoh", "butohs", "buts", "butt", "butte", "butted", "butter", "buttes", "buttle", "button", "butts", "butty", "butut", "bututs", "butyl", "butyls", "buxom", "buy", "buyer", "buyers", "buying", "buyoff", "buyout", "buys", "buzuki", "buzz", "buzzed", "buzzer", "buzzes", "buzzy", "bwana", "bwanas", "bwazi", "bwazis", "byde", "byded", "bydes", "byding", "bye", "byelaw", "byes", "bygone", "byke", "byked", "bykes", "byking", "bylane", "bylaw", "bylaws", "byline", "bylive", "byname", "bypass", "bypast", "bypath", "byplay", "byre", "byres", "byrl", "byrlaw", "byrled", "byrls", "byrnie", "byroad", "byroom", "bys", "byssal", "byssi", "byssus", "bytalk", "byte", "bytes", "byway", "byways", "byword", "bywork", "byzant"];
@@ -390,6 +392,15 @@ function Rocket(type, x, y, s, lead) {
         // va.push(0);
     }
 
+
+    this.move = false;
+    this.newPos = 0;
+
+    this.moveTo = function(y) {
+        this.move = true;
+        this.newPos = y;
+    };
+
     this.animation = function() {
         this.vy = 10;
         if(this.type == 0) {
@@ -438,24 +449,30 @@ function Rocket(type, x, y, s, lead) {
 
     this.strength = 0;
     this.display = function() {
-        this.vy = max(5, this.vy);
-        this.vy = min(30, this.vy);
+        if(this.move) {
+            let d = height/2-this.y - this.newPos;
+            print(d);
+            this.y += d/100;
+            if(abs(d) < 1) {
+                this.move = false;
+            }
+        }
 
         if(this.phase == 3) {
-            print(true);
+            // print(true);
             this.animation();
         } 
 
-        if(this.phase > 0 && this.vy > 0) {
-            this.vy -= 0.05;
-        } else {
-            this.vy = 0;
-        }
+        // if(this.phase > 0 && this.vy > 0) {
+        //     this.vy -= 0.05;
+        // } else {
+        //     this.vy = 0;
+        // }
 
         if(this.lead) {
             translate(0, height-this.y);
         } 
-        this.y -= this.vy;
+        // this.y -= this.vy;
 
         if(this.phase > 0) {
             for(let i = 0; i < this.boosters.length; i++) {
@@ -531,6 +548,7 @@ let reason;
 let rockets = [];
 var bg = [];
 
+let planet = 0;
 function setup() {
     createCanvas(document.body.clientWidth, window.innerHeight); 
     
@@ -586,6 +604,67 @@ function setup() {
     for(let i = 0; i < 100; i++) {
         bg.push([random(width), random(height)]);
     }
+
+    socket.onmessage = (event) => {
+        const incPacket = JSON.parse(event.data);
+    
+        switch (incPacket.type) {
+          case 'points':
+            //client processing of points returned
+            console.log(incPacket.data);
+            break;
+          case 'other':
+            console.log(incPacket.data + ", " + incPacket.data2)
+            break;
+          case 'error':
+            if(incPacket.data == 0) {
+                scene ++;
+            } else {
+                nameError = "Name Taken";
+                nameErrorTime = 100;
+            }
+
+            // console.log(incPacket.data + " :is Error");
+            break;
+          case 'rmLeaderName':
+            if (incPacket.data) {
+              leaderBoardNames.splice(incPacket.data, 1);
+            }
+            break;
+        //   case 'name':
+        //     //client processing of name check
+        //     if (incPacket.data == tempName) {
+        //       myName = tempName;
+        //       tempName = null;
+        //     }
+        //     leaderBoardNames.push(incPacket.data);
+        //     console.log(leaderBoardNames);
+        //     break;
+    
+        case 'response':
+            leaderBoardNames = JSON.parse(incPacket.data);
+            while (lbPoints.length < leaderBoardNames.length) {
+                lbPoints.push(0);
+            }
+            for(let i = 0; i < lbPoints.length; i++) {
+                if(!lbPoints[i]) {
+                    lbPoints[i] = 0;
+                }
+            }
+            // console.log(leaderBoardNames);
+            // console.log(arr);
+            // for(let i = 0; i < arr.length; i++) {
+            //   if(leaderBoardNames[i] != arr[i]) {
+            //     leaderBoardNames.push(String(arr[i]));
+            //   }
+            // }
+            break;
+        case 'update':
+            lbPoints = JSON.parse(incPacket.data);
+            break;
+
+        }
+      };
 }
 
 function joinAnswer() {
@@ -610,58 +689,14 @@ var username = "";
 var leaderBoardNames = [];
 var lbPoints = [];
 
+var nameError = "";
+var nameErrorTime = 0;
 draw = function() {
-    socket.onmessage = (event) => {
-        const incPacket = JSON.parse(event.data);
-    
-        switch (incPacket.type) {
-          case 'points':
-            //client processing of points returned
-            console.log(incPacket.data);
-            break;
-          case 'other':
-            console.log(incPacket.data + ", " + incPacket.data2)
-            break;
-          case 'error':
-            if(incPacket.data == 0) {
-                scene ++;
-            }
-            // console.log(incPacket.data + " :is Error");
-            break;
-          case 'rmLeaderName':
-            if (incPacket.data) {
-              leaderBoardNames.splice(incPacket.data, 1);
-              console.log(leaderBoardNames)
-            }
-            break;
-        //   case 'name':
-        //     //client processing of name check
-        //     if (incPacket.data == tempName) {
-        //       myName = tempName;
-        //       tempName = null;
-        //     }
-        //     leaderBoardNames.push(incPacket.data);
-        //     console.log(leaderBoardNames);
-        //     break;
-    
-        case 'response':
-            leaderBoardNames = JSON.parse(incPacket.data);
-            // console.log(leaderBoardNames);
-            // console.log(arr);
-            // for(let i = 0; i < arr.length; i++) {
-            //   if(leaderBoardNames[i] != arr[i]) {
-            //     leaderBoardNames.push(String(arr[i]));
-            //   }
-            // }
-            break;
-        case 'update':
-            lbPoints = JSON.parse(incPacket.data);
-            break;
-
-        }
-      };
-
-    
+    if(nameErrorTime > 0) {
+        nameErrorTime --;
+    } else {
+        nameErrorTime = 0;
+    }
     if(scene == 0) {
         background(0);
         fill(255);
@@ -674,19 +709,26 @@ draw = function() {
 
         fill(255);
         textSize(70);
-        textAlign(CENTER);
+        textAlign(CENTER, CENTER);
         text("Enter your name:", width/2, height/2-3*s);
 
         if(frameCount % 100 > 50) {
             fill(255);
             rect(width/2-5*s + username.length*50, height/2, 50, 7);
         }
-        textAlign(CORNER);
+        textAlign(CORNER, BASELINE);
         let n = username.split("");
         for(let i = 0; i < n.length; i++) {
             text(n[i], width/2-5*s+50*i, height/2)
         }
 
+        if(nameErrorTime > 0) {
+            textSize(30);
+            fill(255, 0, 0, 255*nameErrorTime/100);
+            textAlign(CENTER, BOTTOM);
+            text(nameError, width/2, height/2-1.5*s);
+        }
+        
     } else {
         if(phase > 1) {
             background(0);
@@ -729,11 +771,21 @@ draw = function() {
         push();
             for(let i = 0; i < rockets.length; i++) {
                 // rockets[i].vy = random(10, 20);
+                if(phase == 0) {
+                    rockets[i].y = height/2;
+                }
                 rockets[i].display();
             }
+            
             noStroke();
-            fill(0);
-            rect(0, height-7*s-height/2, width, height-4*s);
+            // fill(255);
+            // rect(0, height-7*s-height/2, width, height-4*s);
+            // let s1 = width/ground[planet].width;
+            let s1 = (height/2)/ground[planet].height;
+            for (let i = 0; i < width/(ground[planet].width*s1); i++) {
+                image(ground[planet], i*~~(ground[planet].width*s1), 2*s, ground[planet].width*s1, ground[planet].height*s1);
+            }
+            
         pop();
 
         
@@ -789,7 +841,7 @@ draw = function() {
         fill(128);
         text(pointsPossible + " possible", width/2, height-2*s-200+s5+5);
         
-        fill(0);
+        // fill(0);
         // if(time < 6) {
         //     if(Math.floor(time) < floorTime && time > 0) {
         //         tick.play();
@@ -929,11 +981,11 @@ draw = function() {
             // time = 60 - (Date.now()/1000 - startTime/1000);
         // }
 
-        textSize(15);
+        textSize(20);
         fill(255);
-        textAlign(CORNER, CORNER);
+        textAlign(LEFT, TOP);
         for(let i = 0; i < leaderBoardNames.length; i++) {
-            text(leaderBoardNames[i] + ": " + lbPoints[i], 50, i*20);
+            text(leaderBoardNames[i] + ": " + lbPoints[i], 0, i*25);
         }
         if(blastoffTimer > 0 && phase == 0) {
             blastoffTimer-=0.2;
@@ -1138,9 +1190,11 @@ function keyPressed() {
                         if(phase == 0) {
                             blastoffTimer = 20;
                         } else {
-                            rockets[0].vy += 5*answer.length;
+                            // rockets[0].vy += 5*answer.length;
+                            points +=  answer.length*100;
+                            rockets[0].moveTo(points*5);
                         }
-                        points +=  answer.length*100;
+                        
                         if(answer.length > 2) {
                             const wordPacket = { type: 'playerWord', data: points };
                             socket.send(JSON.stringify(wordPacket));
