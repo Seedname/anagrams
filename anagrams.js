@@ -138,7 +138,10 @@ let lists2;
 let images = []
 
 var rocket0, rocket1, rocket2;
+var socket;
 function preload() {
+    socket = new WebSocket('ws://97.100.143.136:9091');
+
     rocket0 = [loadImage('assets/rocket0-t.png'), loadImage('assets/rocket0-b.png')]
     rocket1 = [loadImage('assets/rocket1-m.png'), loadImage('assets/rocket1-m2.png'), loadImage('assets/rocket1-l.png'), loadImage('assets/rocket1-r.png')]
     rocket2 = [loadImage('assets/rocket2-m.png'), loadImage('assets/rocket2-l.png'), loadImage('assets/rocket2-r.png')]
@@ -315,6 +318,7 @@ function RocketNode(x, y, lifespan) {
         }
     }
 }
+
 function Rocket(type, x, y, s, lead) {
     this.type = type;
     this.x = x;
@@ -323,7 +327,6 @@ function Rocket(type, x, y, s, lead) {
     this.s = s;
     this.lead = lead;
     
-
     switch (type) {
         case 0:
             this.offsets = [[0, -10.5*s/20-1.4*s], [0, 10.5*s/20-1.4*s]]
@@ -365,6 +368,7 @@ function Rocket(type, x, y, s, lead) {
 
             this.parts = rocket2;
             break;
+        
     }
 
     this.minWidth = Infinity;
@@ -374,72 +378,93 @@ function Rocket(type, x, y, s, lead) {
         }
     }
 
-    this.phase2 = true;
+    this.phase = 0;
     // let offsets2 = new Array(this.boosters.length);
     // for (let i = 0; i < this.boosters.length; i++) {
     //     offsets2[i] = [0, 0];
     // }
     var vx = [];
     var vy = [];
-    var va = [0];
     for(let i = 0; i < this.parts.length-1; i++) {
-        vx.push(random(10, 15));
         vy.push(10);
-        va.push(0);
+        // va.push(0);
     }
 
     this.animation = function() {
-        
+        this.vy = 10;
         if(this.type == 0) {
-            this.offsets[1][1] ++;
-            va[i] += 0.1;
+            this.offsets[1][1] += this.vy/2;
+            // va[i] += 0.1;
             vy[i-1] += 6/60;
             if(this.boosters.length > 1) {
                 this.boosters.pop();
             }
-            if(this.y - s < height/2 && this.offsets[1][1] > height-3*s) {
-                this.y ++;
-            }
             this.boosters[0].x = this.x;
-            this.boosters[0].y = this.y-s;
+            this.boosters[0].y = y-20*s/20;
         } else if(this.type == 1) {
             for(let i = 1; i < this.offsets.length; i++) {
-                this.offsets[i][1] += vx[i-1];
-                this.offsets[i][1] += vy[i-1];
-                va[i] += 0.1;
-                vy[i-1] += 6/60;
+                // this.offsets[i][1] += vx[i-1];
+                this.offsets[i][1] += this.vy/2;
+                // va[i] += 0.1;
+                // vy[i-1] += 6/60;
             }
             
             if(this.boosters.length > 3) {
                 this.boosters.pop();
             }
-            if(this.y - s < height/2 && this.offsets[1][1] > height-3*s) {
-                this.y ++;
+            // if(this.y - s < height/2 && this.offsets[1][1] > height-3*s) {
+            //     this.y ++;
+            // }
+            // this.boosters[0].x = this.x;
+            
+        } else if(this.type == 2) {
+            for(let i = 1; i < this.offsets.length; i++) {
+                // this.offsets[i][1] += vx[i-1];
+                this.offsets[i][1] += this.vy/2;
+                // va[i] += 0.1;
+                // vy[i-1] += 6/60;
             }
-            this.boosters[0].x = this.x;
-            this.boosters[0].y = this.y-s;
+            
+            if(this.boosters.length > 1) {
+                this.boosters.pop();
+            }
+            // if(this.y - s < height/2 && this.offsets[1][1] > height-3*s) {
+            //     this.y ++;
+            // }
+            // this.boosters[0].x = this.x;
+            // this.boosters[0].y = height;   
         }
     };
 
-    let strength = 2;
+    this.strength = 0;
     this.display = function() {
-        // if(this.phase2) {
-        //     this.animation();
+        this.vy = max(5, this.vy);
+        this.vy = min(30, this.vy);
 
-        // } 
+        if(this.phase == 3) {
+            print(true);
+            this.animation();
+        } 
+
+        if(this.phase > 0 && this.vy > 0) {
+            this.vy -= 0.05;
+        } else {
+            this.vy = 0;
+        }
 
         if(this.lead) {
             translate(0, height-this.y);
         } 
         this.y -= this.vy;
 
-        for(let i = 0; i < this.boosters.length; i++) {
-            push();
-            translate(0, -height+this.y)
-            this.boosters[i].run();
-            pop();
+        if(this.phase > 0) {
+            for(let i = 0; i < this.boosters.length; i++) {
+                push();
+                translate(0, -height+this.y)
+                this.boosters[i].run();
+                pop();
+            }
         }
-
         if (this.type == 0 || this.type == 2) {
             // for(let i = this.parts.length-1; i >= 0; i--) {
             for(let i = 0; i < this.parts.length; i++) {
@@ -452,10 +477,10 @@ function Rocket(type, x, y, s, lead) {
                 // image(p, this.offsets[i][0]*ratio +this.x - s*ratio/2, this.offsets[i][1]*ratio +  this.y-this.s/2, s * ratio, s*h/w*ratio);
                 push();
                     translate(this.offsets[i][0] +this.x - s*ratio/2, this.offsets[i][1] + this.y - height/2);
-                    if(this.phase2) {
-                        rotate(va[i]);
-                    }
-                    image(p, random(-strength, strength), random(-strength, strength), s * ratio, s*h/w*ratio);
+                    // if(this.phase2) {
+                    //     rotate(va[i]);
+                    // }
+                    image(p, random(-this.strength, this.strength), random(-this.strength, this.strength), s * ratio, s*h/w*ratio);
                 pop();
             }
         } else {
@@ -469,10 +494,10 @@ function Rocket(type, x, y, s, lead) {
     
                     push();
                         translate(this.offsets[i][0] +this.x - s*ratio/2, this.offsets[i][1] + this.y - height/2);
-                        if(this.phase2) {
-                            rotate(va[i]);
-                        }
-                        image(p, random(-strength, strength), random(-strength, strength), s * ratio, s*h/w*ratio);
+                        // if(this.phase2) {
+                        //     rotate(va[i]);
+                        // }
+                        image(p,  random(-this.strength, this.strength), random(-this.strength, this.strength), s * ratio, s*h/w*ratio);
                     pop();
                     
                 }
@@ -491,8 +516,8 @@ let answerLetters;
 let answer;
 var points;
 var used;
-var startTime;
-var time;
+// var startTime;
+// var time;
 var time2;
 var time3;
 let endCard;
@@ -526,7 +551,6 @@ function setup() {
     pointsPossible = totalPoints(answers);
     w = scramble(w).split("");
     
-
     for(let i = 0; i < 6; i++) {
         word.push(new Letter(w[i], i*(s+10)+width/2-(5*(s+10))/2, height-2*s, s));    
         locations.push(i*(s+10)+width/2-(5*(s+10))/2);
@@ -541,8 +565,8 @@ function setup() {
     
     points = 0;
     used = [];
-    startTime = Date.now();
-    time = 60;
+    // startTime = Date.now();
+    // time = 60;
     time2 = 0;
     time3 = 255;
     floorTime = 60;
@@ -553,10 +577,11 @@ function setup() {
     reason = "Time's Up!";
 
     rockets.push(new Rocket(1, width/2, height/2, 100/3, true));
-    rockets.push(new Rocket(0, width/2-300, height/2, 100, false));
-    rockets.push(new Rocket(2, width/2+300, height/2, 100/3.5, false));
-    rockets[0].vy = 6;
-    rockets[1].vy = 5;
+    // rockets.push(new Rocket(0, width/2-300, height/2, 100, false));
+    // rockets.push(new Rocket(2, width/2+300, height/2, 100/3.5, false));
+    // rockets[0].vy = 6;
+    // rockets[1].vy = 5;
+
 
     for(let i = 0; i < 100; i++) {
         bg.push([random(width), random(height)]);
@@ -573,225 +598,380 @@ function joinAnswer() {
     return s;
 }
 
-document.addEventListener('visibilitychange', function (event) {
-    if (document.hidden) {
-        time = 0;
-        reason = "Lost Focus!";
-    }
-});
+let phase = 0;
+var dotFill = 0;
 
+var blastoffTimer = 0;
+var phaseReqs = [6, 6, 6, 6];
 
+var scene = 0;
+var username = "";
 
+var leaderBoardNames = [];
+var lbPoints = [];
 
 draw = function() {
-    background(0);
-    noStroke();
-    fill(255);
-    for(let i = 0; i < bg.length; i++) {
-        bg[i][1] += rockets[0].vy;
-        bg[i][1] %= height;
-        ellipse(bg[i][0], bg[i][1], 2, 2);
-    }
+    socket.onmessage = (event) => {
+        const incPacket = JSON.parse(event.data);
+    
+        switch (incPacket.type) {
+          case 'points':
+            //client processing of points returned
+            console.log(incPacket.data);
+            break;
+          case 'other':
+            console.log(incPacket.data + ", " + incPacket.data2)
+            break;
+          case 'error':
+            if(incPacket.data == 0) {
+                scene ++;
+            }
+            // console.log(incPacket.data + " :is Error");
+            break;
+          case 'rmLeaderName':
+            if (incPacket.data) {
+              leaderBoardNames.splice(incPacket.data, 1);
+              console.log(leaderBoardNames)
+            }
+            break;
+        //   case 'name':
+        //     //client processing of name check
+        //     if (incPacket.data == tempName) {
+        //       myName = tempName;
+        //       tempName = null;
+        //     }
+        //     leaderBoardNames.push(incPacket.data);
+        //     console.log(leaderBoardNames);
+        //     break;
+    
+        case 'response':
+            leaderBoardNames = JSON.parse(incPacket.data);
+            // console.log(leaderBoardNames);
+            // console.log(arr);
+            // for(let i = 0; i < arr.length; i++) {
+            //   if(leaderBoardNames[i] != arr[i]) {
+            //     leaderBoardNames.push(String(arr[i]));
+            //   }
+            // }
+            break;
+        case 'update':
+            lbPoints = JSON.parse(incPacket.data);
+            break;
 
-    push();
-        for(let i = 0; i < rockets.length; i++) {
-            rockets[i].vy = random(10, 20);
-            rockets[i].display();
         }
-    pop();
-    if(time3 < 255) {
-        time3 -= 5;
-        fill(0, 189, 0, time3);
-        
-        if(isError) {
-            fill(255, 0, 0, time3);
-        }
-        textAlign(CENTER, CENTER);
-        textSize(20);
-        text(notifText, width/2, height-4*s-50+25);
-        
-        if(time3 < 0) {
-            time3 = 255;
-        }
-    }
-    
-    for(var i = 0; i < word.length; i++) {
-        fill(100);
-        rect(i*(s+10)+width/2-(5*(s+10))/2 - s/2, height-4*s, s, s, 5);
-    }
-    
-    for(var i = 0; i < word.length; i++) {
-        if(word[i].move) {
-            word[i].moveTo();
-        }
-        word[i].display(time > 0, i + 1);
-    }
-    
-    rectMode(CORNER);
-    
-    fill(255);
-    if(isInside(width/2-100*s/100,height-s, 100 * s/50 , 35 * s/50) && time > 0) {
-        fill(200);
-    }
-    
-    rect(width/2-100*s/100, height-s, 100 * s/50 , 35 * s/50, 5);
-    fill(30);
-    
-    textAlign(CENTER, CENTER);
-    textSize(25 * s/50);
-    text("Submit", width/2,height-s + 35 * s/100);
-    
-    textAlign(CENTER, TOP);
-    textSize(s/5);
-    fill(128);
-    text("Enter", width/2, height-s +  (35 * s/50) + 5);
-    
-    fill(0);
-    textSize(25 * s/50);
-    textAlign(CENTER, TOP);
-    text(points + " points", width/2, height-2*s-200);
-    let s5 = textAscent();
-    textSize(s/5);
-     fill(128);
-    text(pointsPossible + " possible", width/2, height-2*s-200+s5+5);
-    
-    fill(0);
-    if(time < 6) {
-        if(Math.floor(time) < floorTime && time > 0) {
-            tick.play();
-        }
-        fill(255, 0, 0);
-    }
-    floorTime = Math.floor(time);
-    
-    textSize(30);
-    textAlign(LEFT, TOP);
-    text("Time: " + time.toFixed(2), 0, 0);
-    
-    fill(255);
-    if(inCircle(width/2-(s+7)*3-40, height-2*s, 30) && time > 0) {
-        fill(200);
-    }
-    
-    shuffleIcon(width/2-(s+7)*3-40, height-2*s, 30);
-    
-    textAlign(CENTER, TOP);
-    textSize(s/5);
-    fill(128);
-    text("Shift", width/2-(s+7)*3-40-30/12, height-2*s + 20);
-    
-    noStroke();
+      };
 
-    if(points >= pointsPossible) {
-        time = 0;
-        reason = "You Won!";
-    }
     
-    if(time <= 0) {
-        time = 0;
-        
-        if(endCard <= height/8) {
-            endCard += 15;
-        } 
-        
-        stroke(255-130, 232-130, 130-130);
-        strokeWeight(4);
-        fill(255, 232, 130);
-        rect(width/2-150, endCard, 300, 3/4*height, 5);
-        
+    if(scene == 0) {
+        background(0);
+        fill(255);
         noStroke();
-        strokeWeight(2);
-        textSize(45);
-        fill(255-130, 232-130, 130-130);
-        textAlign(CENTER, TOP);
-        text(reason, width/2, endCard + 30);
-
-        textAlign(CENTER, CENTER);
-        
-        textSize(27);
-        fill(255-170, 232-170, 0);
-        text("Stats", width/2, endCard + 110);
-        
-        stroke(255-130, 232-130, 130-130);
-        line(width/2-35, endCard+125, width/2+35, endCard+125);
-        
-        noStroke();
-        
-        if(endCard >= height/8) {
-            time2 ++;
-            
-            push();
-            translate(0, 7);
-            textSize(18);
-            fill(255-130, 232-130, 130-130);
-            text("Score: " + points, width/2, height/8+160);
-            text("Possible Score: " + pointsPossible, width/2, height/8+185);
-            text("Words Found: " + foundWords + "/" + answers.length, width/2, height/8+210);
-            
-            var ratio = points/pointsPossible;
-            
-            var display = "";
-            if (ratio <= 0.25) {
-                display = "Nice Job!";
-            } else if(ratio <= 0.5) {
-                display = "Good Job!";
-            } else if(ratio <= 0.75) {
-                display = "Great Job!";
-            } else if(ratio <= 1) {
-                display = "Amazing!";
-            }
-            textSize(30);
-            text(display, width/2, height/8+260);
-
-            fill(255, 232, 130);
-            if(time2 > 0 && time2 < 280/4) {
-                rect(width/2-140, height/8+160-20/2, 280 - 4*(time2), 20);
-            } 
-        
-            if(time2 >= 280/4 && time2 < 2*280/4) {
-                rect(width/2-140, height/8+160-20/2+25, 280 - 4*(time2 - 280/4), 20);
-            } else if(time2 < 280/4) {
-                rect(width/2-140, height/8+160-20/2+25, 280, 20);
-            }
-            
-            if(time2 >= 280/4 && time2 < 2*280/4) {
-                rect(width/2-140, height/8+160-20/2+25, 280 - 4*(time2 - 280/4), 20);
-            } else if(time2 < 280/4) {
-                rect(width/2-140, height/8+160-20/2+25, 280, 20);
-            }
-            
-            if(time2 >= 2*280/4 && time2 < 3*280/4) {
-                rect(width/2-140, height/8+160-20/2+50, 280 - 4*(time2 - 2*280/4), 20);
-            } else if(time2 < 2*280/4) {
-                rect(width/2-140, height/8+160-20/2+50, 280, 20);
-            }
-
-            if(time2 >= 3*280/4 && time2 < 4*280/4) {
-                rect(width/2-140, height/8+260 - 30/2, 280 - 4*(time2 - 3*280/4), 30);
-            } else if(time2 < 3*280/4) {
-                rect(width/2-140, height/8+260 - 30/2, 280, 30);
-            }
-
-            pop();
-            
-            fill(255-130, 232-130, 130-130);
-            textAlign(CENTER, BOTTOM);
-            textSize(10);
-            text("Press anything to continue", width/2, height/2+3/8*height);
-            
-            fill(255, 232, 130);
-            if(time2 >= 4*280/4 && time2 < 5*280/4) {
-                rect(width/2-140, height/2+3/8*height - 10, 280 - 4*(time2 - 4*280/4), 10);
-            } else if(time2 < 5*280/4) {
-                rect(width/2-140, height/2+3/8*height - 10, 280, 10);
-            }
+        for(let i = 0; i < bg.length; i++) {
+            bg[i][1] += max(5, rockets[0].vy);
+            bg[i][1] %= height;
+            ellipse(bg[i][0], bg[i][1], 2, 2);
         }
-        
+
+        fill(255);
+        textSize(70);
+        textAlign(CENTER);
+        text("Enter your name:", width/2, height/2-3*s);
+
+        if(frameCount % 100 > 50) {
+            fill(255);
+            rect(width/2-5*s + username.length*50, height/2, 50, 7);
+        }
+        textAlign(CORNER);
+        let n = username.split("");
+        for(let i = 0; i < n.length; i++) {
+            text(n[i], width/2-5*s+50*i, height/2)
+        }
+
     } else {
-        time = 60 - (Date.now()/1000 - startTime/1000);
-    }
+        if(phase > 1) {
+            background(0);
+            noStroke();
+            fill(dotFill);
+            if(dotFill < 255) { dotFill ++; }
+            for(let i = 0; i < bg.length; i++) {
+                bg[i][1] += max(5, rockets[0].vy);
+                bg[i][1] %= height;
+                ellipse(bg[i][0], bg[i][1], 2, 2);
+            }
+        } else {
+            noStroke();
+            if(-rockets[0].y/10000 < 1) {
+                for(let i = 0; i < 100; i++) {
+                    let c = lerpColor(color(0, 150, 255), color(0, 255, 255), i/100 + rockets[0].y/10000)
+                    
+                    fill(c)
+                    rect(0, i*height/100, width, height/100)
+                }
+            } else {
+                background(0)
+                let c = map(-rockets[0].y/10000-1, 0, 1, 255, 0);
+                fill(0, 150, 255,c);
+                if(c <= 1) {
+                    phase ++;
+                    resetWord();
+                }
+                rect(-1, -1, width+1, height+1);
+            }
+        }
+        
 
+        if(phase == 2 && height/2-rockets[0].y > 50000) {
+            phase = 3;
+            rockets[0].phase = 3;
+        }
+        // print(height/2-rockets[0].y)
+
+        push();
+            for(let i = 0; i < rockets.length; i++) {
+                // rockets[i].vy = random(10, 20);
+                rockets[i].display();
+            }
+            noStroke();
+            fill(0);
+            rect(0, height-7*s-height/2, width, height-4*s);
+        pop();
+
+        
+        if(time3 < 255) {
+            time3 -= 5;
+            fill(0, 189, 0, time3);
+            
+            if(isError) {
+                fill(255, 0, 0, time3);
+            }
+            textAlign(CENTER, CENTER);
+            textSize(20);
+            text(notifText, width/2, height-4*s-50+25);
+            
+            if(time3 < 0) {
+                time3 = 255;
+            }
+        }
+        
+        for(var i = 0; i < word.length; i++) {
+            fill(100);
+            rect(i*(s+10)+width/2-(5*(s+10))/2 - s/2, height-4*s, s, s, 5);
+        }
+        
+        for(var i = 0; i < word.length; i++) {
+            if(word[i].move) {
+                word[i].moveTo();
+            }
+            word[i].display(true, i + 1);
+        }
+        
+        rectMode(CORNER);
+        
+        fill(255);
+        rect(width/2-100*s/100, height-s, 100 * s/50 , 35 * s/50, 5);
+        fill(30);
+        
+        textAlign(CENTER, CENTER);
+        textSize(25 * s/50);
+        text("Submit", width/2,height-s + 35 * s/100);
+        
+        textAlign(CENTER, TOP);
+        textSize(s/5);
+        fill(128);
+        text("Enter", width/2, height-s +  (35 * s/50) + 5);
+        
+        fill(0);
+        textSize(25 * s/50);
+        textAlign(CENTER, TOP);
+        text(points + " points", width/2, height-2*s-200);
+        let s5 = textAscent();
+        textSize(s/5);
+        fill(128);
+        text(pointsPossible + " possible", width/2, height-2*s-200+s5+5);
+        
+        fill(0);
+        // if(time < 6) {
+        //     if(Math.floor(time) < floorTime && time > 0) {
+        //         tick.play();
+        //     }
+        //     fill(255, 0, 0);
+        // }
+        // floorTime = Math.floor(time);
+        
+        // textSize(30);
+        // textAlign(LEFT, TOP);
+        // text("Time: " + time.toFixed(2), 0, 0);
+        
+        fill(255);
+        // if(inCircle(width/2-(s+7)*3-40, height-2*s, 30) && time > 0) {
+        //     fill(200);
+        // }
+        
+        shuffleIcon(width/2-(s+7)*3-40, height-2*s, 30);
+        
+        textAlign(CENTER, TOP);
+        textSize(s/5);
+        fill(128);
+        text("Shift", width/2-(s+7)*3-40-30/12, height-2*s + 20);
+        
+        noStroke();
+
+        // if(points >= pointsPossible) {
+            // time = 0;
+            // reason = "You Won!";
+        // }
+        
+        // if(time <= 0) {
+            // time = 0;
+            
+            // if(endCard <= height/8) {
+            //     endCard += 15;
+            // } 
+            
+            // stroke(255-130, 232-130, 130-130);
+            // strokeWeight(4);
+            // fill(255, 232, 130);
+            // rect(width/2-150, endCard, 300, 3/4*height, 5);
+            
+            // noStroke();
+            // strokeWeight(2);
+            // textSize(45);
+            // fill(255-130, 232-130, 130-130);
+            // textAlign(CENTER, TOP);
+            // text(reason, width/2, endCard + 30);
+
+            // textAlign(CENTER, CENTER);
+            
+            // textSize(27);
+            // fill(255-170, 232-170, 0);
+            // text("Stats", width/2, endCard + 110);
+            
+            // stroke(255-130, 232-130, 130-130);
+            // line(width/2-35, endCard+125, width/2+35, endCard+125);
+            
+            // noStroke();
+            
+            // if(endCard >= height/8) {
+            //     time2 ++;
+                
+            //     push();
+            //     translate(0, 7);
+            //     textSize(18);
+            //     fill(255-130, 232-130, 130-130);
+            //     text("Score: " + points, width/2, height/8+160);
+            //     text("Possible Score: " + pointsPossible, width/2, height/8+185);
+            //     text("Words Found: " + foundWords + "/" + answers.length, width/2, height/8+210);
+                
+            //     var ratio = points/pointsPossible;
+                
+            //     var display = "";
+            //     if (ratio <= 0.25) {
+            //         display = "Nice Job!";
+            //     } else if(ratio <= 0.5) {
+            //         display = "Good Job!";
+            //     } else if(ratio <= 0.75) {
+            //         display = "Great Job!";
+            //     } else if(ratio <= 1) {
+            //         display = "Amazing!";
+            //     }
+            //     textSize(30);
+            //     text(display, width/2, height/8+260);
+
+            //     fill(255, 232, 130);
+            //     if(time2 > 0 && time2 < 280/4) {
+            //         rect(width/2-140, height/8+160-20/2, 280 - 4*(time2), 20);
+            //     } 
+            
+            //     if(time2 >= 280/4 && time2 < 2*280/4) {
+            //         rect(width/2-140, height/8+160-20/2+25, 280 - 4*(time2 - 280/4), 20);
+            //     } else if(time2 < 280/4) {
+            //         rect(width/2-140, height/8+160-20/2+25, 280, 20);
+            //     }
+                
+            //     if(time2 >= 280/4 && time2 < 2*280/4) {
+            //         rect(width/2-140, height/8+160-20/2+25, 280 - 4*(time2 - 280/4), 20);
+            //     } else if(time2 < 280/4) {
+            //         rect(width/2-140, height/8+160-20/2+25, 280, 20);
+            //     }
+                
+            //     if(time2 >= 2*280/4 && time2 < 3*280/4) {
+            //         rect(width/2-140, height/8+160-20/2+50, 280 - 4*(time2 - 2*280/4), 20);
+            //     } else if(time2 < 2*280/4) {
+            //         rect(width/2-140, height/8+160-20/2+50, 280, 20);
+            //     }
+
+            //     if(time2 >= 3*280/4 && time2 < 4*280/4) {
+            //         rect(width/2-140, height/8+260 - 30/2, 280 - 4*(time2 - 3*280/4), 30);
+            //     } else if(time2 < 3*280/4) {
+            //         rect(width/2-140, height/8+260 - 30/2, 280, 30);
+            //     }
+
+            //     pop();
+                
+            //     fill(255-130, 232-130, 130-130);
+            //     textAlign(CENTER, BOTTOM);
+            //     textSize(10);
+            //     text("Press anything to continue", width/2, height/2+3/8*height);
+                
+            //     fill(255, 232, 130);
+            //     if(time2 >= 4*280/4 && time2 < 5*280/4) {
+            //         rect(width/2-140, height/2+3/8*height - 10, 280 - 4*(time2 - 4*280/4), 10);
+            //     } else if(time2 < 5*280/4) {
+            //         rect(width/2-140, height/2+3/8*height - 10, 280, 10);
+            //     }
+            // }
+            
+        // } else {        if(used.length == 6) {
+                // phase = 1;
+                // rockets[0].vy = 10;
+                // used = [];
+            // }
+            // time = 60 - (Date.now()/1000 - startTime/1000);
+        // }
+
+        textSize(15);
+        fill(255);
+        textAlign(CORNER, CORNER);
+        for(let i = 0; i < leaderBoardNames.length; i++) {
+            text(leaderBoardNames[i] + ": " + lbPoints[i], 50, i*20);
+        }
+        if(blastoffTimer > 0 && phase == 0) {
+            blastoffTimer-=0.2;
+            fill(0, 0, 0, blastoffTimer*255/20);
+            textSize(100);
+            textAlign(CENTER, CENTER);
+            text(phaseReqs[phase]-used.length, width/2, height/2);
+            if(used.length == phaseReqs[phase]) {
+                phase ++;
+                rockets[0].phase = 1;
+                rockets[0].vy = 10;
+                resetWord();
+            }
+        }
+
+        if(phase == 0 && used.length > 2) {
+            rockets[0].strength = 1;
+        } else if(phase == 2) {
+            rockets[0].phase = 2;
+        }
+    }
+    
 };
+
+function resetWord() {
+    var w = choices[floor(random(choices.length))];
+    answers = allAnagrams(w);
+    pointsPossible = totalPoints(answers);
+    w = scramble(w).split("");
+    word = [];
+    answerArray = [];
+    used = [];
+    answer = "";
+    answerLetters = 0;
+    for(var i = 0; i < 6; i++) {
+        word.push(new Letter(w[i], i*(s+10)+width/2-(5*(s+10))/2, height-2*s, s));
+    }
+}
 
 function reset() {
     var w = choices[floor(random(choices.length))];
@@ -803,7 +983,7 @@ function reset() {
     used = [];
     answer = "";
     answerLetters = 0;
-    time = 60;
+    // time = 60;
     points = 0;
     time2 = 0;
     time3 = 255;
@@ -815,9 +995,10 @@ function reset() {
         word.push(new Letter(w[i], i*(s+10)+width/2-(5*(s+10))/2, height-2*s, s));
     }
     for(let i = 0; i < rockets.length; i++) {
-        rockets[i].y = 0;
+        rockets[i].y = height/2;
         rockets[i].vy = 0;
     }
+    phase = 0;
 
 }
 function triggerShake(error) {
@@ -833,128 +1014,24 @@ function triggerShake(error) {
     wrong.play();
 }
 
-function mousePressed() {
-    if(time > 0) {
-        for(var i = 0; i < word.length; i++) {
-            if(word[i].click()) {
-                word[i].move = true;
-                if(word[i].newPos.y === height/2+100) {
-                    word[i].newPos.set(locations[answerLetters], height/2);
-                    answerArray[answerLetters] = i;
-                    answerLetters ++;
-                } else {
-                    answerLetters --;
-                    word[i].newPos.set(locations[i], height/2+100);
-    
-                    var k = -1;
-                    for(var j = 0; j < 6; j++) {
-                        if(answerArray[j] === i) {
-                            k = j;
-                        }
-                    }
-                    
-                    if(k >= 0) {
-                        for(var j = k+1; j < 7; j++) {
-                            answerArray[j-1] = answerArray[j];  
-                        }
-                        for(var j = 0; j < 6; j++) {
-                            if(answerArray[j] > -1) {
-                                word[answerArray[j]].move = true;
-                                word[answerArray[j]].newPos.set(locations[j], height/2);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    
-        if(inCircle(width/2-(s+7)*3-40, height/2+100, 30)){
-
-            for(var k = 0; k < answerArray.length; k++) {
-                if(answerArray[k] >= 0) {
-                    word[answerArray[k]].move = true;
-                    word[answerArray[k]].newPos.set(locations[answerArray[k]], height/2 + 100);
-                }
-            }
-            
-            answerArray = [];
-            answer = "";
-            answerLetters = 0;
-            
-            var letters1 = [];
-            for(var i = 0; i < word.length; i++) {
-                letters1.push(word[i]);
-            }
-            
-            var scrambled = [];
-            var len = letters1.length;
-            
-            for(var i = 0; i < len; i++) {
-                var j = floor(Math.random() * letters1.length);
-                scrambled.push(letters1[j]);
-                letters1.splice(j, 1);
-            }
-            
-            word = scrambled;
-            
-            for(var i = 0; i < len; i++) {
-                word[i].move = true;
-                word[i].newPos.set(locations[i], height/2 + 100);
-            }
-        }
-        
-        if(isInside(width/2-100*s/100, height-s, 100 * s/50, 35 * s/50)) {
-            answer = joinAnswer(); 
-            if(answer.length > 2) {
-                var j = alphabet.indexOf(answer.substring(0, 1));
-                var exists = false;
-                for(var i = 0; i < answers.length; i++) {
-                    if(answer === answers[i]) {
-                        exists = true;
-                    }
-                }
-                if(exists) {
-                    var inList = false;
-                    for(var k = 0; k < used.length; k++) {
-                        if(used[k] === answer) {
-                            inList = true;
-                        }
-                    }
-                    if(!inList) {
-                        used.push(answer);
-                        points += answer.length*100;
-                        right.play();
-                        time3 = 254;
-                        foundWords ++;
-                        notifText = "+" + answer.length*100 + " points";
-                        isError = false;
-                        for(var k = 0; k < answerArray.length; k++) {
-                            if(answerArray[k] >= 0) {
-                                word[answerArray[k]].move = true;
-                                word[answerArray[k]].newPos.set(locations[answerArray[k]], height-2*s);
-                            }
-                        }
-                        answerArray = [];
-                        answer = "";
-                        answerLetters = 0;
-                    } else {
-                        triggerShake("Already used word");
-                    }
-                } else {
-                    triggerShake("Word doesn't exist");
-                }
-            } else if(answer.length > 0) {
-                triggerShake("Word too short");
-            } else {
-                triggerShake("No word entered");
-            }
-        }
-    } else if(time2 > 60) {
-        reset();
-    }
-}
 function keyPressed() {
-    if(time > 0) {
+    if(scene == 0) {
+        if (keyCode >= 65 && keyCode <= 90 || keyCode === 8 || (keyCode >= 49 && keyCode <= 54)) {
+            if(keyCode != 8) {
+                var letter = letters[keyCode - 65];
+                username += letter;
+            } else {
+                username = username.substring(0, username.length-1)
+            }
+        } else if(keyCode == 13) {
+            const namePacket = { type: 'name', data: username };
+            socket.send(JSON.stringify(namePacket));
+
+            const newMessage = { type : "retrieve", data: null };
+            socket.send(JSON.stringify(newMessage));
+
+        }
+    } else {
         if (keyCode >= 65 && keyCode <= 90 || keyCode === 8 || (keyCode >= 49 && keyCode <= 54)) {
             var letter = letters[keyCode - 65];
             for (var i = 0; i < word.length; i++) {
@@ -1058,7 +1135,16 @@ function keyPressed() {
                     }
                     if(!inList) {
                         used.push(answer);
+                        if(phase == 0) {
+                            blastoffTimer = 20;
+                        } else {
+                            rockets[0].vy += 5*answer.length;
+                        }
                         points +=  answer.length*100;
+                        if(answer.length > 2) {
+                            const wordPacket = { type: 'playerWord', data: points };
+                            socket.send(JSON.stringify(wordPacket));
+                        }
                         right.play();
                         time3 = 254;
                         foundWords ++;
@@ -1084,10 +1170,10 @@ function keyPressed() {
             } else {
                 triggerShake("No word entered");
             }
-        }
     } else if(time2 > 60) {
         reset();
     }
+}
 }
 
 function windowResized() {
@@ -1134,10 +1220,14 @@ function windowResized() {
     for(let i = 0; i < rockets.length; i++) {
         rockets[i].x *= finalWidth/prevWidth;
         for(let j = 0; j < rockets[i].boosters.length; j++) {
-            print(rockets[i].boosters[i].x)
             rockets[i].boosters[j].x *= finalWidth/prevWidth;
             rockets[i].boosters[j].y *= finalHeight/prevHeight;
-            print(rockets[i].boosters[i].x)
         }
     }
+
+    bg = [];
+    for(let i = 0; i < 100; i++) {
+        bg.push([random(width), random(height)]);
+    }
+    
 }
