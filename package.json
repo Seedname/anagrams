@@ -1,7 +1,7 @@
 {
     "type": "module",
     "scripts": {
-        "start": "node test2.js"
+        "start": "node server.js"
     },
     "dependencies": {
         "node-fetch": "^3.3.0",

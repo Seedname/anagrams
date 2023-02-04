@@ -9,7 +9,7 @@ const wss = new WebSocketServer({ port: 9091 });
 
 const clients = [];
 
-var response = await fetch('https://raw.githubusercontent.com/first20hours/google-10000-english/master/google-10000-english-usa-no-swears.txt');
+var response = await fetch('localhost:5500/words/all.txt');
 var openedText = await response.text(); // <-- changed
 var words = openedText.split(/\r\n|\n/);
 
