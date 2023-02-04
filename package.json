@@ -1,7 +1,11 @@
 {
     "type": "module",
+    "scripts": {
+        "start": "node test2.js"
+    },
     "dependencies": {
         "node-fetch": "^3.3.0",
         "ws": "^8.12.0"
     }
+
 }
