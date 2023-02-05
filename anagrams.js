@@ -399,7 +399,9 @@ function Rocket(type, x, y, s, lead, name) {
             //     d -= height;
             // }
             // print(d);
-            this.y += d/100;
+            let vy = d/100;
+            this.y += vy;
+            this.vy = -vy;
             if(abs(d) < 1) {
                 this.move = false;
             }
@@ -429,6 +431,7 @@ function Rocket(type, x, y, s, lead, name) {
                 pop();
             }
         }
+
         if (this.type == 0 || this.type == 2) {
             // for(let i = this.parts.length-1; i >= 0; i--) {
             for(let i = 0; i < this.parts.length; i++) {
@@ -467,6 +470,23 @@ function Rocket(type, x, y, s, lead, name) {
                 }
         }
 
+        fill(255, 0, 0);
+        if(this.lead) {
+            fill(0, 255, 0);
+        }
+        textSize(25);
+        textAlign(CENTER, BASELINE);
+        switch (this.type) {
+            case 0:
+                text(this.name, this.x, this.y-height/2 + this.offsets[0][1] - 0.1*this.s);
+                break;
+            case 1:
+                text(this.name, this.x, this.y-height/2 + this.offsets[0][1] - 2.5*this.s);
+                break;
+            case 2:
+                text(this.name, this.x, this.y-height/2 + this.offsets[0][1] - 0.5*this.s);
+                break;
+        }
         // text(this.name, )
 
     };
@@ -497,7 +517,6 @@ let rockets = [];
 var bg = [];
 let rocketsArray = [];
 let planet = 0;
-
 
 function resetWord(word1) {
     // var w = choices[floor(random(choices.length))];
@@ -614,7 +633,7 @@ function setup() {
                             }
                         }
                     } else {
-                        rockets.push(new Rocket(rocketsArray[i], i*5*s, height/2, 100/3, false, leaderBoardNames[i]));
+                        rockets.push(new Rocket(rocketsArray[i], (i+1)*5*s, height/2, 100/3, false, leaderBoardNames[i]));
                     }
                 }
 
@@ -797,9 +816,12 @@ draw = function() {
             noStroke();
             fill(dotFill);
             if(dotFill < 255) { dotFill ++; }
-            
+            let num = 5;
+            if (rockets.length > 0 && rockets.length == leaderBoardNames.length) {
+                num = max(5, rockets[leadRocket].vy);
+            }
             for(let i = 0; i < bg.length; i++) {
-                bg[i][1] += 5;
+                bg[i][1] += num;
                 bg[i][1] %= height;
                 ellipse(bg[i][0], bg[i][1], 2, 2);
             }
@@ -895,7 +917,7 @@ draw = function() {
                 time3 = 255;
             }
         }
-        
+        // if(word.length > 0) {}
         for(var i = 0; i < word.length; i++) {
             fill(100);
             rect(i*(s+10)+width/2-(5*(s+10))/2 - s/2, height-4*s, s, s, 5);
