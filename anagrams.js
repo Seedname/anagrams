@@ -141,6 +141,7 @@ let images = []
 var rocket0, rocket1, rocket2;
 var socket;
 var roundWords = [];
+var leadRocket = 0;
 
 function preload() {
     socket = new WebSocket('ws://127.0.0.1:9091');    
@@ -400,7 +401,6 @@ function Rocket(type, x, y, s, lead, name) {
             // print(d);
             this.y += d/100;
             if(abs(d) < 1) {
-                console.log(true);
                 this.move = false;
             }
         }
@@ -467,6 +467,8 @@ function Rocket(type, x, y, s, lead, name) {
                 }
         }
 
+        // text(this.name, )
+
     };
 }
 
@@ -519,7 +521,7 @@ function setup() {
     createCanvas(document.body.clientWidth, window.innerHeight); 
     // pointsPossible = 0;
     resetWord('');
-    rockets.push(new Rocket(1, 0, height/2, 100/3, true, null));
+    // rockets.push(new Rocket(1, 0, height/2, 100/3, true, null));
 
     socket.onmessage = (event) => {
         const packet = JSON.parse(event.data);
@@ -595,8 +597,10 @@ function setup() {
                     }
                 }
 
+                
                 break;
             case 'updateRockets':
+                console.log(true);
                 rocketsArray = JSON.parse(packet.data);
                 
                 for (let i = 0; i < rocketsArray.length; i++) {
@@ -604,17 +608,26 @@ function setup() {
                         if(rockets[i].name !== leaderBoardNames[i]) {
                             rockets[i].name = leaderBoardNames[i];
                             if(leaderBoardNames[i] == username) {
-                                const currentReference = rockets[i];
-                                rockets.splice(i, 1);
                                 rockets[0].lead = false;
-                                rockets.unshift(currentReference);
-                                rockets[0].lead = true;
+                                rockets[i].lead = true;
+                                leadRocket = i;
                             }
                         }
                     } else {
                         rockets.push(new Rocket(rocketsArray[i], i*5*s, height/2, 100/3, false, leaderBoardNames[i]));
                     }
                 }
+
+                for (let i = 0; i < rockets.length; i++) {
+                    rockets[i].name = leaderBoardNames[i];
+                    if(leaderBoardNames[i] == username) {
+                        rockets[i].lead = true;
+                        leadRocket = i;
+                    } else {
+                        rockets[i].lead = false;
+                    }
+                }
+
                 break;
             case 'updateWords':
                 roundWords = JSON.parse(packet.data);
@@ -624,9 +637,18 @@ function setup() {
                 for(let i = 0; i < rockets.length; i++) {
                     if(rockets[i].name == packet.data) {
                         rockets.splice(i, 1);
+                        for (let j = 0; j < rockets.length; j++) {
+                            rockets[j].name = leaderBoardNames[j];
+                            rockets[j].x = j*5*s;
+                            if(leaderBoardNames[j] == username) {
+                                rockets[j].lead = true;
+                                leadRocket = j;
+                            }
+                        }
                         break;
                     }
                 }
+
         }
       };
     
@@ -719,6 +741,19 @@ var lbPoints = [];
 var nameError = "";
 var nameErrorTime = 0;
 draw = function() {
+    
+    // for (let i = 0; i < rockets.length; i++) {
+    //     if(rockets[i].name !== leaderBoardNames[i]) {
+    //         rockets[i].name = leaderBoardNames[i];
+    //         if(leaderBoardNames[i] == username) {
+    //             rockets[i].lead = true;
+    //             leadRocket = i;
+    //         } else {
+    //             rockets[i].lead = false;
+    //         }
+    //     }
+    // }
+
     if(nameErrorTime > 0) {
         nameErrorTime --;
     } else {
@@ -729,7 +764,7 @@ draw = function() {
         fill(255);
         noStroke();
         for(let i = 0; i < bg.length; i++) {
-            bg[i][1] += max(5, rockets[0].vy);
+            bg[i][1] += 5;
             bg[i][1] %= height;
             ellipse(bg[i][0], bg[i][1], 2, 2);
         }
@@ -762,26 +797,28 @@ draw = function() {
             noStroke();
             fill(dotFill);
             if(dotFill < 255) { dotFill ++; }
+            
             for(let i = 0; i < bg.length; i++) {
-                bg[i][1] += max(5, rockets[0].vy);
+                bg[i][1] += 5;
                 bg[i][1] %= height;
                 ellipse(bg[i][0], bg[i][1], 2, 2);
             }
-        } else {
+        } else if(rockets.length > 0 && rockets.length == leaderBoardNames.length) {
             noStroke();
-            if(-rockets[0].y/10000 < 1) {
+            if(-rockets[leadRocket].y/10000 < 1) {
                 for(let i = 0; i < 100; i++) {
-                    let c = lerpColor(color(0, 150, 255), color(0, 255, 255), i/100 + rockets[0].y/10000)
+                    let c = lerpColor(color(0, 150, 255), color(0, 255, 255), i/100 + rockets[leadRocket].y/10000)
                     
                     fill(c)
                     rect(0, i*height/100, width, height/100)
                 }
             } else {
                 background(0)
-                let c = map(-rockets[0].y/10000-1, 0, 1, 255, 0);
+                let c = map(-rockets[leadRocket].y/10000-1, 0, 1, 255, 0);
                 fill(0, 150, 255,c);
                 if(c <= 1) {
                     phase ++;
+                    rockets[leadRocket].strength = 0;
                     resetWord(roundWords[phase]);
                     updatePhase(phase);
                 }
@@ -790,31 +827,58 @@ draw = function() {
         }
         
 
-        if(phase == 2 && height/2-rockets[0].y > 50000) {
-            phase = 3;
-        }
+
         // print(height/2-rockets[0].y)
 
-        push();
-            for(let i = 0; i < rockets.length; i++) {
-                // rockets[i].vy = random(10, 20);
-                if(phase == 0) {
-                    rockets[i].y = height/2;
-                }
-                rockets[i].display();
+        if(rockets.length > 0 && rockets.length == leaderBoardNames.length) {
+            if(height/2-rockets[leadRocket].y > 50000) {
+                phase = 3;
+                resetWord(roundWords[phase]);
+                updatePhase(phase);
             }
             
-            noStroke();
-            // fill(255);
-            // rect(0, height-7*s-height/2, width, height-4*s);
-            // let s1 = width/ground[planet].width;
-            let s1 = (height/2)/ground[planet].height;
-            for (let i = 0; i < width/(ground[planet].width*s1); i++) {
-                image(ground[planet], i*~~(ground[planet].width*s1), 2*s, ground[planet].width*s1, ground[planet].height*s1);
-            }
-            
-        pop();
+            // for (let i = 0; i < rockets.length; i++) {
+            //     rockets[i].name = leaderBoardNames[i];
+            //     if(leaderBoardNames[i] == username) {
+            //         rockets[i].lead = true;
+            //         leadRocket = i;
+            //     } else {
+            //         rockets[i].lead = false;
+            //     }
+            // }
 
+            for(let i = 0; i < leaderBoardNames.length; i++) {
+                for(let j = 0; j < rockets.length; j++) {
+                    if(rockets[j].name == leaderBoardNames[i]) {
+                        rockets[j].moveTo(lbPoints[i]*5);
+                    }
+                    
+                }
+            }
+            push();
+                rockets[leadRocket].display();
+                if(phase == 0) {
+                    rockets[leadRocket].y = height/2;
+                }
+                for(let i = 0; i < rockets.length; i++) {
+                    // rockets[i].vy = random(10, 20);
+                    rockets[i].x = (i+1)*5*s;
+                    if(i != leadRocket) {
+                        rockets[i].display();
+                    }
+                }
+                
+                noStroke();
+                // fill(255);
+                // rect(0, height-7*s-height/2, width, height-4*s);
+                // let s1 = width/ground[planet].width;
+                let s1 = (height/2)/ground[planet].height;
+                for (let i = 0; i < width/(ground[planet].width*s1); i++) {
+                    image(ground[planet], i*~~(ground[planet].width*s1), 2*s, ground[planet].width*s1, ground[planet].height*s1);
+                }
+                
+            pop();
+        }
         
         if(time3 < 255) {
             time3 -= 5;
@@ -863,28 +927,10 @@ draw = function() {
         textSize(25 * s/50);
         textAlign(CENTER, TOP);
         text(points + " points", width/2, height-2*s-200);
-        // let s5 = textAscent();
-        // textSize(s/5);
-        // fill(128);
-        // text(pointsPossible + " possible", width/2, height-2*s-200+s5+5);
-        
-        // fill(0);
-        // if(time < 6) {
-        //     if(Math.floor(time) < floorTime && time > 0) {
-        //         tick.play();
-        //     }
-        //     fill(255, 0, 0);
-        // }
-        // floorTime = Math.floor(time);
-        
-        // textSize(30);
-        // textAlign(LEFT, TOP);
-        // text("Time: " + time.toFixed(2), 0, 0);
+
         
         fill(255);
-        // if(inCircle(width/2-(s+7)*3-40, height-2*s, 30) && time > 0) {
-        //     fill(200);
-        // }
+
         
         shuffleIcon(width/2-(s+7)*3-40, height-2*s, 30);
         
@@ -894,119 +940,6 @@ draw = function() {
         text("Shift", width/2-(s+7)*3-40-30/12, height-2*s + 20);
         
         noStroke();
-
-        // if(points >= pointsPossible) {
-            // time = 0;
-            // reason = "You Won!";
-        // }
-        
-        // if(time <= 0) {
-            // time = 0;
-            
-            // if(endCard <= height/8) {
-            //     endCard += 15;
-            // } 
-            
-            // stroke(255-130, 232-130, 130-130);
-            // strokeWeight(4);
-            // fill(255, 232, 130);
-            // rect(width/2-150, endCard, 300, 3/4*height, 5);
-            
-            // noStroke();
-            // strokeWeight(2);
-            // textSize(45);
-            // fill(255-130, 232-130, 130-130);
-            // textAlign(CENTER, TOP);
-            // text(reason, width/2, endCard + 30);
-
-            // textAlign(CENTER, CENTER);
-            
-            // textSize(27);
-            // fill(255-170, 232-170, 0);
-            // text("Stats", width/2, endCard + 110);
-            
-            // stroke(255-130, 232-130, 130-130);
-            // line(width/2-35, endCard+125, width/2+35, endCard+125);
-            
-            // noStroke();
-            
-            // if(endCard >= height/8) {
-            //     time2 ++;
-                
-            //     push();
-            //     translate(0, 7);
-            //     textSize(18);
-            //     fill(255-130, 232-130, 130-130);
-            //     text("Score: " + points, width/2, height/8+160);
-            //     text("Possible Score: " + pointsPossible, width/2, height/8+185);
-            //     text("Words Found: " + foundWords + "/" + answers.length, width/2, height/8+210);
-                
-            //     var ratio = points/pointsPossible;
-                
-            //     var display = "";
-            //     if (ratio <= 0.25) {
-            //         display = "Nice Job!";
-            //     } else if(ratio <= 0.5) {
-            //         display = "Good Job!";
-            //     } else if(ratio <= 0.75) {
-            //         display = "Great Job!";
-            //     } else if(ratio <= 1) {
-            //         display = "Amazing!";
-            //     }
-            //     textSize(30);
-            //     text(display, width/2, height/8+260);
-
-            //     fill(255, 232, 130);
-            //     if(time2 > 0 && time2 < 280/4) {
-            //         rect(width/2-140, height/8+160-20/2, 280 - 4*(time2), 20);
-            //     } 
-            
-            //     if(time2 >= 280/4 && time2 < 2*280/4) {
-            //         rect(width/2-140, height/8+160-20/2+25, 280 - 4*(time2 - 280/4), 20);
-            //     } else if(time2 < 280/4) {
-            //         rect(width/2-140, height/8+160-20/2+25, 280, 20);
-            //     }
-                
-            //     if(time2 >= 280/4 && time2 < 2*280/4) {
-            //         rect(width/2-140, height/8+160-20/2+25, 280 - 4*(time2 - 280/4), 20);
-            //     } else if(time2 < 280/4) {
-            //         rect(width/2-140, height/8+160-20/2+25, 280, 20);
-            //     }
-                
-            //     if(time2 >= 2*280/4 && time2 < 3*280/4) {
-            //         rect(width/2-140, height/8+160-20/2+50, 280 - 4*(time2 - 2*280/4), 20);
-            //     } else if(time2 < 2*280/4) {
-            //         rect(width/2-140, height/8+160-20/2+50, 280, 20);
-            //     }
-
-            //     if(time2 >= 3*280/4 && time2 < 4*280/4) {
-            //         rect(width/2-140, height/8+260 - 30/2, 280 - 4*(time2 - 3*280/4), 30);
-            //     } else if(time2 < 3*280/4) {
-            //         rect(width/2-140, height/8+260 - 30/2, 280, 30);
-            //     }
-
-            //     pop();
-                
-            //     fill(255-130, 232-130, 130-130);
-            //     textAlign(CENTER, BOTTOM);
-            //     textSize(10);
-            //     text("Press anything to continue", width/2, height/2+3/8*height);
-                
-            //     fill(255, 232, 130);
-            //     if(time2 >= 4*280/4 && time2 < 5*280/4) {
-            //         rect(width/2-140, height/2+3/8*height - 10, 280 - 4*(time2 - 4*280/4), 10);
-            //     } else if(time2 < 5*280/4) {
-            //         rect(width/2-140, height/2+3/8*height - 10, 280, 10);
-            //     }
-            // }
-            
-        // } else {        if(used.length == 6) {
-                // phase = 1;
-                // rockets[0].vy = 10;
-                // used = [];
-            // }
-            // time = 60 - (Date.now()/1000 - startTime/1000);
-        // }
 
         textSize(20);
         fill(255);
@@ -1026,12 +959,15 @@ draw = function() {
                 updatePhase(phase);
             }
         }
-
-        if(phase == 2 && foundWords > 2) {
-            rockets[0].strength = 1;
+        if(rockets.length > 0 && rockets.length == leaderBoardNames.length) {
+            if(phase == 0 && foundWords > 2) {
+                rockets[leadRocket].strength = 1;
+            } 
+            if(phase == 1) {
+                rockets[leadRocket].strength = 3;
+            }
+            rockets[leadRocket].phase = phase;
         }
-        rockets[0].phase = phase;
-        
     }
     
 };

@@ -143,14 +143,14 @@ wss.on('connection', (ws) => {
                         if(clients[i] == ws) {
                             const namePacketReturn = { type: 'message', data: 0 };
                             clients[i].send(JSON.stringify(namePacketReturn));
-                        } else {
+                        } 
+
                             updateLb(clients[i]);
                             const rocketsReturn = { type: 'updateRockets', data: JSON.stringify(getRockets()) };
                             for(let j = 0; j < clients.length; j++) {
                                 clients[j].send(JSON.stringify(rocketsReturn));
-                                
                             }
-                        }
+                        
                         
                     }
                 }
@@ -223,18 +223,22 @@ wss.on('connection', (ws) => {
         for(let i = 0; i < clients.length; i++) {
             if (clients[i] == ws) {
                 const rmRocket = { type: 'delRocket', data: ws.name };
-                for (let j = 0; j < clients.length; j++) {
-                    if(i != j) {
-                        clients[j].send(JSON.stringify(rmRocket));
-                    }
-                }
-
-                clients.splice(i, 1);
-
-                for (let j = 0; j < clients.length; j++) {
-                    updateLb(clients[j]);
-                }
                 
+
+                // if(clients.length > 0) {
+                    for (let j = 0; j < clients.length; j++) {
+                        if(i != j) {
+                            clients[j].send(JSON.stringify(rmRocket));
+                        }
+                        
+                    }
+                    clients.splice(i, 1);
+                    const rocketsReturn = { type: 'updateRockets', data: JSON.stringify(getRockets()) };
+                    for (let j = 0; j < clients.length; j++) {
+                        updateLb(clients[j]);
+                        clients[j].send(JSON.stringify(rocketsReturn));
+                    }
+                // }
                 break;
             }
         }
