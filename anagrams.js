@@ -261,19 +261,21 @@ function RocketNode(x, y, lifespan) {
         }
     }
 }
-function Rocket(type, x, y, s, lead) {
+function Rocket(type, x, y, s, lead, name) {
     this.type = type;
     this.x = x;
     this.y = y;
     this.vy = 0;
     this.s = s;
     this.lead = lead;
+    this.name = name;
 
     switch (type) {
         case 0:
-            this.offsets = [[0, -10.5*s/20-1.4*s], [0, 10.5*s/20-1.4*s]]
+            this.s = s*3;
+            this.offsets = [[0, -10.5*this.s/20-1.4*this.s], [0, 10.5*this.s/20-1.4*this.s]]
 
-            this.boosterPoses = [[this.x-4*s/20, this.y+s], [this.x+4*s/20, this.y+s]];
+            this.boosterPoses = [[this.x-4*this.s/20, this.y+this.s], [this.x+4*this.s/20, this.y+this.s]];
             this.boosters = new Array(this.boosterPoses.length);
             
             for(let i = 0; i < this.boosterPoses.length; i++) {
@@ -351,7 +353,7 @@ function Rocket(type, x, y, s, lead) {
                 this.boosters.pop();
             }
             this.boosters[0].x = this.x;
-            this.boosters[0].y = y-20*s/20;
+            this.boosters[0].y = y-20*this.s/20;
         } else if(this.type == 1) {
             for(let i = 1; i < this.offsets.length; i++) {
                 // this.offsets[i][1] += vx[i-1];
@@ -392,9 +394,13 @@ function Rocket(type, x, y, s, lead) {
     this.display = function() {
         if(this.move) {
             let d = height/2-this.y - this.newPos;
-            print(d);
+            // if (!this.lead) {
+            //     d -= height;
+            // }
+            // print(d);
             this.y += d/100;
             if(abs(d) < 1) {
+                console.log(true);
                 this.move = false;
             }
         }
@@ -434,11 +440,11 @@ function Rocket(type, x, y, s, lead) {
 
                 // image(p, this.offsets[i][0]*ratio +this.x - s*ratio/2, this.offsets[i][1]*ratio +  this.y-this.s/2, s * ratio, s*h/w*ratio);
                 push();
-                    translate(this.offsets[i][0] +this.x - s*ratio/2, this.offsets[i][1] + this.y - height/2);
+                    translate(this.offsets[i][0] +this.x - this.s*ratio/2, this.offsets[i][1] + this.y - height/2);
                     // if(this.phase2) {
                     //     rotate(va[i]);
                     // }
-                    image(p, random(-this.strength, this.strength), random(-this.strength, this.strength), s * ratio, s*h/w*ratio);
+                    image(p, random(-this.strength, this.strength), random(-this.strength, this.strength), this.s * ratio, this.s*h/w*ratio);
                 pop();
             }
         } else {
@@ -451,11 +457,11 @@ function Rocket(type, x, y, s, lead) {
                     const ratio = w/this.minWidth;
     
                     push();
-                        translate(this.offsets[i][0] +this.x - s*ratio/2, this.offsets[i][1] + this.y - height/2);
+                        translate(this.offsets[i][0] +this.x - this.s*ratio/2, this.offsets[i][1] + this.y - height/2);
                         // if(this.phase2) {
                         //     rotate(va[i]);
                         // }
-                        image(p,  random(-this.strength, this.strength), random(-this.strength, this.strength), s * ratio, s*h/w*ratio);
+                        image(p,  random(-this.strength, this.strength), random(-this.strength, this.strength), this.s * ratio, this.s*h/w*ratio);
                     pop();
                     
                 }
@@ -487,12 +493,13 @@ let floorTime;
 let reason;
 let rockets = [];
 var bg = [];
-
+let rocketsArray = [];
 let planet = 0;
 
 
 function resetWord(word1) {
     // var w = choices[floor(random(choices.length))];
+    // console.log(roundWords);
     var w = word1;
     // answers = allAnagrams(w);
     // pointsPossible = totalPoints(answers);
@@ -512,6 +519,7 @@ function setup() {
     createCanvas(document.body.clientWidth, window.innerHeight); 
     // pointsPossible = 0;
     resetWord('');
+    rockets.push(new Rocket(1, 0, height/2, 100/3, true, null));
 
     socket.onmessage = (event) => {
         const packet = JSON.parse(event.data);
@@ -542,8 +550,8 @@ function setup() {
                         if(phase == 0) {
                             blastoffTimer = 20;
                         } else {
-                            points +=  answer.length*100;
-                            rockets[0].moveTo(points*5);
+                            points += answer.length*100;
+                            // rockets[0].moveTo(points*5);
                         }
                         
                         right.play();
@@ -564,7 +572,7 @@ function setup() {
                         break;
                 }
                 break;                
-            case 'response':
+            case 'updateNames':
                 leaderBoardNames = JSON.parse(packet.data);
                 // while (lbPoints.length < leaderBoardNames.length) {
                 //     lbPoints.push(0);
@@ -575,14 +583,50 @@ function setup() {
                 //     }
                 // }
                 break;
-            case 'update':
+            case 'updatePoints':
+                // const before = JSON.parse(JSON.stringify(lbPoints));
                 lbPoints = JSON.parse(packet.data);
+
+                for(let i = 0; i < leaderBoardNames.length; i++) {
+                    for(let j = 0; j < rockets.length; j++) {
+                        if(rockets[j].name == leaderBoardNames[i]) {
+                            rockets[j].moveTo(lbPoints[i]*5);
+                        }
+                    }
+                }
+
+                break;
+            case 'updateRockets':
+                rocketsArray = JSON.parse(packet.data);
+                
+                for (let i = 0; i < rocketsArray.length; i++) {
+                    if (i < rockets.length) {
+                        if(rockets[i].name !== leaderBoardNames[i]) {
+                            rockets[i].name = leaderBoardNames[i];
+                            if(leaderBoardNames[i] == username) {
+                                const currentReference = rockets[i];
+                                rockets.splice(i, 1);
+                                rockets[0].lead = false;
+                                rockets.unshift(currentReference);
+                                rockets[0].lead = true;
+                            }
+                        }
+                    } else {
+                        rockets.push(new Rocket(rocketsArray[i], i*5*s, height/2, 100/3, false, leaderBoardNames[i]));
+                    }
+                }
                 break;
             case 'updateWords':
                 roundWords = JSON.parse(packet.data);
                 resetWord(roundWords[0]);
                 break;
-
+            case 'delRocket':
+                for(let i = 0; i < rockets.length; i++) {
+                    if(rockets[i].name == packet.data) {
+                        rockets.splice(i, 1);
+                        break;
+                    }
+                }
         }
       };
     
@@ -631,7 +675,7 @@ function setup() {
     foundWords = 0;
     reason = "Time's Up!";
 
-    rockets.push(new Rocket(1, width/2, height/2, 100/3, true));
+    
     // rockets.push(new Rocket(0, width/2-300, height/2, 100, false));
     // rockets.push(new Rocket(2, width/2+300, height/2, 100/3.5, false));
     // rockets[0].vy = 6;
@@ -738,8 +782,8 @@ draw = function() {
                 fill(0, 150, 255,c);
                 if(c <= 1) {
                     phase ++;
-                    updatePhase(phase);
                     resetWord(roundWords[phase]);
+                    updatePhase(phase);
                 }
                 rect(-1, -1, width+1, height+1);
             }
@@ -978,9 +1022,8 @@ draw = function() {
             text(phaseReqs[phase]-foundWords, width/2, height/2);
             if(foundWords == phaseReqs[phase]) {
                 phase ++;
-                updatePhase(phase);
-                rockets[0].vy = 10;
                 resetWord(roundWords[phase]);
+                updatePhase(phase);
             }
         }
 
@@ -1072,30 +1115,33 @@ function keyPressed() {
                     } else if(keyCode >= 49 && keyCode <= 54) {
                         i = keyCode - 49;
                     }
-                    word[i].move = true;
-                    if(word[i].newPos.y === height-2*s) {
-                        word[i].newPos.set(locations[answerLetters], height-3.5*s);
-                        answerArray[answerLetters] = i;
-                        answerLetters ++;
-                    } else {
-                        answerLetters --;
-                        word[i].newPos.set(locations[i], height-2*s);
-        
-                        var k = -1;
-                        for(var j = 0; j < 6; j++) {
-                            if(answerArray[j] === i) {
-                                k = j;
-                            }
-                        }
-                        
-                        if(k >= 0) {
-                            for(var j = k+1; j < 7; j++) {
-                                answerArray[j-1] = answerArray[j];  
-                            }
+                    if (!(answerLetters == 0 && keyCode == 8)) {
+                        word[i].move = true;
+                    
+                        if(word[i].newPos.y === height-2*s) {
+                            word[i].newPos.set(locations[answerLetters], height-3.5*s);
+                            answerArray[answerLetters] = i;
+                            answerLetters ++;
+                        } else {
+                            answerLetters --;
+                            word[i].newPos.set(locations[i], height-2*s);
+            
+                            var k = -1;
                             for(var j = 0; j < 6; j++) {
-                                if(answerArray[j] > -1) {
-                                    word[answerArray[j]].move = true;
-                                    word[answerArray[j]].newPos.set(locations[j], height-3.5*s);
+                                if(answerArray[j] === i) {
+                                    k = j;
+                                }
+                            }
+                            
+                            if(k >= 0) {
+                                for(var j = k+1; j < 7; j++) {
+                                    answerArray[j-1] = answerArray[j];  
+                                }
+                                for(var j = 0; j < 6; j++) {
+                                    if(answerArray[j] > -1) {
+                                        word[answerArray[j]].move = true;
+                                        word[answerArray[j]].newPos.set(locations[j], height-3.5*s);
+                                    }
                                 }
                             }
                         }

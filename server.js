@@ -3,7 +3,6 @@ const require = createRequire(import.meta.url);
 
 import { WebSocketServer } from 'ws';
 
-import fetch from "node-fetch";
 const fs = require('fs');
 
 // async function getTxt(url) {
@@ -106,8 +105,9 @@ function allAnagrams(word) {
 }
 
 function updateLb(ws) {
-    const namesReturn = { type : "response", data : JSON.stringify(getNames()) };
-    const pointsReturn = { type: 'update', data: JSON.stringify(getPoints()) };
+    const namesReturn = { type : "updateNames", data : JSON.stringify(getNames()) };
+    const pointsReturn = { type: 'updatePoints', data: JSON.stringify(getPoints()) };
+    
     ws.send(JSON.stringify(namesReturn));
     ws.send(JSON.stringify(pointsReturn));
 }
@@ -115,7 +115,7 @@ function updateLb(ws) {
 wss.on('connection', (ws) => {
     ws.score = 0;
     ws.name = "";
-    ws.rocket = -1;
+    ws.rocket = ~~(Math.random()*3);
     ws.used = [];
     ws.currentWord = 0;
     
@@ -145,6 +145,11 @@ wss.on('connection', (ws) => {
                             clients[i].send(JSON.stringify(namePacketReturn));
                         } else {
                             updateLb(clients[i]);
+                            const rocketsReturn = { type: 'updateRockets', data: JSON.stringify(getRockets()) };
+                            for(let j = 0; j < clients.length; j++) {
+                                clients[j].send(JSON.stringify(rocketsReturn));
+                                
+                            }
                         }
                         
                     }
@@ -217,14 +222,17 @@ wss.on('connection', (ws) => {
     if (clients.length > 0) {
         for(let i = 0; i < clients.length; i++) {
             if (clients[i] == ws) {
+                const rmRocket = { type: 'delRocket', data: ws.name };
+                for (let j = 0; j < clients.length; j++) {
+                    if(i != j) {
+                        clients[j].send(JSON.stringify(rmRocket));
+                    }
+                }
+
                 clients.splice(i, 1);
 
-                const namePacketReturn = { type: 'response', data: JSON.stringify(getNames()) };
-                const pointsReturn = { type: 'update', data: JSON.stringify(getPoints()) };
-
                 for (let j = 0; j < clients.length; j++) {
-                    clients[j].send(JSON.stringify(namePacketReturn));
-                    clients[j].send(JSON.stringify(pointsReturn));
+                    updateLb(clients[j]);
                 }
                 
                 break;
