@@ -105,7 +105,7 @@ function updateLb(ws) {
 
 wss.on('connection', (ws) => {
     ws.score = 0;
-    ws.name = "";
+    ws.name = "loading...";
     ws.rocket = ~~(Math.random()*3);
     ws.used = [];
     ws.currentWord = 0;
