@@ -883,19 +883,19 @@ draw = function() {
                 time3 = 255;
             }
         }
-        // if(word.length > 0) {}
-        for(var i = 0; i < word.length; i++) {
-            fill(100);
-            rect(i*(s+10)+width/2-(5*(s+10))/2 - s/2, height-4*s, s, s, 5);
-        }
-        
-        for(var i = 0; i < word.length; i++) {
-            if(word[i].move) {
-                word[i].moveTo();
+        if(word.length > 0) {
+            for(var i = 0; i < word.length; i++) {
+                fill(100);
+                rect(i*(s+10)+width/2-(5*(s+10))/2 - s/2, height-4*s, s, s, 5);
             }
-            word[i].display(true, i + 1);
-        }
         
+            for(var i = 0; i < word.length; i++) {
+                if(word[i].move) {
+                    word[i].moveTo();
+                }
+                word[i].display(true, i + 1);
+            }
+        }
         rectMode(CORNER);
         
         fill(255);
