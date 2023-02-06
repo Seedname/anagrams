@@ -36,7 +36,7 @@ function startRound() {
 
 startRound();
 
-const wss = new WebSocketServer({ port: 9091 });
+const wss = new WebSocketServer({ port: 9092 });
 const clients = [];
 
 function getPoints() {
