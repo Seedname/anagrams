@@ -144,7 +144,7 @@ var roundWords = [];
 var leadRocket = 0;
 
 function preload() {
-    socket = new WebSocket('ws://space-race.onrender.com:9092');    
+    socket = new WebSocket('ws://seed.ddns.net:9091');    
 
     rocket0 = [loadImage('assets/rocket0-t.png'), loadImage('assets/rocket0-b.png')]
     rocket1 = [loadImage('assets/rocket1-m.png'), loadImage('assets/rocket1-m2.png'), loadImage('assets/rocket1-l.png'), loadImage('assets/rocket1-r.png')]
