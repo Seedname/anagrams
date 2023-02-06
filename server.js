@@ -5,13 +5,6 @@ import { WebSocketServer } from 'ws';
 
 const fs = require('fs');
 
-// async function getTxt(url) {
-//     const response = await fetch(url);
-//     return await response.text().then(result => { return result.split(/\r\n|\n/) });
-//     // const words = openedText.split(/\r\n|\n/);
-//     // return words;
-// }
-
 function getTxt(location) {
     return fs.readFileSync(location, 'utf8').split(/\r\n|\n/);
 }
@@ -28,8 +21,6 @@ function scramble(word) {
     return scrambled;
 }
 
-// const words = await getTxt('https://raw.githubusercontent.com/Seedname/anagrams/main/words/all.txt');
-// const usable = await getTxt('https://raw.githubusercontent.com/Seedname/anagrams/main/words/usable.txt');
 const words = getTxt('./words/all.txt');
 const usable =  getTxt('./words/usable.txt');
 
@@ -158,15 +149,7 @@ wss.on('connection', (ws) => {
             case 'getWords':
                 const wordsForRound = { type: 'updateWords', data: JSON.stringify(roundWords) };
                 ws.send(JSON.stringify(wordsForRound));
-
-            // case 'playerWord':
-            //     ws.score = packet.data;
-
-            //     const pointReturn = { type: 'update', data: JSON.stringify(getPoints()) };
-            //     for(let i = 0; i < clients.length; i++) {
-            //         clients[i].send(JSON.stringify(pointReturn));
-            //     }
-            //     break;
+                break;
             case 'retrieve':
                 updateLb(ws);
                 break;
@@ -215,6 +198,7 @@ wss.on('connection', (ws) => {
             case 'phaseChange':
                 ws.currentWord = packet.data;
                 ws.used = [];
+                break;
         }
     });
 
@@ -245,23 +229,3 @@ wss.on('connection', (ws) => {
     }
   });
 });
-
-//read from file a list of words, save it in a list and and shuffle it (twice for good measure)
-
-// for(var j = 0; j < words.length; j++) {
-//     if (words[j].length === 6) {
-//         potential.push(words[j]);
-//     }
-// }
-
-// function processData(word) {
-//     if(answers != null){
-//         var pointsOut = 0
-//         for(let k = 0; k < answers.length; k++) {
-//             if (word == answers[k]) {
-//                 pointsOut = word.length * 100;
-//             }
-//         }
-//     }
-//     return pointsOut;
-// }

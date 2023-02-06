@@ -157,47 +157,6 @@ function preload() {
 
 }
 
-// function allAnagrams(word) {
-//     var anaWord = word;
-//     var count = 0;
-    
-//     var all = [];
-//     for(var i = 0; i < lists.length; i++) {
-//         for(var j = 0; j < lists[i].length; j++) {
-//             var currentWord = lists[i][j];
-//             anaWord = word;
-            
-//             if(currentWord.length <= anaWord.length) {
-//                 var isAnagram = true;
-//                 for(var k = 0; k < currentWord.length; k++) {
-//                     var current = currentWord.substring(k, k+1);
-//                     var indOf = anaWord.indexOf(current);
-                    
-                    
-//                     if(indOf > -1) {
-//                         anaWord = anaWord.split("");
-//                         anaWord.splice(indOf, 1);
-//                         anaWord = anaWord.join('');
-//                     } else {
-//                         isAnagram = false;
-//                     }
-//                 }
-                    
-//                 if (isAnagram) {
-//                     all.push(currentWord);
-//                 }
-//             }
-//         }
-//     }
-//     return all;
-// }
-// function totalPoints(words) {
-//     var points = 0;
-//     for(var i = 0; i < words.length; i++) {
-//         points += words[i].length * 100;
-//     }
-//     return points;
-// }
 
 function Particle(x, y, vx, vy, s, life) {
     this.x = x;
@@ -345,9 +304,8 @@ function Rocket(type, x, y, s, lead, name) {
     };
 
     this.animation = function() {
-        this.vy = 10;
         if(this.type == 0) {
-            this.offsets[1][1] += this.vy/2;
+            this.offsets[1][1] += 5;
             // va[i] += 0.1;
             vy[i-1] += 6/60;
             if(this.boosters.length > 1) {
@@ -358,7 +316,7 @@ function Rocket(type, x, y, s, lead, name) {
         } else if(this.type == 1) {
             for(let i = 1; i < this.offsets.length; i++) {
                 // this.offsets[i][1] += vx[i-1];
-                this.offsets[i][1] += this.vy/2;
+                this.offsets[i][1] += 5;
                 // va[i] += 0.1;
                 // vy[i-1] += 6/60;
             }
@@ -374,7 +332,7 @@ function Rocket(type, x, y, s, lead, name) {
         } else if(this.type == 2) {
             for(let i = 1; i < this.offsets.length; i++) {
                 // this.offsets[i][1] += vx[i-1];
-                this.offsets[i][1] += this.vy/2;
+                this.offsets[i][1] += 5;
                 // va[i] += 0.1;
                 // vy[i-1] += 6/60;
             }
@@ -612,6 +570,14 @@ function setup() {
                     for(let j = 0; j < rockets.length; j++) {
                         if(rockets[j].name == leaderBoardNames[i]) {
                             rockets[j].moveTo(lbPoints[i]*5);
+                            if(rockets[j].phase < 3 && lbPoints[j] >= 10000) {
+                                rockets[j].phase = 3;
+                                rockets[j].strength = 0;
+                            }
+                            if(rockets[j].phase == 0 && lbPoints[j] > 0) {
+                                rockets[j].strength = 3;
+                                rockets[j].phase = 1;
+                            }
                         }
                     }
                 }
@@ -853,7 +819,7 @@ draw = function() {
         // print(height/2-rockets[0].y)
 
         if(rockets.length > 0 && rockets.length == leaderBoardNames.length) {
-            if(height/2-rockets[leadRocket].y > 50000) {
+            if(phase == 2 && points >= 10000) {
                 phase = 3;
                 resetWord(roundWords[phase]);
                 updatePhase(phase);
