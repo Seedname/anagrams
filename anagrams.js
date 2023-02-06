@@ -141,7 +141,7 @@ let images = []
 var rocket0, rocket1, rocket2;
 var socket;
 var roundWords = [];
-var leadRocket = 0;
+var leadRocket = -1;
 let gameStartState;
 function preload() {
     socket = new WebSocket('ws://127.0.0.1:9091');    
@@ -249,7 +249,7 @@ function Rocket(type, x, y, s, lead, name) {
     this.setup = function() {
         switch (this.type) {
             case 0:
-                this.offsets = [[0, -10.5*this.s/20-1.4*this.s], [0, 10.5*this.s/20-1.4*this.s]]
+                this.offsets = [[0, -10.5*this.s/20-1.4*this.s], [0, 10.5*this.s/20-1.4*this.s]];
 
                 this.boosterPoses = [[this.x-4*this.s/20, height/2+this.s], [this.x+4*this.s/20, height/2+this.s]];
                 this.boosters = new Array(this.boosterPoses.length);
@@ -580,6 +580,10 @@ function setup() {
                         answerLetters = 0;
                         
                         break;
+                    case 5:
+                        nameError = "Innapropriate Name";
+                        nameErrorTime = 100;
+                        break;
                 }
                 break;                
             case 'updateNames':
@@ -655,7 +659,8 @@ function setup() {
                         rockets.splice(i, 1);
                         for (let j = 0; j < rockets.length; j++) {
                             rockets[j].name = leaderBoardNames[j];
-                            rockets[j].x = j*5*s;
+                            rockets[j].x = (j+1)*5*s;   
+                            rockets[j].setup();
                             if(leaderBoardNames[j] == username) {
                                 rockets[j].lead = true;
                                 leadRocket = j;

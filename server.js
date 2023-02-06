@@ -4,38 +4,6 @@ const fs = require('fs');
 const url = require('url');
 const path = require('path');
 
-const server = http.createServer((req, res) => {
-    let filePath = '.' + req.url;
-    if (filePath === './') {
-      filePath = './index.html';
-    }
-  
-    const extname = path.extname(filePath);
-    let contentType = 'text/html';
-    switch (extname) {
-      case '.js':
-        contentType = 'text/javascript';
-        break;
-      case '.css':
-        contentType = 'text/css';
-        break;
-    }
-  
-    fs.readFile(filePath, (err, content) => {
-      if (err) {
-        res.writeHead(404, { 'Content-Type': 'text/plain' });
-        res.end(err.message);
-        return;
-      }
-  
-      res.writeHead(200, { 'Content-Type': 'contentType' });
-      res.end(content, 'utf-8');
-    });
-
-});
-  
-  server.listen(80);
-
 function getTxt(location) {
     return fs.readFileSync(location, 'utf8').split(/\r\n|\n/);
 }
@@ -84,8 +52,7 @@ function allAnagrams(word) {
 
 const words = getTxt('./words/all.txt');
 const usable =  getTxt('./words/usable.txt');
-
-// const wss = new WebSocketServer({ port: 9091 });
+const banned =  getTxt('./words/banned.txt');
 
 class Room {
     constructor(code) {
@@ -104,7 +71,7 @@ class Room {
     }
 
     getPoints() {
-        let points = [];
+        const points = [];
         for(let i = 0; i < this.clients.length; i++) {
             points.push(this.clients[i].score);
         }
@@ -112,7 +79,7 @@ class Room {
     }
     
     getNames() {
-        let names = [];
+        const names = [];
         for(let i = 0; i < this.clients.length; i++) {
             names.push(this.clients[i].name);
         }
@@ -120,7 +87,7 @@ class Room {
     }
     
     getRockets() {
-        let rockets = [];
+        const rockets = [];
         for(let i = 0; i < this.clients.length; i++) {
             rockets.push(this.clients[i].rocket);
         }
@@ -130,7 +97,7 @@ class Room {
     updateLb(ws) {
         const namesReturn = { type : "updateNames", data : JSON.stringify(this.getNames()) };
         const pointsReturn = { type: 'updatePoints', data: JSON.stringify(this.getPoints()) };
-        
+
         ws.send(JSON.stringify(namesReturn));
         ws.send(JSON.stringify(pointsReturn));
     }
@@ -142,7 +109,13 @@ class Room {
         ws.used = [];
         ws.currentWord = 0;
         this.clients.push(ws);
-    }
+
+        const rocketsReturn = { type: 'updateRockets', data: JSON.stringify(this.getRockets()) };
+        for(let i = 0; i < this.clients.length; i++) {
+            this.updateLb(this.clients[i]);
+            this.clients[i].send(JSON.stringify(rocketsReturn));
+        }
+    } 
 
     onMessage(ws, message) {
         const packet = JSON.parse(message);
@@ -151,7 +124,7 @@ class Room {
             case 'name':
                 let nameUsed = false;
                 for(let i = 0; i < this.clients.length; i++) {
-                    if(this.clients[i].name == packet.data) {
+                    if(this.clients[i].name === packet.data) {
                         nameUsed = true;
                     }
                 }
@@ -160,21 +133,32 @@ class Room {
                     const messagePacket = { type : 'message', data: 1 };
                     ws.send(JSON.stringify(messagePacket));
                 } else {
-                    ws.name = packet.data;
+                    let innapropriate = false;
+                    for(let i = 0; i < banned.length; i++) {
+                        if(packet.data.indexOf(banned[i]) >= 0) {
+                            innapropriate = true;
+                        }
+                    }
 
-                    for (let i = 0; i < this.clients.length; i++) {
-                        if(this.clients[i] == ws) {
-                            const namePacketReturn = { type: 'message', data: 0 };
-                            this.clients[i].send(JSON.stringify(namePacketReturn));
-                        } 
+                    if (innapropriate) {
+                        const messagePacket = { type : 'message', data: 5 };
+                        ws.send(JSON.stringify(messagePacket));
+                    } else {
+                        ws.name = packet.data;
 
-                            this.updateLb(this.clients[i]);
-                            const rocketsReturn = { type: 'updateRockets', data: JSON.stringify(this.getRockets()) };
-                            for(let j = 0; j < this.clients.length; j++) {
-                                this.clients[j].send(JSON.stringify(rocketsReturn));
-                            }
-                        
-                        
+                        for (let i = 0; i < this.clients.length; i++) {
+                            if(this.clients[i] == ws) {
+                                const namePacketReturn = { type: 'message', data: 0 };
+                                this.clients[i].send(JSON.stringify(namePacketReturn));
+
+                                const rocketsReturn = { type: 'updateRockets', data: JSON.stringify(this.getRockets()) };
+                                for(let j = 0; j < this.clients.length; j++) {
+                                    this.updateLb(this.clients[j]);
+                                    this.clients[j].send(JSON.stringify(rocketsReturn));
+                                }
+                                break;
+                            } 
+                        }
                     }
                 }
                 break;
@@ -207,8 +191,8 @@ class Room {
                                 const points = packet.data.length * 100;
                                 ws.score += points;
 
-                                for(let i = 0; i < this.clients.length; i++) {
-                                    this.updateLb(this.clients[i]);
+                                for(let j = 0; j < this.clients.length; j++) {
+                                    this.updateLb(this.clients[j]);
                                 }
                             }
                             
@@ -252,25 +236,97 @@ class Room {
                     break;
                 }
             }
+            if(this.clients.length <= 0) {
+                rooms[parseInt(this.code, 10)] = undefined;
+            }
         }
     }
 }
 
+const rooms = new Array(10000);
+rooms[0] = new Room("0000");
+
+const server = http.createServer((req, res) => {
+    let filePath = "." + req.url;
+    if (filePath === './') {
+        filePath = './index.html';
+    }
+  
+    let extname = path.extname(filePath);
+
+    if(extname == '') {
+        const room = String(filePath).trim().substring(2);
+
+        if(rooms[parseInt(room, 10)]) {
+            filePath = './game.html';
+            extname = path.extname(filePath);
+        } else {
+            res.writeHead(404, { 'Content-Type': 'text/plain' });
+            res.end("No room with code " + room);
+            return;
+        }
+    }
+
+    let contentType = 'text/html';
+    switch (extname) {
+      case '.js':
+        contentType = 'text/javascript';
+        break;
+      case '.css':
+        contentType = 'text/css';
+        break;
+    }
+  
+    fs.readFile(filePath, (err, content) => {
+      if (err) {
+        res.writeHead(404, { 'Content-Type': 'text/plain' });
+        res.end(err.message);
+        return;
+      }
+  
+      res.writeHead(200, { 'Content-Type': contentType });
+      res.end(content, 'utf-8');
+    });
+
+});
+  
+server.listen(80);
+
+function addLeading(num) {
+    const str = num + "";
+    return "0000".substring(str.length-1) + str;
+}
+
 const wss = new WebSocket.Server({ port: 9091 });
-let room = new Room("");
+
 wss.on('connection', (ws, req) => {
-    // const path = new URL(`http://${req.headers.host}${req.url}`).pathname;
-    // console.log(`Received request for path: ${path}`);
+    ws.room = 0;
 
-    // const query = url.parse(req.url, true).query;
-    // console.log(query);
+    for(let i = 0; i < rooms.length; i++) {
+        if (rooms[i] && rooms[i].clients.length < 3) {
+            ws.room = i; 
+            break;
+        } else if(!rooms[i]) {
+            ws.room = i;
+            rooms[i] = new Room(addLeading(i));
+            break;
+        }
+    }
+    // while (rooms[ws.room].clients.length >= 3) {
+    //     if(!rooms[ws.room]) {
+    //         rooms.push(new Room(addLeading(ws.room)));
+    //     } else {
+    //         ws.room ++;
+    //     }
+    // }
 
-    room.onConnection(ws);
+    rooms[ws.room].onConnection(ws);
+
     ws.on('message', (message) => {
-        room.onMessage(ws, message);
-     });
+        rooms[ws.room].onMessage(ws, message);
+    });
  
      ws.on('close', () => {
-         room.onClose(ws);
+         rooms[ws.room].onClose(ws);
      });
 });
