@@ -144,7 +144,12 @@ var roundWords = [];
 var leadRocket = -1;
 let gameStartState;
 function preload() {
-    socket = new WebSocket('ws://127.0.0.1:9091');    
+    let location = window.location.href;
+    location = location.substring(location.indexOf("//")+2);
+    let pathname = location.substring(location.indexOf("/"));
+    location = location.substring(0, location.indexOf("/"));
+    // location = location.substring(0, location.length-1);
+    socket = new WebSocket('ws://'+location+':9091'+pathname);    
     gameStartState = 0;
     rocket0 = [loadImage('assets/rocket0-t.png'), loadImage('assets/rocket0-b.png')]
     rocket1 = [loadImage('assets/rocket1-m.png'), loadImage('assets/rocket1-m2.png'), loadImage('assets/rocket1-l.png'), loadImage('assets/rocket1-r.png')]
@@ -154,7 +159,6 @@ function preload() {
     right = loadSound('assets/metal-small2.wav');
     wrong = loadSound('assets/interface1.wav');
     tick = loadSound('assets/interface6.wav');
-
 }
 
 

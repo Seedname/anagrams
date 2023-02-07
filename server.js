@@ -1,8 +1,8 @@
 const WebSocket = require('ws');
 const http = require('http');
 const fs = require('fs');
-const url = require('url');
 const path = require('path');
+const url = require('url');
 
 function getTxt(location) {
     return fs.readFileSync(location, 'utf8').split(/\r\n|\n/);
@@ -244,7 +244,6 @@ class Room {
 }
 
 const rooms = new Array(10000);
-rooms[0] = new Room("0000");
 
 const server = http.createServer((req, res) => {
     let filePath = "." + req.url;
@@ -294,32 +293,53 @@ server.listen(80);
 
 function addLeading(num) {
     const str = num + "";
-    return "0000".substring(str.length-1) + str;
+    return "000".substring(str.length-1) + str;
 }
+
+const wss2 = new WebSocket.Server({ port: 9090 });
+
+wss2.on('connection', (ws, req) => {
+    ws.on('message', (message) => {
+        const packet = JSON.parse(message);
+
+        switch (packet.type) {
+            case 'code':
+                let open = false;
+                if(rooms[parseInt(packet.data,10)]) {open = true;}
+                const roomOpen = { type: 'message', data: open };
+                ws.send(JSON.stringify(roomOpen));
+                break;
+            case 'createRoom':
+                let num = ~~(Math.random() * rooms.length);
+                let tries = 0;
+                while (rooms[num] && tries < 100) {
+                    num = ~~(Math.random() * rooms.length);
+                    tries ++;
+                }
+
+                if(tries >= 100) {
+                    ws.close();
+                } else {
+                    rooms[num] = new Room(addLeading(num));
+                    const change = { type: 'changeRoom', data: addLeading(num) };
+                    ws.send(JSON.stringify(change));
+                }
+                break;
+        }
+    });
+});
 
 const wss = new WebSocket.Server({ port: 9091 });
 
 wss.on('connection', (ws, req) => {
-    ws.room = 0;
-
-    for(let i = 0; i < rooms.length; i++) {
-        if (rooms[i] && rooms[i].clients.length < 3) {
-            ws.room = i; 
-            break;
-        } else if(!rooms[i]) {
-            ws.room = i;
-            rooms[i] = new Room(addLeading(i));
-            break;
-        }
+    const parsedUrl = url.parse(req.url);
+    try {
+        ws.room = parseInt(String(parsedUrl.pathname).substring(1), 10);
+    } catch {
+        console.log(String(parsedUrl.pathname).substring(1) + " failed to parse");
+        ws.close();
+        return;
     }
-    // while (rooms[ws.room].clients.length >= 3) {
-    //     if(!rooms[ws.room]) {
-    //         rooms.push(new Room(addLeading(ws.room)));
-    //     } else {
-    //         ws.room ++;
-    //     }
-    // }
-
     rooms[ws.room].onConnection(ws);
 
     ws.on('message', (message) => {
