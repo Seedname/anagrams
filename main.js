@@ -138,3 +138,12 @@ function keyPressed() {
     }
 }
 
+function windowResized() {
+    resizeCanvas(document.body.clientWidth, window.innerHeight);
+
+    bg = [];
+    for(let i = 0; i < 100; i++) {
+        bg.push([random(width), random(height)]);
+    }
+    
+}
