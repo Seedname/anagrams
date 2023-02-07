@@ -3,7 +3,7 @@ function preload() {
     let location = window.location.href;
     location = location.substring(location.indexOf("//")+2);
     location = location.substring(0, location.indexOf("/"));
-    socket = new WebSocket('ws://'+location+':9090'); 
+    socket = new WebSocket('ws://'+location+':5050'); 
 
     rocket0 = [loadImage('assets/rocket0-t.png'), loadImage('assets/rocket0-b.png')]
     rocket1 = [loadImage('assets/rocket1-m.png'), loadImage('assets/rocket1-m2.png'), loadImage('assets/rocket1-l.png'), loadImage('assets/rocket1-r.png')]

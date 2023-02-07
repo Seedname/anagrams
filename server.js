@@ -296,7 +296,7 @@ function addLeading(num) {
     return "000".substring(str.length-1) + str;
 }
 
-const wss2 = new WebSocket.Server({ port: 9090 });
+const wss2 = new WebSocket.Server({ port: 5050 });
 
 wss2.on('connection', (ws, req) => {
     ws.on('message', (message) => {
@@ -329,7 +329,7 @@ wss2.on('connection', (ws, req) => {
     });
 });
 
-const wss = new WebSocket.Server({ port: 9091 });
+const wss = new WebSocket.Server({ port: 5353 });
 
 wss.on('connection', (ws, req) => {
     const parsedUrl = url.parse(req.url);
