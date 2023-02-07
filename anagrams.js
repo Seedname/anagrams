@@ -237,6 +237,7 @@ function Rocket(type, x, y, s, lead, name) {
     switch (this.type) {
         case 0:
             this.s = s*3;
+            this.offsets = [[0, -10.5*this.s/20-1.4*this.s], [0, 10.5*this.s/20-1.4*this.s]];
             this.parts = rocket0;
             break;
         case 1:
@@ -253,7 +254,7 @@ function Rocket(type, x, y, s, lead, name) {
     this.setup = function() {
         switch (this.type) {
             case 0:
-                this.offsets = [[0, -10.5*this.s/20-1.4*this.s], [0, 10.5*this.s/20-1.4*this.s]];
+                // this.offsets = [[0, -10.5*this.s/20-1.4*this.s], [0, 10.5*this.s/20-1.4*this.s]];
 
                 this.boosterPoses = [[this.x-4*this.s/20, height/2+this.s], [this.x+4*this.s/20, height/2+this.s]];
                 this.boosters = new Array(this.boosterPoses.length);
@@ -265,7 +266,7 @@ function Rocket(type, x, y, s, lead, name) {
                 // this.boosters = [new RocketNode(this.x-100, this.y-s, 20)];
                 break;
             case 1:
-                this.offsets = [[0, 10*this.s/20-4*this.s], [0, -34*this.s/20-4*this.s], [-27*this.s/20, 8*this.s/20-4*this.s], [27*this.s/20, 8*this.s/20-4*this.s]];
+                // this.offsets = [[0, 10*this.s/20-4*this.s], [0, -34*this.s/20-4*this.s], [-27*this.s/20, 8*this.s/20-4*this.s], [27*this.s/20, 8*this.s/20-4*this.s]];
 
                 this.boosterPoses = [[this.x, height/2+68*s/20], [this.x-9*s/20,height/2+65*s/20], [this.x+9*s/20,height/2+65*s/20], [this.x-27*s/20, height/2+65*s/20], [this.x+27*s/20, height/2+65*s/20]];
                 this.boosters = new Array(this.boosterPoses.length);
@@ -276,7 +277,7 @@ function Rocket(type, x, y, s, lead, name) {
                 }
                 break;
             case 2:
-                this.offsets = [[0, -39*s/20-5*s], [-15*s/20, 39*s/20-5*s], [15*s/20, 39*s/20-5*s]]
+                // this.offsets = [[0, -39*s/20-5*s], [-15*s/20, 39*s/20-5*s], [15*s/20, 39*s/20-5*s]]
 
                 this.boosterPoses = [[this.x, height/2+80*s/20], [this.x+16*s/20, height/2+80*s/20], [this.x-16*s/20, height/2+80*s/20]];
                 this.boosters = new Array(this.boosterPoses.length);

@@ -5,10 +5,10 @@ function preload() {
     location = location.substring(0, location.indexOf("/"));
     socket = new WebSocket('ws://'+location+':443'); 
 
-    rocket0 = [loadImage('assets/rocket0-t.png'), loadImage('assets/rocket0-b.png')]
-    rocket1 = [loadImage('assets/rocket1-m.png'), loadImage('assets/rocket1-m2.png'), loadImage('assets/rocket1-l.png'), loadImage('assets/rocket1-r.png')]
-    rocket2 = [loadImage('assets/rocket2-m.png'), loadImage('assets/rocket2-l.png'), loadImage('assets/rocket2-r.png')]
-    ground = [loadImage('assets/earth-crust-10x.png')];
+//     rocket0 = [loadImage('assets/rocket0-t.png'), loadImage('assets/rocket0-b.png')]
+//     rocket1 = [loadImage('assets/rocket1-m.png'), loadImage('assets/rocket1-m2.png'), loadImage('assets/rocket1-l.png'), loadImage('assets/rocket1-r.png')]
+//     rocket2 = [loadImage('assets/rocket2-m.png'), loadImage('assets/rocket2-l.png'), loadImage('assets/rocket2-r.png')]
+//     ground = [loadImage('assets/earth-crust-10x.png')];
 }
 
 function isInside(x, y, w, h) {
