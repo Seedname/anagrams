@@ -30,14 +30,14 @@ function setup() {
         switch (packet.type) {
             case 'message':
                 if(packet.data) {
-                    location.replace('http://localhost/' + code);
+                    location.replace(window.location.href + code);
                 } else {
                     codeErrorTime = 100;
                     codeError = "Invalid Room Code";
                 }
                 break;
             case 'changeRoom':
-                location.replace('http://localhost/' + packet.data);
+                location.replace(window.location.href + packet.data);
         };
     };
 
