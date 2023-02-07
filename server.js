@@ -296,57 +296,60 @@ function addLeading(num) {
     return "000".substring(str.length-1) + str;
 }
 
-const wss2 = new WebSocket.Server({ port: 5050 });
-
-wss2.on('connection', (ws, req) => {
-    ws.on('message', (message) => {
-        const packet = JSON.parse(message);
-
-        switch (packet.type) {
-            case 'code':
-                let open = false;
-                if(rooms[parseInt(packet.data,10)]) {open = true;}
-                const roomOpen = { type: 'message', data: open };
-                ws.send(JSON.stringify(roomOpen));
-                break;
-            case 'createRoom':
-                let num = ~~(Math.random() * rooms.length);
-                let tries = 0;
-                while (rooms[num] && tries < 100) {
-                    num = ~~(Math.random() * rooms.length);
-                    tries ++;
-                }
-
-                if(tries >= 100) {
-                    ws.close();
-                } else {
-                    rooms[num] = new Room(addLeading(num));
-                    const change = { type: 'changeRoom', data: addLeading(num) };
-                    ws.send(JSON.stringify(change));
-                }
-                break;
-        }
-    });
-});
-
-const wss = new WebSocket.Server({ port: 5353 });
+const wss = new WebSocket.Server({ port: 443 });
 
 wss.on('connection', (ws, req) => {
     const parsedUrl = url.parse(req.url);
-    try {
-        ws.room = parseInt(String(parsedUrl.pathname).substring(1), 10);
-    } catch {
-        console.log(String(parsedUrl.pathname).substring(1) + " failed to parse");
-        ws.close();
-        return;
+    const usePath = parsedUrl.pathname !== "/";
+    console.log(usePath);
+    if(usePath) {
+        try {
+            ws.room = parseInt(String(parsedUrl.pathname).substring(1), 10);
+        } catch {
+            console.log(String(parsedUrl.pathname).substring(1) + " failed to parse");
+            ws.close();
+            return;
+        }
+        rooms[ws.room].onConnection(ws);
     }
-    rooms[ws.room].onConnection(ws);
-
+    
     ws.on('message', (message) => {
-        rooms[ws.room].onMessage(ws, message);
+        if(usePath) {
+            rooms[ws.room].onMessage(ws, message);
+        } else {
+            const packet = JSON.parse(message);
+    
+            switch (packet.type) {
+                case 'code':
+                    let open = false;
+                    if(rooms[parseInt(packet.data,10)]) {open = true;}
+                    const roomOpen = { type: 'message', data: open };
+                    ws.send(JSON.stringify(roomOpen));
+                    break;
+                case 'createRoom':
+                    let num = ~~(Math.random() * rooms.length);
+                    let tries = 0;
+                    while (rooms[num] && tries < 100) {
+                        num = ~~(Math.random() * rooms.length);
+                        tries ++;
+                    }
+    
+                    if(tries >= 100) {
+                        ws.close();
+                    } else {
+                        rooms[num] = new Room(addLeading(num));
+                        const change = { type: 'changeRoom', data: addLeading(num) };
+                        ws.send(JSON.stringify(change));
+                    }
+                    break;
+            }
+        }
     });
- 
+    
+
      ws.on('close', () => {
-         rooms[ws.room].onClose(ws);
+        if(usePath) {
+            rooms[ws.room].onClose(ws);
+        }
      });
 });
