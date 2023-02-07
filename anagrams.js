@@ -464,8 +464,6 @@ function Rocket(type, x, y, s, lead, name) {
                 text(this.name, this.x, this.y-height/2 + this.offsets[0][1] - 0.5*this.s);
                 break;
         }
-        // text(this.name, )
-
     };
 }
 
@@ -495,6 +493,7 @@ var bg = [];
 let rocketsArray = [];
 let planet = 0;
 
+let distance = 0;
 function resetWord(word1) {
     // var w = choices[floor(random(choices.length))];
     // console.log(roundWords);
@@ -638,18 +637,28 @@ function setup() {
                             }
                         }
                     } else {
-                        rockets.push(new Rocket(rocketsArray[i], (i+1)*5*s, height/2, 100/3, false, leaderBoardNames[i]));
+                        rockets.push(new Rocket(rocketsArray[i], 0, height/2, 100/3, false, leaderBoardNames[i]));
                     }
                 }
 
+                distance = width/(rockets.length + (rockets.length%2==0));
+
                 for (let i = 0; i < rockets.length; i++) {
                     rockets[i].name = leaderBoardNames[i];
+                    rockets[i].x = width/2 + distance * (i-~~(rockets.length/2));
+                    
                     if(leaderBoardNames[i] == username) {
                         rockets[i].lead = true;
                         leadRocket = i;
-                    } else {
-                        rockets[i].lead = false;
+                        rockets[i].x = width/2;
                     }
+                }
+                
+                for(let i = 0; i < rockets.length; i++) {
+                    if(i !== leadRocket && rockets[i].x == width/2) {
+                        rockets[i].x = width/2 + distance * (leadRocket-~~(rockets.length/2));
+                    }
+                    rockets[i].setup();
                 }
 
                 break;
@@ -661,19 +670,31 @@ function setup() {
                 for(let i = 0; i < rockets.length; i++) {
                     if(rockets[i].name == packet.data) {
                         rockets.splice(i, 1);
-                        for (let j = 0; j < rockets.length; j++) {
-                            rockets[j].name = leaderBoardNames[j];
-                            rockets[j].x = (j+1)*5*s;   
-                            rockets[j].setup();
-                            if(leaderBoardNames[j] == username) {
-                                rockets[j].lead = true;
-                                leadRocket = j;
-                            }
-                        }
                         break;
                     }
                 }
 
+                distance = width/(rockets.length - (rockets.length%2==0));
+
+                for (let i = 0; i < rockets.length; i++) {
+                    rockets[i].name = leaderBoardNames[i];
+                    rockets[i].x = width/2 + distance * (i-~~(rockets.length/2));
+                    
+                    if(leaderBoardNames[i] == username) {
+                        rockets[i].lead = true;
+                        leadRocket = i;
+                        rockets[i].x = width/2;
+                    }
+                }
+                
+                for(let i = 0; i < rockets.length; i++) {
+                    if(i !== leadRocket && rockets[i].x == width/2) {
+                        rockets[i].x = width/2 + distance * (leadRocket-~~(rockets.length/2));
+                    }
+                    rockets[i].setup();
+                }
+
+                break;
         }
       };
     
@@ -887,10 +908,25 @@ draw = function() {
             // }
             push();
                 rockets[leadRocket].display();
+                // rockets[leadRocket].x = width/2;
 
                 for(let i = 0; i < rockets.length; i++) {
                     // rockets[i].vy = random(10, 20);
-                    rockets[i].x = (i+1)*5*s;
+
+                    // rockets[leadRocket].x = width/2;
+                    // rockets[leadRocket].setup();
+                    // let distance = width/rockets.length;
+                    // for(let i = 0; i < rockets.length; i++) {
+                    //     let shift = -(i > rockets.length);
+                    //     if(i != leadRocket) {
+                    //         if (i+shift < (rockets.length+shift)/2) {
+                    //             rockets[i].x = distance*(i+shift);
+                    //         }  else {
+                    //             rockets[i].x = distance*(i+shift+1);
+                    //         }
+                    //     }
+                    // }
+
                     if(rockets[i].phase == 0) {
                         rockets[i].y = height/2;
                     }

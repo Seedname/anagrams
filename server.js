@@ -301,7 +301,7 @@ const wss = new WebSocket.Server({ port: 443 });
 wss.on('connection', (ws, req) => {
     const parsedUrl = url.parse(req.url);
     const usePath = parsedUrl.pathname !== "/";
-    console.log(usePath);
+
     if(usePath) {
         try {
             ws.room = parseInt(String(parsedUrl.pathname).substring(1), 10);
