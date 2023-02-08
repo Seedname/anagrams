@@ -100,6 +100,9 @@ function scramble(word) {
     }
     return scrambled;
 }
+
+
+
 function shuffleIcon(x, y, s) {
     push();
     translate(x-s/8, y);
@@ -378,7 +381,7 @@ function Rocket(type, x, y, s, lead, name) {
             // print(d);
             let vy = d/100;
             this.y += vy;
-            this.vy = -vy;
+            this.vy = -2*vy;
             if(abs(d) < 1) {
                 this.move = false;
             }
@@ -564,14 +567,16 @@ function setup() {
                         if(phase == 0) {
                             blastoffTimer = 20;
                         } else {
-                            points += answer.length*100;
+                            points += 100*Math.pow(answer.length-2, 2);
                             // rockets[0].moveTo(points*5);
                         }
                         
                         right.play();
-                        time3 = 254;
                         foundWords ++;
-                        notifText = "+" + answer.length*100 + " points";
+                        if(phase > 0) {
+                            time3 = 254;
+                            notifText = "+" + 100*Math.pow(answer.length-2, 2) + " points";
+                        }
                         isError = false;
                         for(var k = 0; k < answerArray.length; k++) {
                             if(answerArray[k] >= 0) {
@@ -841,6 +846,8 @@ draw = function() {
     } else {
         if(phase > 1) {
             background(0);
+            // noFill();
+            // stroke(dotFill);
             noStroke();
             fill(dotFill);
             if(dotFill < 255) { dotFill ++; }
@@ -848,11 +855,14 @@ draw = function() {
             if (rockets.length > 0 && rockets.length == leaderBoardNames.length) {
                 num = max(5, rockets[leadRocket].vy);
             }
+            
             for(let i = 0; i < bg.length; i++) {
                 bg[i][1] += num;
                 bg[i][1] %= height;
                 ellipse(bg[i][0], bg[i][1], 2, 2);
+                // line(bg[i][0], bg[i][1], bg[i][0],  bg[i][1]+num/2.5, 2);
             }
+            // noStroke();
         } else if(rockets.length > 0 && rockets.length == leaderBoardNames.length) {
             
             if(-rockets[leadRocket].y/10000 < 1) {
@@ -991,11 +1001,12 @@ draw = function() {
         fill(128);
         text("Enter", width/2, height-s +  (35 * s/50) + 5);
         
-        fill(0);
-        textSize(25 * s/50);
-        textAlign(CENTER, TOP);
-        text(points + " points", width/2, height-2*s-200);
-
+        if(phase > 0) {
+            fill(0);
+            textSize(25 * s/50);
+            textAlign(CENTER, TOP);
+            text(points + " points", width/2, height-2*s-200);
+        }
         
         fill(255);
 

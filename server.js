@@ -188,7 +188,7 @@ class Room {
                             valid = true;
                             
                             if(ws.currentWord > 0) {
-                                const points = packet.data.length * 100;
+                                const points = 100*Math.pow(packet.data.length-2, 2);
                                 ws.score += points;
 
                                 for(let j = 0; j < this.clients.length; j++) {
