@@ -135,10 +135,6 @@ function shuffleIcon(x, y, s) {
 }
 
 let right, wrong, tick;
-let a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z;
-let a1, b1, c1, d1, e1, f1, g1, h1, i1, j1, k1, l1, m1, n1, o1, p1, q1, r1, s1, t1, u1, v1, w1, x1, y1, z1;
-let lists;
-let lists2;
 let images = []
 
 var rocket0, rocket1, rocket2;
@@ -793,18 +789,6 @@ var lbPoints = [];
 var nameError = "";
 var nameErrorTime = 0;
 draw = function() {
-    // for (let i = 0; i < rockets.length; i++) {
-    //     if(rockets[i].name !== leaderBoardNames[i]) {
-    //         rockets[i].name = leaderBoardNames[i];
-    //         if(leaderBoardNames[i] == username) {
-    //             rockets[i].lead = true;
-    //             leadRocket = i;
-    //         } else {
-    //             rockets[i].lead = false;
-    //         }
-    //     }
-    // }
-
     if(nameErrorTime > 0) {
         nameErrorTime --;
     } else {
@@ -1061,7 +1045,6 @@ draw = function() {
     }
     
 };
-
 
 function reset() {
     var w = choices[floor(random(choices.length))];

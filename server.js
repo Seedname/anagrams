@@ -57,9 +57,15 @@ const banned =  getTxt('./words/banned.txt');
 class Room {
     constructor(code) {
         this.code = code;
+        this.open = true;
+
         this.roundWords = new Array(4);
         this.answerArrays = new Array(4);
         this.startRound();
+
+        this.roundStart = false;
+        this.roomType = 0;
+        
         this.clients = [];
     }
 
@@ -213,6 +219,14 @@ class Room {
                 ws.currentWord = packet.data;
                 ws.used = [];
                 break;
+            case 'startRound':
+                if (ws == this.clients[0]) {
+                    const startPacket = JSON.stringify({type: "begin", data: null});
+                    for (let i = 0; i < this.clients.length; i++) {
+
+                    }
+                }
+                break;
         }
     }
 
@@ -237,7 +251,9 @@ class Room {
                 }
             }
             if(this.clients.length <= 0) {
-                rooms[parseInt(this.code, 10)] = undefined;
+                this.open = false;
+                // rooms[parseInt(this.code, 10)] = undefined;
+                this.startRound();
             }
         }
     }
@@ -255,8 +271,8 @@ const server = http.createServer((req, res) => {
 
     if(extname == '') {
         const room = String(filePath).trim().substring(2);
-
-        if(rooms[parseInt(room, 10)]) {
+        const current = rooms[parseInt(room, 10)];
+        if(current && current.open) {
             filePath = './game.html';
             extname = path.extname(filePath);
         } else {
@@ -337,7 +353,11 @@ wss.on('connection', (ws, req) => {
                     if(tries >= 100) {
                         ws.close();
                     } else {
-                        rooms[num] = new Room(addLeading(num));
+                        if(!rooms[num]) {
+                            rooms[num] = new Room(addLeading(num));
+                        } else {
+                            rooms[num].open = true;
+                        }
                         const change = { type: 'changeRoom', data: addLeading(num) };
                         ws.send(JSON.stringify(change));
                     }
@@ -350,6 +370,7 @@ wss.on('connection', (ws, req) => {
      ws.on('close', () => {
         if(usePath) {
             rooms[ws.room].onClose(ws);
+            // ws.close();
         }
      });
 });
