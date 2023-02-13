@@ -325,7 +325,7 @@ function Rocket(type, x, y, s, lead, name) {
         if(this.type == 0) {
             this.offsets[1][1] += 5;
             // va[i] += 0.1;
-            vy[i-1] += 6/60;
+            // vy[i-1] += 6/60;
             if(this.boosters.length > 1) {
                 this.boosters.pop();
             }
