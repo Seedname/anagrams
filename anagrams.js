@@ -101,8 +101,6 @@ function scramble(word) {
     return scrambled;
 }
 
-
-
 function shuffleIcon(x, y, s) {
     push();
     translate(x-s/8, y);
@@ -872,10 +870,6 @@ draw = function() {
                 rect(-1, -1, width+1, height+1);
             }
         }
-        
-
-
-        // print(height/2-rockets[0].y)
 
         if(rockets.length > 0 && rockets.length == leaderBoardNames.length) {
             if(phase == 2 && points >= 10000) {
@@ -883,45 +877,10 @@ draw = function() {
                 resetWord(roundWords[phase]);
                 updatePhase(phase);
             }
-            
-            // for (let i = 0; i < rockets.length; i++) {
-            //     rockets[i].name = leaderBoardNames[i];
-            //     if(leaderBoardNames[i] == username) {
-            //         rockets[i].lead = true;
-            //         leadRocket = i;
-            //     } else {
-            //         rockets[i].lead = false;
-            //     }
-            // }
 
-            // for(let i = 0; i < leaderBoardNames.length; i++) {
-            //     for(let j = 0; j < rockets.length; j++) {
-            //         if(rockets[j].name == leaderBoardNames[i]) {
-            //             rockets[j].moveTo(lbPoints[i]*3);
-            //         }
-            //     }
-            // }
             push();
                 rockets[leadRocket].display();
-                // rockets[leadRocket].x = width/2;
-
                 for(let i = 0; i < rockets.length; i++) {
-                    // rockets[i].vy = random(10, 20);
-
-                    // rockets[leadRocket].x = width/2;
-                    // rockets[leadRocket].setup();
-                    // let distance = width/rockets.length;
-                    // for(let i = 0; i < rockets.length; i++) {
-                    //     let shift = -(i > rockets.length);
-                    //     if(i != leadRocket) {
-                    //         if (i+shift < (rockets.length+shift)/2) {
-                    //             rockets[i].x = distance*(i+shift);
-                    //         }  else {
-                    //             rockets[i].x = distance*(i+shift+1);
-                    //         }
-                    //     }
-                    // }
-
                     if(rockets[i].phase == 0) {
                         rockets[i].y = height/2;
                     }
@@ -931,9 +890,6 @@ draw = function() {
                 }
                 
                 noStroke();
-                // fill(255);
-                // rect(0, height-7*s-height/2, width, height-4*s);
-                // let s1 = width/ground[planet].width;
                 let s1 = (height/2)/ground[planet].height;
                 for (let i = 0; i < width/(ground[planet].width*s1); i++) {
                     image(ground[planet], i*~~(ground[planet].width*s1), 2*s, ground[planet].width*s1, ground[planet].height*s1);
@@ -957,6 +913,7 @@ draw = function() {
                 time3 = 255;
             }
         }
+
         if(word.length > 0) {
             for(var i = 0; i < word.length; i++) {
                 fill(100);
@@ -969,41 +926,50 @@ draw = function() {
                 }
                 word[i].display(true, i + 1);
             }
-        }
-        rectMode(CORNER);
-        
-        fill(255);
-        rect(width/2-100*s/100, height-s, 100 * s/50 , 35 * s/50, 5);
-        fill(30);
-        
-        textAlign(CENTER, CENTER);
-        textSize(25 * s/50);
-        text("Submit", width/2,height-s + 35 * s/100);
-        
-        textAlign(CENTER, TOP);
-        textSize(s/5);
-        fill(128);
-        text("Enter", width/2, height-s +  (35 * s/50) + 5);
-        
-        if(phase > 0) {
-            fill(0);
+
+            rectMode(CORNER);
+            
+            fill(255);
+            rect(width/2-100*s/100, height-s, 100 * s/50 , 35 * s/50, 5);
+            fill(30);
+            
+            textAlign(CENTER, CENTER);
             textSize(25 * s/50);
+            text("Submit", width/2,height-s + 35 * s/100);
+            
             textAlign(CENTER, TOP);
-            text(points + " points", width/2, height-2*s-200);
+            textSize(s/5);
+            fill(128);
+            text("Enter", width/2, height-s +  (35 * s/50) + 5);
+            
+            if(phase > 0) {
+                fill(0);
+                textSize(25 * s/50);
+                textAlign(CENTER, TOP);
+                text(points + " points", width/2, height-2*s-200);
+            }
+
+            fill(255);        
+            shuffleIcon(width/2-(s+7)*3-40, height-2*s, 30);
+        
+            textAlign(CENTER, TOP);
+            textSize(s/5);
+            fill(128);
+            text("Shift", width/2-(s+7)*3-40-30/12, height-2*s + 20);
+        } else if (rockets[0].name == username) {
+            fill(0, 150, 0);
+            if(isInside(width/2-1.5*s, height-2*s, 3*s, s)) {
+                fill(0, 120, 0);
+            }
+            rect(width/2-1.5*s, height-2*s, 3*s, s, 5);
+
+            fill(255);
+            textSize(20);
+            textAlign(CENTER, CENTER);
+            text("Start Round", width/2, height-3/2*s)
         }
-        
-        fill(255);
 
-        
-        shuffleIcon(width/2-(s+7)*3-40, height-2*s, 30);
-        
-        textAlign(CENTER, TOP);
-        textSize(s/5);
-        fill(128);
-        text("Shift", width/2-(s+7)*3-40-30/12, height-2*s + 20);
-        
         noStroke();
-
         textSize(20);
         fill(255);
         textAlign(LEFT, TOP);
@@ -1088,6 +1054,12 @@ function triggerShake(error) {
     wrong.play();
 }
 
+function mouseReleased() {
+    if(word.length == 0 && rockets[0].name == username && isInside(width/2-1.5*s, height-2*s, 3*s, s)) {
+        const data = JSON.stringify({type: 'startRound', data: null});
+        socket.send(data);
+    }
+}
 function keyPressed() {
     if(scene == 0) {
         if (keyCode >= 65 && keyCode <= 90 || keyCode === 8) {
@@ -1105,7 +1077,7 @@ function keyPressed() {
             socket.send(JSON.stringify(newMessage));
 
         }
-    } else {
+    } else if(word.length > 0) {
         if (keyCode >= 65 && keyCode <= 90 || keyCode === 8 || (keyCode >= 49 && keyCode <= 54)) {
             var letter = letters[keyCode - 65];
             for (var i = 0; i < word.length; i++) {
@@ -1214,40 +1186,44 @@ function windowResized() {
     resizeCanvas(document.body.clientWidth, window.innerHeight);
     let finalWidth = width;
     let finalHeight = height;
+
     for(let i = 0; i < 6; i++) { 
         locations[i] = (i*(s+10)+width/2-(5*(s+10))/2);
     }
     
-    for(var k = 0; k < answerArray.length; k++) {
-        if(answerArray[k] >= 0) {
-            word[answerArray[k]].move = true;
-            word[answerArray[k]].newPos.set(locations[answerArray[k]], height-2*s);
+    if(word.length > 0) {
+        for(var k = 0; k < answerArray.length; k++) {
+            if(answerArray[k] >= 0) {
+                word[answerArray[k]].move = true;
+                word[answerArray[k]].newPos.set(locations[answerArray[k]], height-2*s);
+            }
         }
-    }
 
-    answerArray = [];
-    answer = "";
-    answerLetters = 0;
+        answerArray = [];
+        answer = "";
+        answerLetters = 0;
 
-    var letters1 = [];
-    for(var i = 0; i < word.length; i++) {
-        letters1.push(word[i]);
-    }
+        var letters1 = [];
+        for(var i = 0; i < word.length; i++) {
+            letters1.push(word[i]);
+        }
 
-    var scrambled = [];
-    var len = letters1.length;
+        var scrambled = [];
+        var len = letters1.length;
 
-    for(var i = 0; i < len; i++) {
-        var j = floor(Math.random() * letters1.length);
-        scrambled.push(letters1[j]);
-        letters1.splice(j, 1);
-    }
+        for(var i = 0; i < len; i++) {
+            var j = floor(Math.random() * letters1.length);
+            scrambled.push(letters1[j]);
+            letters1.splice(j, 1);
+        }
 
-    word = scrambled;
+        word = scrambled;
 
-    for(var i = 0; i < len; i++) {
-        word[i].move = true;
-        word[i].newPos.set(locations[i], height-2*s);
+        for(var i = 0; i < len; i++) {
+            word[i].move = true;
+            word[i].newPos.set(locations[i], height-2*s);
+        }
+
     }
     for(let i = 0; i < rockets.length; i++) {
         rockets[i].x *= finalWidth/prevWidth;

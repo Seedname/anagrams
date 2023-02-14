@@ -57,14 +57,13 @@ const banned =  getTxt('./words/banned.txt');
 class Room {
     constructor(code) {
         this.code = code;
-        this.open = true;
 
         this.roundWords = new Array(4);
         this.answerArrays = new Array(4);
         this.startRound();
 
         this.roundStart = false;
-        this.roomType = 0;
+        this.public = false;
         
         this.clients = [];
     }
@@ -169,8 +168,10 @@ class Room {
                 }
                 break;
             case 'getWords':
-                const wordsForRound = { type: 'updateWords', data: JSON.stringify(this.roundWords) };
-                ws.send(JSON.stringify(wordsForRound));
+                if(this.roundStart) {
+                    const wordsForRound = { type: 'updateWords', data: JSON.stringify(this.roundWords) };
+                    ws.send(JSON.stringify(wordsForRound));
+                }
                 break;
             case 'retrieve':
                 this.updateLb(ws);
@@ -221,9 +222,11 @@ class Room {
                 break;
             case 'startRound':
                 if (ws == this.clients[0]) {
-                    const startPacket = JSON.stringify({type: "begin", data: null});
+                    // const startPacket = JSON.stringify({type: "begin", data: null});
+                    const wordsForRound = { type: 'updateWords', data: JSON.stringify(this.roundWords) };
+                    this.roundStart = true;
                     for (let i = 0; i < this.clients.length; i++) {
-
+                        this.clients[i].send(JSON.stringify(wordsForRound));
                     }
                 }
                 break;
@@ -251,9 +254,7 @@ class Room {
                 }
             }
             if(this.clients.length <= 0) {
-                this.open = false;
-                // rooms[parseInt(this.code, 10)] = undefined;
-                this.startRound();
+                rooms[parseInt(this.code, 10)] = undefined;
             }
         }
     }
@@ -272,7 +273,7 @@ const server = http.createServer((req, res) => {
     if(extname == '') {
         const room = String(filePath).trim().substring(2);
         const current = rooms[parseInt(room, 10)];
-        if(current && current.open) {
+        if(current) {
             filePath = './game.html';
             extname = path.extname(filePath);
         } else {
@@ -321,12 +322,12 @@ wss.on('connection', (ws, req) => {
     if(usePath) {
         try {
             ws.room = parseInt(String(parsedUrl.pathname).substring(1), 10);
+            rooms[ws.room].onConnection(ws);
         } catch {
             console.log(String(parsedUrl.pathname).substring(1) + " failed to parse");
             ws.close();
             return;
         }
-        rooms[ws.room].onConnection(ws);
     }
     
     ws.on('message', (message) => {
@@ -355,8 +356,6 @@ wss.on('connection', (ws, req) => {
                     } else {
                         if(!rooms[num]) {
                             rooms[num] = new Room(addLeading(num));
-                        } else {
-                            rooms[num].open = true;
                         }
                         const change = { type: 'changeRoom', data: addLeading(num) };
                         ws.send(JSON.stringify(change));
