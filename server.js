@@ -230,6 +230,15 @@ class Room {
                     }
                 }
                 break;
+            case 'switchState':
+                if (ws == this.clients[0]) {
+                    if(packet.data === true) {
+                        this.public = true;
+                    } else if(packet.data === false) {
+                        this.public = false;
+                    }
+                }
+                break;
         }
     }
 
@@ -237,10 +246,10 @@ class Room {
         if (this.clients.length > 0) {
             for(let i = 0; i < this.clients.length; i++) {
                 if (this.clients[i] == ws) {
-                    const rmRocket = { type: 'delRocket', data: ws.name };
+                    const rmRocket = JSON.stringify({ type: 'delRocket', data: ws.name });
                     for (let j = 0; j < this.clients.length; j++) {
                         if(i != j) {
-                            this.clients[j].send(JSON.stringify(rmRocket));
+                            this.clients[j].send(rmRocket);
                         }
                         
                     }
@@ -329,7 +338,7 @@ wss.on('connection', (ws, req) => {
             return;
         }
     }
-    
+
     ws.on('message', (message) => {
         if(usePath) {
             rooms[ws.room].onMessage(ws, message);
@@ -360,6 +369,24 @@ wss.on('connection', (ws, req) => {
                         const change = { type: 'changeRoom', data: addLeading(num) };
                         ws.send(JSON.stringify(change));
                     }
+                    break;
+                case 'sendRooms':
+                    const names = [];
+                    const codes = [];
+                    const players = [];
+                    for (let i = 0; i < rooms.length; i++) {
+                        if(rooms[i]) {
+                            const name = String(rooms[i].clients[0].name);
+                            if(name !== "loading...") {
+                                names.push(name);
+                                codes.push(String(rooms[i].code));
+                                players.push(String(rooms[i].clients.length));
+                            }
+                        }
+                    }
+
+                    const sendPacket = {type: 'publicRooms', data: JSON.stringify([names, codes, players])};
+                    ws.send(JSON.stringify(sendPacket));
                     break;
             }
         }

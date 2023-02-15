@@ -2,17 +2,30 @@
 <html>
     <head>
         <title>Space Race</title>
-
-        <style>
-            body {
-               margin: 0;
-               overflow: hidden;
-            }
-        </style>
+        <link rel="stylesheet" href="main.css">
         <script src="https://cdn.jsdelivr.net/npm/p5@1.5.0/lib/p5.js"></script>
-        <script src="./main.js"></script>
+        <script src="main2.js"></script>
     </head>
+
     <body>
+        <div class="base">
+            <div class="home">
+                <div class="publicRooms">
+                    <div class="header">
+                        <header data-text="publicRooms">No available Rooms</header>
+                        <button onclick="createRoom()">Create Room</button>
+                    </div>
+
+                    <div class="listContainer">
+                        <div class="list">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
+
+    
+    <!-- <script src="./main.js"></script> -->
 
 </html>
