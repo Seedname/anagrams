@@ -1,7 +1,12 @@
 body {
   background-color: #181a1b;
 }
-
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 30%;
+}
 body > .base {
   background: #2a2d2f;
   min-height: 100vh;

@@ -21,7 +21,7 @@ socket.onmessage = (event) => {
             }
             break;
         case 'changeRoom':
-            location.replace(window.location.href + packet.data);
+            location.href = window.location.href + packet.data;
             break;
         case 'publicRooms':
             const data = JSON.parse(packet.data);
