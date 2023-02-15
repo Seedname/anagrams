@@ -34,6 +34,9 @@ socket.onmessage = (event) => {
                 const entry = document.createElement("a");
                 entry.className = "entry";
                 entry.href = "/" + String(codes[i]);
+                const c = [~~(Math.random()*255), ~~(Math.random()*255), ~~(Math.random()*255)]
+                const sum = c[0] + c[1] + c[2];
+                entry.style.background = "rgb(" + c[0] + "," + c[1] + "," + c[2] + ",255)";
 
                 const info = document.createElement("div");
                 info.className = "info";
@@ -52,6 +55,12 @@ socket.onmessage = (event) => {
                 const playing = document.createElement("div");
                 playing.className = "playing";
                 playing.textContent = String(count[i]) + " playing";
+
+                if(sum < 255*1.5) {
+                    text.style.color = "#eee";
+                    roomCode.style.color = "#eee";
+                    playing.style.color = "#eee";
+                }
 
                 title.appendChild(text);
                 title.appendChild(roomCode);

@@ -376,12 +376,15 @@ wss.on('connection', (ws, req) => {
                     const players = [];
                     for (let i = 0; i < rooms.length; i++) {
                         if(rooms[i]) {
-                            const name = String(rooms[i].clients[0].name);
-                            if(name !== "loading...") {
-                                names.push(name);
-                                codes.push(String(rooms[i].code));
-                                players.push(String(rooms[i].clients.length));
+                            let name = String(rooms[i].clients[0].name);
+                            
+                            if(name === "loading...") {
+                                name = "unnamed";
                             }
+                            names.push(name);
+                            codes.push(String(rooms[i].code));
+                            players.push(String(rooms[i].clients.length));
+                        
                         }
                     }
 
