@@ -66,6 +66,8 @@ class Room {
         this.public = false;
         
         this.clients = [];
+
+        this.startedTime = 0;
     }
 
     startRound() {    
@@ -177,45 +179,48 @@ class Room {
                 this.updateLb(ws);
                 break;
             case 'checkWord':
-                let used = false;
-                for (let i = 0; i < ws.used.length; i++) {
-                    if (packet.data == ws.used[i]) {
-                        used = true;
-                        break;
-                    }
-                }
-
-                if(used) {
-                    const messagePacket = { type : 'message', data: 2 };
-                    ws.send(JSON.stringify(messagePacket));   
-                } else {
-                    let valid = false;
-                    for (let i = 0; i < this.answerArrays[ws.currentWord].length; i++) {
-                        if (packet.data == this.answerArrays[ws.currentWord][i]) {
-                            valid = true;
-                            
-                            if(ws.currentWord > 0) {
-                                const points = 100*Math.pow(packet.data.length-2, 2);
-                                ws.score += points;
-
-                                for(let j = 0; j < this.clients.length; j++) {
-                                    this.updateLb(this.clients[j]);
-                                }
-                            }
-                            
-                            const messagePacket = { type : 'message', data: 4 }; 
-                            ws.send(JSON.stringify(messagePacket));
-                            ws.used.push(packet.data);
+                if (Date.now() - this.startedTime >= 5000) {
+                    let used = false;
+                    for (let i = 0; i < ws.used.length; i++) {
+                        if (packet.data == ws.used[i]) {
+                            used = true;
                             break;
                         }
                     }
-                    if(!valid) {
-                        const messagePacket = { type : 'message', data: 3 };
-                        ws.send(JSON.stringify(messagePacket));   
-                    }
 
+                    if(used) {
+                        const messagePacket = { type : 'message', data: 2 };
+                        ws.send(JSON.stringify(messagePacket));   
+                    } else {
+                        let valid = false;
+                        for (let i = 0; i < this.answerArrays[ws.currentWord].length; i++) {
+                            if (packet.data == this.answerArrays[ws.currentWord][i]) {
+                                valid = true;
+                                
+                                if(ws.currentWord > 0) {
+                                    const points = 100*Math.pow(packet.data.length-2, 2);
+                                    ws.score += points;
+
+                                    for(let j = 0; j < this.clients.length; j++) {
+                                        this.updateLb(this.clients[j]);
+                                    }
+                                }
+                                
+                                const messagePacket = { type : 'message', data: 4 }; 
+                                ws.send(JSON.stringify(messagePacket));
+                                ws.used.push(packet.data);
+                                break;
+                            }
+                        }
+                        if(!valid) {
+                            const messagePacket = { type : 'message', data: 3 };
+                            ws.send(JSON.stringify(messagePacket));   
+                        }
+
+                    }
                 }
                 break;
+
             case 'phaseChange':
                 ws.currentWord = packet.data;
                 ws.used = [];
@@ -228,6 +233,7 @@ class Room {
                     for (let i = 0; i < this.clients.length; i++) {
                         this.clients[i].send(JSON.stringify(wordsForRound));
                     }
+                    this.startedTime = Date.now();
                 }
                 break;
             case 'switchState':

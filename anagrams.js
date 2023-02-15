@@ -134,12 +134,11 @@ function shuffleIcon(x, y, s) {
 
 let right, wrong, tick;
 let images = []
-
-var rocket0, rocket1, rocket2;
+var rocket0, rocket1, rocket2, gameStartState;
 var socket;
 var roundWords = [];
 var leadRocket = -1;
-let gameStartState;
+
 function preload() {
     let location = window.location.href;
     location = location.substring(location.indexOf("//")+2);
@@ -157,7 +156,6 @@ function preload() {
     wrong = loadSound('assets/interface1.wav');
     tick = loadSound('assets/interface6.wav');
 }
-
 
 function Particle(x, y, vx, vy, s, life) {
     this.x = x;
@@ -465,33 +463,16 @@ function Rocket(type, x, y, s, lead, name) {
     };
 }
 
-let choices;
+let choices, alphabet, letters, answerArray, answerLetters, answer, points, used, time3, notifText, isError, answers, foundWords;
 let word = [];
-let alphabet;
-let letters;
 let locations = [];
-let answerArray;
-let answerLetters;
-let answer;
-var points;
-var used;
-
-var time2;
-var time3;
-let endCard;
-var notifText;
-var isError;
-let answers;
-// let pointsPossible;
-let foundWords;
-let floorTime;
-let reason;
 let rockets = [];
 var bg = [];
 let rocketsArray = [];
-let planet = 0;
 
+let planet = 0;
 let distance = 0;
+
 function resetWord(word1) {
     // var w = choices[floor(random(choices.length))];
     // console.log(roundWords);
@@ -517,12 +498,10 @@ function resetWord(word1) {
             }
         }
     }
-
     
     used = [];
     answer = "";
     answerLetters = 0;
-
 
 }
 
@@ -698,14 +677,6 @@ function setup() {
         }
       };
     
-      
-    // choices = [];
-    // word = [];
-    // for(let i = 0; i < lists2.length; i++) {
-    //     for(let j = 0; j < lists2[i].length; j++) {
-    //         choices.push(lists2[i][j]);
-    //     }
-    // }
     
     alphabet = "abcdefghijklmnopqrstuvwxyz";
     letters = alphabet.split("");
@@ -713,37 +684,18 @@ function setup() {
 
     
     locations = [];
-    // w = choices[floor(random(choices.length))];
-    // answers = allAnagrams(w);
-    // pointsPossible = totalPoints(answers);
-    // w = scramble(w).split("");
     
     for(let i = 0; i < 6; i++) {
-        // word.push(new Letter(w[i], i*(s+10)+width/2-(5*(s+10))/2, height-2*s, s));    
         locations.push(i*(s+10)+width/2-(5*(s+10))/2);
     }
     
-    // answerArray = new Array(6);
-    // for(var i = 0; i < 6; i++) {
-    //     answerArray[i] = -1;
-    // }
-    // answerLetters = 0;
-    // answer = "";
-    
     points = 0;
     used = [];
-    // startTime = Date.now();
-    // time = 60;
-    time2 = 0;
     time3 = 255;
-    floorTime = 60;
     notifText = "";
     isError = true;
-    endCard = -3/4*height;
     foundWords = 0;
-    reason = "Time's Up!";
 
-    
     // rockets.push(new Rocket(0, width/2-300, height/2, 100, false));
     // rockets.push(new Rocket(2, width/2+300, height/2, 100/3.5, false));
     // rockets[0].vy = 6;
@@ -786,6 +738,7 @@ var lbPoints = [];
 
 var nameError = "";
 var nameErrorTime = 0;
+
 draw = function() {
     if(nameErrorTime > 0) {
         nameErrorTime --;
@@ -1022,17 +975,12 @@ function reset() {
     used = [];
     answer = "";
     answerLetters = 0;
-    // time = 60;
     points = 0;
-    time2 = 0;
     time3 = 255;
     startTime = Date.now();
-    endCard = -3/4*height;
     foundWords = 0;
-    reason = "Time's Up!";
     for(var i = 0; i < 6; i++) {
         word.push(new Letter(w[i], i*(s+10)+width/2-(5*(s+10))/2, height-2*s, s));
-        
     }
     for(let i = 0; i < rockets.length; i++) {
         rockets[i].y = height/2;
@@ -1041,6 +989,7 @@ function reset() {
     phase = 0;
 
 }
+
 function triggerShake(error) {
     for(var k = 0; k < answerArray.length; k++) {
         if(answerArray[k] >= 0) {
@@ -1060,6 +1009,7 @@ function mouseReleased() {
         socket.send(data);
     }
 }
+
 function keyPressed() {
     if(scene == 0) {
         if (keyCode >= 65 && keyCode <= 90 || keyCode === 8) {
@@ -1182,23 +1132,14 @@ function keyPressed() {
 
 function windowResized() {
     let prevWidth = width;
-    let prevHeight = height;
     resizeCanvas(document.body.clientWidth, window.innerHeight);
     let finalWidth = width;
-    let finalHeight = height;
 
     for(let i = 0; i < 6; i++) { 
         locations[i] = (i*(s+10)+width/2-(5*(s+10))/2);
     }
     
     if(word.length > 0) {
-        for(var k = 0; k < answerArray.length; k++) {
-            if(answerArray[k] >= 0) {
-                word[answerArray[k]].move = true;
-                word[answerArray[k]].newPos.set(locations[answerArray[k]], height-2*s);
-            }
-        }
-
         answerArray = [];
         answer = "";
         answerLetters = 0;
@@ -1225,12 +1166,9 @@ function windowResized() {
         }
 
     }
+
     for(let i = 0; i < rockets.length; i++) {
         rockets[i].x *= finalWidth/prevWidth;
-        // for(let j = 0; j < rockets[i].boosters.length; j++) {
-        //     rockets[i].boosters[j].x *= finalWidth/prevWidth;
-        //     rockets[i].boosters[j].y *= finalHeight/prevHeight;
-        // }
         rockets[i].setup();
     }
 
