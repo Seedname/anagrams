@@ -292,6 +292,11 @@ class Room {
 
 const rooms = [];
 
+http.createServer(function (req, res) {
+    res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+    res.end();
+}).listen(80);
+
 const server = https.createServer(options, function (req, res) {
     let filePath = "." + req.url;
     if (filePath === './') {
