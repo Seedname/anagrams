@@ -959,7 +959,7 @@ draw = function() {
             textSize(s/5);
             fill(128);
             text("Shift", width/2-(s+7)*3-40-30/12, height-2*s + 20);
-        } else if (rockets[0].name == username) {
+        } else if (rockets.length > 0 && rockets[0].name && rockets[0].name == username) {
             fill(0, 150, 0);
             if(isInside(width/2-1.5*s, height-2*s, 3*s, s)) {
                 fill(0, 120, 0);
