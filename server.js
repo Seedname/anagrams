@@ -360,7 +360,7 @@ https.createServer(options, function (req, res) {
       res.end(content, 'utf-8');
     });
 
-}).listen(8000);
+}).listen(8080);
 
 const wss = new WebSocket.Server({ port: 443 });
 const alphabet = "abcdefghijklmnopqrstuvwxyz";
