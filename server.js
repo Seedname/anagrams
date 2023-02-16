@@ -292,8 +292,7 @@ class Room {
 
 const rooms = [];
 
-
-https.createServer(options, function (req, res) {
+const server = https.createServer(options, function (req, res) {
     let filePath = "." + req.url;
     if (filePath === './') {
         filePath = './index.html';
@@ -360,9 +359,10 @@ https.createServer(options, function (req, res) {
       res.end(content, 'utf-8');
     });
 
-}).listen(443);
+});
+server.listen(443);
 
-const wss = new WebSocket.Server({ port: 8000 });
+const wss = new WebSocket.Server({ server });
 const alphabet = "abcdefghijklmnopqrstuvwxyz";
 
 wss.on('connection', (ws, req) => {
