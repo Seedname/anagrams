@@ -93,12 +93,11 @@ function Switch(x, y, w, h) {
     this.value = false;
     this.move = false;
     
-    this.update = function() {
+    this.display = function(x, y) {
+        this.x = x;
+        this.y = y;
+
         this.sliderX = constrain(this.sliderX, 0, 3/4*this.w);
-    };
-    
-    
-    this.display = function() {
         var c = color(200);
         if(this.move) {
             var d = (this.w-this.h)*(this.value) - this.sliderX;
@@ -574,10 +573,10 @@ function setup() {
     // resetWord('');
     // rockets.push(new Rocket(1, 0, height/2, 100/3, true, null));
 
-    socket.onopen = (event) => {
-        const loaded = JSON.stringify( {type:'retrieve', data:null} );
-        socket.send(loaded);
-    };
+    // socket.onopen = (event) => {
+    //     const loaded = JSON.stringify( {type:'retrieve', data:null} );
+    //     socket.send(loaded);
+    // };
 
     socket.onmessage = (event) => {
         const packet = JSON.parse(event.data);
@@ -750,7 +749,7 @@ function setup() {
     letters = alphabet.split("");
     s = 55;
 
-    swtch = new Switch(width/2-6*s, height-3/2*s, 4*s, 2*s);
+    swtch = new Switch(width/2-3*s, height-3/2*s, s, s/2);
     locations = [];
     
     for(let i = 0; i < 6; i++) {
@@ -981,8 +980,19 @@ draw = function() {
             textAlign(CENTER, CENTER);
             text("Start Round", width/2, height-3/2*s);
             
-            swtch.update();
-            swtch.display();
+            swtch.display(width/2-3*s, height-3/2*s);
+
+            fill(255, 100);
+            rect(width/2-3*s, height-3/2*s-s/3-s/4, s, s/2);
+
+            fill(0);
+            textAlign(CENTER, CENTER);
+            textSize(16);
+            if(swtch.value) {
+                text("Public", width/2-3*s+s/2, height-3/2*s-s/3);
+            } else {
+                text("Private", width/2-3*s+s/2, height-3/2*s-s/3);
+            }
         }
 
         noStroke();
@@ -1248,6 +1258,8 @@ function windowResized() {
         rockets[i].x *= finalWidth/prevWidth;
         rockets[i].setup();
     }
+
+    swtch.x *= finalWidth/prevWidth;
 
     bg = [];
     for(let i = 0; i < 100; i++) {

@@ -372,6 +372,7 @@ const server = https.createServer(options, (req, res) => {
 
 });
 server.listen(443);
+// server.listen(80);
 
 const wss = new WebSocket.Server({ server });
 const alphabet = "abcdefghijklmnopqrstuvwxyz";
