@@ -293,40 +293,52 @@ const server = http.createServer((req, res) => {
   
     let extname = path.extname(filePath);
 
-    if(extname == '') {
-        const room = String(filePath).trim().substring(2);
-        if (rooms.length == 0 || sanitizeString(room) !== room) {
-            res.writeHead(404, { 'Content-Type': 'text/plain' });
-            res.end("No room with code " + room);
-            return;
-        }
+    // if(extname == '') {
+    //     const room = String(filePath).trim().substring(2);
+    //     if (rooms.length == 0 || sanitizeString(room) !== room) {
+    //         res.writeHead(404, { 'Content-Type': 'text/plain' });
+    //         res.end("No room with code " + room);
+    //         return;
+    //     }
 
-        let roomOpen = false;
-        for (let i = 0; i < rooms.length; i++) {
-            if (rooms[i].code == room) {
-                roomOpen = true;
-                break;
-            }
-        }
+    //     let roomOpen = false;
+    //     for (let i = 0; i < rooms.length; i++) {
+    //         if (rooms[i].code == room) {
+    //             roomOpen = true;
+    //             break;
+    //         }
+    //     }
 
-        if(roomOpen) {
-            filePath = './game.html';
-            extname = path.extname(filePath);
-        } else {
-            res.writeHead(404, { 'Content-Type': 'text/plain' });
-            res.end("No room with code " + room);
-            return;
-        }
-    }
+    //     if(roomOpen) {
+    //         filePath = './game.html';
+    //         extname = path.extname(filePath);
+    //     } else {
+    //         res.writeHead(404, { 'Content-Type': 'text/plain' });
+    //         res.end("No room with code " + room);
+    //         return;
+    //     }
+    // }
 
-    let contentType = 'text/html';
+    let contentType = 'text/plain';
     switch (extname) {
-      case '.js':
-        contentType = 'text/javascript';
-        break;
-      case '.css':
-        contentType = 'text/css';
-        break;
+        case '.html':
+            contentType = 'text/html';
+            break;
+        case '.js':
+            contentType = 'text/javascript';
+            break;
+        case '.css':
+            contentType = 'text/css';
+            break;
+        case '.png':
+            contentType = 'image/png';
+            break;
+        case '.wav':
+            contentType = 'audio/wav';
+            break;
+        case '.ico':
+            contentType = "image/vnd.microsoft.icon";
+            break;
     }
   
     fs.readFile(filePath, (err, content) => {
