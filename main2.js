@@ -1,7 +1,7 @@
 let loc = window.location.href;
 loc = loc.substring(loc.indexOf("//")+2);
 loc = loc.substring(0, loc.indexOf("/"));
-const socket = new WebSocket('ws://'+loc+':80'); 
+const socket = new WebSocket('wss://'+loc+':8000'); 
 
 socket.onopen = (event) => {
     const loaded = JSON.stringify( {type:'sendRooms', data:null} );

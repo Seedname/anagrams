@@ -362,7 +362,7 @@ https.createServer(options, function (req, res) {
 
 }).listen(443);
 
-const wss = new WebSocket.Server({ port: 80 });
+const wss = new WebSocket.Server({ port: 8000 });
 const alphabet = "abcdefghijklmnopqrstuvwxyz";
 
 wss.on('connection', (ws, req) => {
