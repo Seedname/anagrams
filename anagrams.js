@@ -971,8 +971,8 @@ draw = function() {
             textAlign(CENTER, CENTER);
             text("Start Round", width/2, height-3/2*s);
             
-            s.update();
-            s.display();
+            swtch.update();
+            swtch.display();
         }
 
         noStroke();
