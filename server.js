@@ -360,9 +360,9 @@ https.createServer(options, function (req, res) {
       res.end(content, 'utf-8');
     });
 
-}).listen(8080);
+}).listen(443);
 
-const wss = new WebSocket.Server({ port: 443 });
+const wss = new WebSocket.Server({ port: 80 });
 const alphabet = "abcdefghijklmnopqrstuvwxyz";
 
 wss.on('connection', (ws, req) => {
