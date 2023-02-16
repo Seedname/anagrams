@@ -1,149 +1,91 @@
-var socket;
-function preload() {
-    let location = window.location.href;
-    location = location.substring(location.indexOf("//")+2);
-    location = location.substring(0, location.indexOf("/"));
-    socket = new WebSocket('ws://'+location+':443'); 
+let loc = window.location.href;
+loc = loc.substring(loc.indexOf("//")+2);
+loc = loc.substring(0, loc.indexOf("/"));
+const socket = new WebSocket('wss://'+loc+':443'); 
 
-//     rocket0 = [loadImage('assets/rocket0-t.png'), loadImage('assets/rocket0-b.png')]
-//     rocket1 = [loadImage('assets/rocket1-m.png'), loadImage('assets/rocket1-m2.png'), loadImage('assets/rocket1-l.png'), loadImage('assets/rocket1-r.png')]
-//     rocket2 = [loadImage('assets/rocket2-m.png'), loadImage('assets/rocket2-l.png'), loadImage('assets/rocket2-r.png')]
-//     ground = [loadImage('assets/earth-crust-10x.png')];
-}
+socket.onopen = (event) => {
+    const loaded = JSON.stringify( {type:'sendRooms', data:null} );
+    socket.send(loaded);
+};
 
-function isInside(x, y, w, h) {
-    return mouseX >= x && mouseX <= x+w && mouseY >= y && mouseY <= y+h;
-}
+socket.onmessage = (event) => {
+    const packet = JSON.parse(event.data);
 
-var bg = [];
-let scene = 0;
-var code = "";
-var codeErrorTime = 0;
-var codeError = "";
-var s = 55;
+    switch (packet.type) {
+        case 'message':
+            if(packet.data) {
+                // location.replace(window.location.href + code);
+            } else {
+                codeErrorTime = 100;
+                codeError = "Invalid Room Code";
+            }
+            break;
+        case 'changeRoom':
+            location.href = window.location.href + packet.data;
+            break;
+        case 'publicRooms':
+            const data = JSON.parse(packet.data);
+            const names = data[0];
+            const codes = data[1];
+            const count = data[2];
 
-function setup() {
-    createCanvas(document.body.clientWidth, window.innerHeight); 
-    socket.onmessage = (event) => {
-        const packet = JSON.parse(event.data);
-    
-        switch (packet.type) {
-            case 'message':
-                if(packet.data) {
-                    location.replace(window.location.href + code);
-                } else {
-                    codeErrorTime = 100;
-                    codeError = "Invalid Room Code";
+            const selector = document.querySelector("body > div > div > div > div.listContainer > div");
+            for (let i = 0; i < names.length; i++) {
+                const entry = document.createElement("a");
+                entry.className = "entry";
+                entry.href = "/" + String(codes[i]);
+                const c = [~~(Math.random()*255), ~~(Math.random()*255), ~~(Math.random()*255)]
+                const sum = c[0] + c[1] + c[2];
+                entry.style.background = "rgb(" + c[0] + "," + c[1] + "," + c[2] + ",255)";
+
+                const info = document.createElement("div");
+                info.className = "info";
+
+                const title = document.createElement("div");
+                title.className = "title";
+
+                const text = document.createElement("span");
+                text.className = "text";
+                text.textContent = String(names[i]) + "'s room";
+
+                const roomCode = document.createElement("span");
+                roomCode.className = "roomCode";
+                roomCode.textContent = String(codes[i]);
+
+                const playing = document.createElement("div");
+                playing.className = "playing";
+                playing.textContent = String(count[i]) + " playing";
+
+                if(sum < 255*1.5) {
+                    text.style.color = "#eee";
+                    roomCode.style.color = "#eee";
+                    playing.style.color = "#eee";
                 }
-                break;
-            case 'changeRoom':
-                location.replace(window.location.href + packet.data);
-        };
+
+                title.appendChild(text);
+                title.appendChild(roomCode);
+
+                info.appendChild(title);
+                info.appendChild(playing);
+
+                entry.appendChild(info);
+
+                selector.appendChild(entry);
+            }
+
+            let text = "No";
+            if(names.length > 0) {
+                text = names.length;
+            }
+
+            document.querySelector("body > div > div > div > div.header > header").textContent = text + " available rooms";
     };
+};
 
-    for(let i = 0; i < 100; i++) {
-        bg.push([random(width), random(height)]);
-    }
-    
+function createRoom() {
+    const roomPacket = { type: 'createRoom', message: null };
+    socket.send(JSON.stringify(roomPacket));
 }
 
-function draw() {
-    background(0);
-    fill(255);
-    noStroke();
-    for(let i = 0; i < bg.length; i++) {
-        bg[i][1] += 5;
-        bg[i][1] %= height;
-        ellipse(bg[i][0], bg[i][1], 2, 2);
-    }
-
-    if(scene == 0) {
-        fill(220);
-        if(isInside(width/2-125, height/2-3*s, 250, 3*s/2)) {
-            fill(150);
-        }
-        rect(width/2-125, height/2-3*s, 250, 3*s/2);
-
-        fill(0);
-        textAlign(CENTER, CENTER);
-        textSize(35);
-
-        text("Create Room", width/2, height/2 - 3*s + 3*s/4);
-
-        fill(220);
-        if(isInside(width/2-125, height/2+3*s/2, 250, 3*s/2)) {
-            fill(150);
-        }
-        rect(width/2-125, height/2+3*s/2, 250, 3*s/2);
-
-        fill(0);
-        textAlign(CENTER, CENTER);
-        textSize(35);
-
-        text("Join Room", width/2, height/2+3*s/2+3*s/4);
-
-        fill(255);
-        text("OR", width/2, height/2);
-
-    } else if (scene == 1) {
-        fill(255);
-        textSize(70);
-        textAlign(CENTER, CENTER);
-        text("Enter Room Code:", width/2, height/2-3*s);
-
-        if(code.length < 4 && frameCount % 100 > 50) {
-            fill(255);
-            rect(width/2-1.5*s + code.length*50, height/2, 50, 7);
-        }
-        textAlign(CORNER, BASELINE);
-        let n = code.split("");
-        for(let i = 0; i < n.length; i++) {
-            text(n[i], width/2-1.5*s+50*i, height/2)
-        }
-
-        if(codeErrorTime > 0) {
-            codeErrorTime --;
-            textSize(30);
-            fill(255, 0, 0, 255*codeErrorTime/100);
-            textAlign(CENTER, BOTTOM);
-            text(codeError, width/2, height/2-1.5*s);
-        } else {
-            codeErrorTime = 0;
-        }
-    }
-}
-
-function mousePressed() {
-    if(scene == 0) {
-        if(isInside(width/2-125, height/2-3*s, 250, 3*s/2)) { 
-            const roomPacket = { type: 'createRoom', message: null };
-            socket.send(JSON.stringify(roomPacket));
-        } else if(isInside(width/2-125, height/2+3*s/2, 250, 3*s/2)) {
-            scene = 1;
-        }
-    } 
-}
-function keyPressed() {
-    if(scene == 1) {
-        if (keyCode >= 48 && keyCode <= 57 || keyCode === 8) {
-            if(keyCode == 8) {
-                code = code.substring(0, code.length-1);
-            } else if(code.length < 4) {
-                code += keyCode - 48;
-            } 
-        } else if(keyCode == 13) {
-            const namePacket = { type: 'code', data: code };
-            socket.send(JSON.stringify(namePacket));
-        }
-    }
-}
-
-function windowResized() {
-    resizeCanvas(document.body.clientWidth, window.innerHeight);
-
-    bg = [];
-    for(let i = 0; i < 100; i++) {
-        bg.push([random(width), random(height)]);
-    }
-    
-}
+// const namePacket = { type: 'code', data: code };
+// socket.send(JSON.stringify(namePacket));
