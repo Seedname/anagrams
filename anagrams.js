@@ -203,7 +203,9 @@ function preload() {
     let pathname = location.substring(location.indexOf("/"));
     location = location.substring(0, location.indexOf("/"));
     // location = location.substring(0, location.length-1);
-    socket = new WebSocket('wss://'+location+':443'+pathname);    
+    // socket = new WebSocket('wss://'+location+':443'+pathname);    
+    socket = new WebSocket('ws://'+location+':80'+pathname);
+
     gameStartState = 0;
     rocket0 = [loadImage('assets/rocket0-t.png'), loadImage('assets/rocket0-b.png')]
     rocket1 = [loadImage('assets/rocket1-m.png'), loadImage('assets/rocket1-m2.png'), loadImage('assets/rocket1-l.png'), loadImage('assets/rocket1-r.png')]
@@ -572,6 +574,11 @@ function setup() {
     // resetWord('');
     // rockets.push(new Rocket(1, 0, height/2, 100/3, true, null));
 
+    socket.onopen = (event) => {
+        const loaded = JSON.stringify( {type:'retrieve', data:null} );
+        socket.send(loaded);
+    };
+
     socket.onmessage = (event) => {
         const packet = JSON.parse(event.data);
     
@@ -786,8 +793,11 @@ function joinAnswer() {
 }
 
 
-var phase, dotFill, blastoffTimer, scene, nameErrorTime = 0;
-var username, nameError = "";
+var phase, dotFill, blastoffTimer, scene, nameErrorTime;
+phase = dotFill = blastoffTimer = scene = nameErrorTime = 0;
+
+var username = "";
+var nameError = "";
 
 draw = function() {
     if(nameErrorTime > 0) {
@@ -1057,7 +1067,7 @@ function triggerShake(error) {
 }
 
 function mouseReleased() {
-    if(word.length == 0 && rockets[0].name == username) {
+    if(word.length == 0 && rockets.length > 0 && rockets[0].name && rockets[0].name == username) {
         if(isInside(width/2-1.5*s, height-2*s, 3*s, s)) {
             const data = JSON.stringify({type: 'startRound', data: null});
             socket.send(data);

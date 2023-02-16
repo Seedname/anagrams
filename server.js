@@ -10,7 +10,6 @@ const options = {
     cert: fs.readFileSync(`/etc/letsencrypt/live/seed.ddns.net/fullchain.pem`)
 };
 
-
 function getTxt(location) {
     return fs.readFileSync(location, 'utf8').split(/\r\n|\n/);
 }
@@ -256,7 +255,7 @@ class Room {
                 }
                 break;
             case 'visibility':
-                if(this.clients[0] == ws) {
+                if(ws == this.clients[0]) {
                     if(packet.data === true || packet.data === false) {
                         this.public = packet.data;
                     }
@@ -304,7 +303,7 @@ http.createServer(function (req, res) {
     res.end();
 }).listen(80);
 
-const server = https.createServer(options, function (req, res) {
+const server = https.createServer(options, (req, res) => {
     let filePath = "." + req.url;
     if (filePath === './') {
         filePath = './index.html';
@@ -372,7 +371,7 @@ const server = https.createServer(options, function (req, res) {
     });
 
 });
-server.listen(443);
+server.listen(80);
 
 const wss = new WebSocket.Server({ server });
 const alphabet = "abcdefghijklmnopqrstuvwxyz";
