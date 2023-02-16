@@ -202,8 +202,8 @@ function preload() {
     let pathname = location.substring(location.indexOf("/"));
     location = location.substring(0, location.indexOf("/"));
     // location = location.substring(0, location.length-1);
-    socket = new WebSocket('wss://'+location+':443'+pathname);    
-    // socket = new WebSocket('ws://'+location+':80'+pathname);
+    // socket = new WebSocket('wss://'+location+':443'+pathname);    
+    socket = new WebSocket('ws://'+location+':80'+pathname);
 
     gameStartState = 0;
     rocket0 = [loadImage('assets/rocket0-t.png'), loadImage('assets/rocket0-b.png')]

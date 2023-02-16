@@ -5,10 +5,10 @@ const fs = require('fs');
 const path = require('path');
 const url = require('url');
 
-const options = {
-    key: fs.readFileSync(`/etc/letsencrypt/live/seed.ddns.net/privkey.pem`),
-    cert: fs.readFileSync(`/etc/letsencrypt/live/seed.ddns.net/fullchain.pem`)
-};
+// const options = {
+//     key: fs.readFileSync(`/etc/letsencrypt/live/seed.ddns.net/privkey.pem`),
+//     cert: fs.readFileSync(`/etc/letsencrypt/live/seed.ddns.net/fullchain.pem`)
+// };
 
 function getTxt(location) {
     return fs.readFileSync(location, 'utf8').split(/\r\n|\n/);
@@ -298,12 +298,13 @@ class Room {
 
 const rooms = [];
 
-http.createServer(function (req, res) {
-    res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
-    res.end();
-}).listen(80);
+// http.createServer(function (req, res) {
+//     res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+//     res.end();
+// }).listen(80);
 
-const server = https.createServer(options, (req, res) => {
+// const server = https.createServer(options, (req, res) => {
+const server = http.createServer((req, res) => {
     let filePath = "." + req.url;
     if (filePath === './') {
         filePath = './index.html';
@@ -371,8 +372,8 @@ const server = https.createServer(options, (req, res) => {
     });
 
 });
-server.listen(443);
-// server.listen(80);
+// server.listen(443);
+server.listen(80);
 
 const wss = new WebSocket.Server({ server });
 const alphabet = "abcdefghijklmnopqrstuvwxyz";
