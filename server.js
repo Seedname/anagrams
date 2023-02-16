@@ -1,8 +1,15 @@
 const WebSocket = require('ws');
 const http = require('http');
+const https = require(`https`);
 const fs = require('fs');
 const path = require('path');
 const url = require('url');
+
+const options = {
+    key: fs.readFileSync(`/etc/letsencrypt/live/seed.ddns.net/privkey.pem`),
+    cert: fs.readFileSync(`/etc/letsencrypt/live/seed.ddns.net/fullchain.pem`)
+};
+
 
 function getTxt(location) {
     return fs.readFileSync(location, 'utf8').split(/\r\n|\n/);
@@ -285,7 +292,8 @@ class Room {
 
 const rooms = [];
 
-const server = http.createServer((req, res) => {
+
+https.createServer(options, function (req, res) {
     let filePath = "." + req.url;
     if (filePath === './') {
         filePath = './index.html';
@@ -293,31 +301,31 @@ const server = http.createServer((req, res) => {
   
     let extname = path.extname(filePath);
 
-    // if(extname == '') {
-    //     const room = String(filePath).trim().substring(2);
-    //     if (rooms.length == 0 || sanitizeString(room) !== room) {
-    //         res.writeHead(404, { 'Content-Type': 'text/plain' });
-    //         res.end("No room with code " + room);
-    //         return;
-    //     }
+    if(extname == '') {
+        const room = String(filePath).trim().substring(2);
+        if (rooms.length == 0 || sanitizeString(room) !== room) {
+            res.writeHead(404, { 'Content-Type': 'text/plain' });
+            res.end("No room with code " + room);
+            return;
+        }
 
-    //     let roomOpen = false;
-    //     for (let i = 0; i < rooms.length; i++) {
-    //         if (rooms[i].code == room) {
-    //             roomOpen = true;
-    //             break;
-    //         }
-    //     }
+        let roomOpen = false;
+        for (let i = 0; i < rooms.length; i++) {
+            if (rooms[i].code == room) {
+                roomOpen = true;
+                break;
+            }
+        }
 
-    //     if(roomOpen) {
-    //         filePath = './game.html';
-    //         extname = path.extname(filePath);
-    //     } else {
-    //         res.writeHead(404, { 'Content-Type': 'text/plain' });
-    //         res.end("No room with code " + room);
-    //         return;
-    //     }
-    // }
+        if(roomOpen) {
+            filePath = './game.html';
+            extname = path.extname(filePath);
+        } else {
+            res.writeHead(404, { 'Content-Type': 'text/plain' });
+            res.end("No room with code " + room);
+            return;
+        }
+    }
 
     let contentType = 'text/plain';
     switch (extname) {
@@ -352,9 +360,7 @@ const server = http.createServer((req, res) => {
       res.end(content, 'utf-8');
     });
 
-});
-  
-server.listen(80);
+}).listen(8000);
 
 const wss = new WebSocket.Server({ port: 443 });
 const alphabet = "abcdefghijklmnopqrstuvwxyz";
