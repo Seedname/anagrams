@@ -210,7 +210,3 @@ body > .base {
     margin-right: 1em;
   }
 }
-html{
-  -ms-touch-action: none;
-  -ms-content-zooming: none;
-}
