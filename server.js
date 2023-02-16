@@ -49,6 +49,10 @@ function allAnagrams(word) {
     }
     return all;
 }
+function sanitizeString(str){
+    str = str.replace(/[^a-z0-9áéíóúñü \.,_-]/gim,"");
+    return str.trim();
+}
 
 const words = getTxt('./words/all.txt');
 const usable =  getTxt('./words/usable.txt');
@@ -179,48 +183,47 @@ class Room {
                 this.updateLb(ws);
                 break;
             case 'checkWord':
-                if (Date.now() - this.startedTime >= 5000) {
-                    let used = false;
-                    for (let i = 0; i < ws.used.length; i++) {
-                        if (packet.data == ws.used[i]) {
-                            used = true;
+                // if (Date.now() - this.startedTime >= 5000) {
+                let used = false;
+                for (let i = 0; i < ws.used.length; i++) {
+                    if (packet.data == ws.used[i]) {
+                        used = true;
+                        break;
+                    }
+                }
+
+                if(used) {
+                    const messagePacket = { type : 'message', data: 2 };
+                    ws.send(JSON.stringify(messagePacket));   
+                } else {
+                    let valid = false;
+                    for (let i = 0; i < this.answerArrays[ws.currentWord].length; i++) {
+                        if (packet.data == this.answerArrays[ws.currentWord][i]) {
+                            valid = true;
+                            
+                            if(ws.currentWord > 0) {
+                                const points = 100*Math.pow(packet.data.length-2, 2);
+                                ws.score += points;
+
+                                for(let j = 0; j < this.clients.length; j++) {
+                                    this.updateLb(this.clients[j]);
+                                }
+                            }
+                            
+                            const messagePacket = { type : 'message', data: 4 }; 
+                            ws.send(JSON.stringify(messagePacket));
+                            ws.used.push(packet.data);
                             break;
                         }
                     }
-
-                    if(used) {
-                        const messagePacket = { type : 'message', data: 2 };
+                    if(!valid) {
+                        const messagePacket = { type : 'message', data: 3 };
                         ws.send(JSON.stringify(messagePacket));   
-                    } else {
-                        let valid = false;
-                        for (let i = 0; i < this.answerArrays[ws.currentWord].length; i++) {
-                            if (packet.data == this.answerArrays[ws.currentWord][i]) {
-                                valid = true;
-                                
-                                if(ws.currentWord > 0) {
-                                    const points = 100*Math.pow(packet.data.length-2, 2);
-                                    ws.score += points;
-
-                                    for(let j = 0; j < this.clients.length; j++) {
-                                        this.updateLb(this.clients[j]);
-                                    }
-                                }
-                                
-                                const messagePacket = { type : 'message', data: 4 }; 
-                                ws.send(JSON.stringify(messagePacket));
-                                ws.used.push(packet.data);
-                                break;
-                            }
-                        }
-                        if(!valid) {
-                            const messagePacket = { type : 'message', data: 3 };
-                            ws.send(JSON.stringify(messagePacket));   
-                        }
-
                     }
-                }
-                break;
 
+                }
+                // }
+                break;
             case 'phaseChange':
                 ws.currentWord = packet.data;
                 ws.used = [];
@@ -269,13 +272,18 @@ class Room {
                 }
             }
             if(this.clients.length <= 0) {
-                rooms[parseInt(this.code, 10)] = undefined;
+                for (let i = 0; i < rooms.length; i++) {
+                    if (rooms[i] === this) {
+                        rooms.splice(i, 1);
+                        break;
+                    }
+                }
             }
         }
     }
 }
 
-const rooms = new Array(10000);
+const rooms = [];
 
 const server = http.createServer((req, res) => {
     let filePath = "." + req.url;
@@ -287,8 +295,21 @@ const server = http.createServer((req, res) => {
 
     if(extname == '') {
         const room = String(filePath).trim().substring(2);
-        const current = rooms[parseInt(room, 10)];
-        if(current) {
+        if (rooms.length == 0 || sanitizeString(room) !== room) {
+            res.writeHead(404, { 'Content-Type': 'text/plain' });
+            res.end("No room with code " + room);
+            return;
+        }
+
+        let roomOpen = false;
+        for (let i = 0; i < rooms.length; i++) {
+            if (rooms[i].code == room) {
+                roomOpen = true;
+                break;
+            }
+        }
+
+        if(roomOpen) {
             filePath = './game.html';
             extname = path.extname(filePath);
         } else {
@@ -323,75 +344,78 @@ const server = http.createServer((req, res) => {
   
 server.listen(80);
 
-function addLeading(num) {
-    const str = num + "";
-    return "000".substring(str.length-1) + str;
-}
-
 const wss = new WebSocket.Server({ port: 443 });
+const alphabet = "abcdefghijklmnopqrstuvwxyz";
 
 wss.on('connection', (ws, req) => {
     const parsedUrl = url.parse(req.url);
     const usePath = parsedUrl.pathname !== "/";
 
     if(usePath) {
-        try {
-            ws.room = parseInt(String(parsedUrl.pathname).substring(1), 10);
-            rooms[ws.room].onConnection(ws);
-        } catch {
-            console.log(String(parsedUrl.pathname).substring(1) + " failed to parse");
+        const room = sanitizeString(String(parsedUrl.pathname).substring(1));
+
+        let roomIndex = -1;
+        for (let i = 0; i < rooms.length; i++) {
+            if (rooms[i].code == room) {
+                roomIndex = i;
+                break;
+            }
+        }
+
+        if (roomIndex >= 0) {
+            ws.room = rooms[roomIndex];
+            ws.room.onConnection(ws);
+        } else {
+            console.log("Room " + room + " failed to connect");
             ws.close();
-            return;
         }
     }
 
     ws.on('message', (message) => {
         if(usePath) {
-            rooms[ws.room].onMessage(ws, message);
+            ws.room.onMessage(ws, message);
         } else {
             const packet = JSON.parse(message);
     
             switch (packet.type) {
                 case 'code':
                     let open = false;
-                    if(rooms[parseInt(packet.data,10)]) {open = true;}
+                    for (let i = 0; i < rooms.length; i++) {
+                        if (rooms[i].code === sanitizeString(String(packet.data))) {
+                            roomOpen = true;
+                            break;
+                        }
+                    }
+
                     const roomOpen = { type: 'message', data: open };
                     ws.send(JSON.stringify(roomOpen));
                     break;
                 case 'createRoom':
-                    let num = ~~(Math.random() * rooms.length);
-                    let tries = 0;
-                    while (rooms[num] && tries < 100) {
-                        num = ~~(Math.random() * rooms.length);
-                        tries ++;
+                    let room = "";
+                    for (let i = 0; i < 4; i++) {
+                        room += alphabet.charAt(~~(Math.random()*26)).toUpperCase();
                     }
-    
-                    if(tries >= 100) {
-                        ws.close();
-                    } else {
-                        if(!rooms[num]) {
-                            rooms[num] = new Room(addLeading(num));
-                        }
-                        const change = { type: 'changeRoom', data: addLeading(num) };
-                        ws.send(JSON.stringify(change));
-                    }
+ 
+                    rooms.push(new Room(room));
+                    
+                    const change = { type: 'changeRoom', data: room };
+                    ws.send(JSON.stringify(change));
+                    
                     break;
                 case 'sendRooms':
                     const names = [];
                     const codes = [];
                     const players = [];
+                    
                     for (let i = 0; i < rooms.length; i++) {
-                        if(rooms[i]) {
-                            let name = String(rooms[i].clients[0].name);
-                            
-                            if(name === "loading...") {
-                                name = "unnamed";
-                            }
-                            names.push(name);
-                            codes.push(String(rooms[i].code));
-                            players.push(String(rooms[i].clients.length));
+                        let name = String(rooms[i].clients[0].name);
                         
+                        if(name === "loading...") {
+                            name = "unnamed";
                         }
+                        names.push(name);
+                        codes.push(String(rooms[i].code));
+                        players.push(String(rooms[i].clients.length));
                     }
 
                     const sendPacket = {type: 'publicRooms', data: JSON.stringify([names, codes, players])};
@@ -403,9 +427,8 @@ wss.on('connection', (ws, req) => {
     
 
      ws.on('close', () => {
-        if(usePath) {
-            rooms[ws.room].onClose(ws);
-            // ws.close();
+        if(usePath && ws.room) {
+            ws.room.onClose(ws);
         }
      });
 });
