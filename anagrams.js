@@ -82,6 +82,64 @@ function Letter(letter, x, y, s) {
         }
     };
 }
+
+function Switch(x, y, w, h) {
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+    
+    this.sliderX = 0;
+    this.value = false;
+    this.move = false;
+    
+    this.update = function() {
+        this.sliderX = constrain(this.sliderX, 0, 3/4*this.w);
+    };
+    
+    
+    this.display = function() {
+        var c = color(200);
+        if(this.move) {
+            var d = (this.w-this.h)*(this.value) - this.sliderX;
+            this.sliderX += d/6;
+            
+            if(abs(d) < 1) {
+                this.move = false;
+            } 
+            
+            var value = abs(d);
+            if(this.value) {
+                value = this.w-this.h-abs(d);
+            }
+            c = lerpColor(color(200), color(0, 196, 255), value/(this.w-this.h));
+            
+        }
+        
+        
+        fill(c);
+        noStroke();
+
+        if(this.value && !this.move) {
+            c = color(0, 196, 255);
+        }
+        
+        if(this.click()) {
+            c = color(red(c)-20, green(c)-20, blue(c)-20);
+        }
+        
+        fill(c);
+        rect(this.x, this.y, this.w, this.h, Infinity);
+        noStroke();
+        fill(255);
+        ellipse(this.x+this.sliderX+this.h/2, this.y+this.h/2, this.h/1.5, this.h/1.5);
+    };
+    
+    this.click = function() {
+        return mouseX >= this.x && mouseX <= this.x + this.w && mouseY >= this.y && mouseY <= this.y + this.h;
+    };
+}
+
 function isInside(x, y, w , h) {
     return (mouseX >= x && mouseX <= x + w && mouseY >= y && mouseY <= y + h);
 }
@@ -463,12 +521,15 @@ function Rocket(type, x, y, s, lead, name) {
     };
 }
 
-let choices, alphabet, letters, answerArray, answerLetters, answer, points, used, time3, notifText, isError, answers, foundWords;
+let choices, alphabet, letters, answerArray, answerLetters, answer, points, used, time3, notifText, isError, answers, foundWords, swtch;
 let word = [];
 let locations = [];
 let rockets = [];
 var bg = [];
 let rocketsArray = [];
+var phaseReqs = [6, 6, 6, 6];
+var leaderBoardNames = [];
+var lbPoints = [];
 
 let planet = 0;
 let distance = 0;
@@ -682,7 +743,7 @@ function setup() {
     letters = alphabet.split("");
     s = 55;
 
-    
+    swtch = new Switch(width/2-6*s, height-3/2*s, 4*s, 2*s);
     locations = [];
     
     for(let i = 0; i < 6; i++) {
@@ -724,20 +785,9 @@ function joinAnswer() {
     return s;
 }
 
-let phase = 0;
-var dotFill = 0;
 
-var blastoffTimer = 0;
-var phaseReqs = [6, 6, 6, 6];
-
-var scene = 0;
-var username = "";
-
-var leaderBoardNames = [];
-var lbPoints = [];
-
-var nameError = "";
-var nameErrorTime = 0;
+var phase, dotFill, blastoffTimer, scene, nameErrorTime = 0;
+var username, nameError = "";
 
 draw = function() {
     if(nameErrorTime > 0) {
@@ -919,7 +969,10 @@ draw = function() {
             fill(255);
             textSize(20);
             textAlign(CENTER, CENTER);
-            text("Start Round", width/2, height-3/2*s)
+            text("Start Round", width/2, height-3/2*s);
+            
+            s.update();
+            s.display();
         }
 
         noStroke();
@@ -1004,9 +1057,23 @@ function triggerShake(error) {
 }
 
 function mouseReleased() {
-    if(word.length == 0 && rockets[0].name == username && isInside(width/2-1.5*s, height-2*s, 3*s, s)) {
-        const data = JSON.stringify({type: 'startRound', data: null});
-        socket.send(data);
+    if(word.length == 0 && rockets[0].name == username) {
+        if(isInside(width/2-1.5*s, height-2*s, 3*s, s)) {
+            const data = JSON.stringify({type: 'startRound', data: null});
+            socket.send(data);
+        }
+
+        if(swtch.click()) {
+            if(swtch.value) {
+                swtch.value = false;
+            } else {
+                swtch.value = true;
+            }
+            swtch.move = true;
+
+            const data = JSON.stringify({type: 'visibility', data: swtch.value});
+            socket.send(data);
+        }
     }
 }
 

@@ -255,6 +255,13 @@ class Room {
                     }
                 }
                 break;
+            case 'visibility':
+                if(this.clients[0] == ws) {
+                    if(packet.data === true || packet.data === false) {
+                        this.public = packet.data;
+                    }
+                }
+                break;
         }
     }
 
@@ -431,14 +438,18 @@ wss.on('connection', (ws, req) => {
                     const players = [];
                     
                     for (let i = 0; i < rooms.length; i++) {
-                        let name = String(rooms[i].clients[0].name);
-                        
-                        if(name === "loading...") {
-                            name = "unnamed";
+                        const current = rooms[i];
+                        if(current.public) {
+                            let name = String(current.clients[0].name);
+                            
+                            if(name === "loading...") {
+                                name = "unnamed";
+                            }
+
+                            names.push(name);
+                            codes.push(String(current.code));
+                            players.push(String(current.clients.length));
                         }
-                        names.push(name);
-                        codes.push(String(rooms[i].code));
-                        players.push(String(rooms[i].clients.length));
                     }
 
                     const sendPacket = {type: 'publicRooms', data: JSON.stringify([names, codes, players])};
