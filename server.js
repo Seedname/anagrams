@@ -5,10 +5,10 @@ const fs = require('fs');
 const path = require('path');
 const url = require('url');
 
-const options = {
-    key: fs.readFileSync(`/etc/letsencrypt/live/seed.ddns.net/privkey.pem`),
-    cert: fs.readFileSync(`/etc/letsencrypt/live/seed.ddns.net/fullchain.pem`)
-};
+// const options = {
+//     key: fs.readFileSync(`/etc/letsencrypt/live/seed.ddns.net/privkey.pem`),
+//     cert: fs.readFileSync(`/etc/letsencrypt/live/seed.ddns.net/fullchain.pem`)
+// };
 
 function getTxt(location) {
     return fs.readFileSync(location, 'utf8').split(/\r\n|\n/);
@@ -122,7 +122,7 @@ class Room {
     onConnection(ws) {
         ws.score = 0;
         ws.name = "loading...";
-        ws.rocket = ~~(Math.random()*3);
+        ws.rocket = 0;
         ws.used = [];
         ws.currentWord = 0;
         this.clients.push(ws);
@@ -261,6 +261,18 @@ class Room {
                     }
                 }
                 break;
+            case 'changeRocket':
+                try {
+                    ws.rocket = parseInt(sanitizeString(packet.data+""), 10);
+                    const rocketsReturn = { type: 'updateRockets', data: JSON.stringify(this.getRockets()) };
+                    for(let i = 0; i < this.clients.length; i++) {
+                        // this.updateLb(this.clients[i]);
+                        this.clients[i].send(JSON.stringify(rocketsReturn));
+                    }
+                } catch {
+                    break;
+                }
+                break;
         }
     }
 
@@ -298,13 +310,13 @@ class Room {
 
 const rooms = [];
 
-http.createServer(function (req, res) {
-    res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
-    res.end();
-}).listen(80);
+// http.createServer(function (req, res) {
+//     res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+//     res.end();
+// }).listen(80);
 
-const server = https.createServer(options, (req, res) => {
-// const server = http.createServer((req, res) => {
+// const server = https.createServer(options, (req, res) => {
+const server = http.createServer((req, res) => {
     let filePath = "." + req.url;
     if (filePath === './') {
         filePath = './index.html';
@@ -372,8 +384,8 @@ const server = https.createServer(options, (req, res) => {
     });
 
 });
-server.listen(443);
-// server.listen(80);
+// server.listen(443);
+server.listen(80);
 
 const wss = new WebSocket.Server({ server });
 const alphabet = "abcdefghijklmnopqrstuvwxyz";

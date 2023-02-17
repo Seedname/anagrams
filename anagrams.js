@@ -146,6 +146,21 @@ function inCircle(x, y, s) {
     return dist(mouseX, mouseY, x, y) <= s/2;
 }
 
+function signTri (x1, y1, x2, y2, x3, y3) {
+    return (x1 - x3) * (y2 - y3) - (x2 - x3) * (y1 - y3);
+}
+
+function inTri (x1, y1, x2, y2, x3, y3) {
+    const d1 = signTri(mouseX, mouseY, x1, y1, x2, y2);
+    const d2 = signTri(mouseX, mouseY, x2, y2, x3, y3);
+    const d3 = signTri(mouseX, mouseY, x3, y3, x1, y1);
+
+    const has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+    const has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+
+    return !(has_neg && has_pos);
+}
+
 function scramble(word) {
     var scrambled = "";
     var word = word.split("");
@@ -195,15 +210,16 @@ var rocket0, rocket1, rocket2, gameStartState;
 var socket;
 var roundWords = [];
 var leadRocket = -1;
-
+var currentRoom = "";
 function preload() {
     let location = window.location.href;
     location = location.substring(location.indexOf("//")+2);
     let pathname = location.substring(location.indexOf("/"));
+    currentRoom = pathname.substring(1);
     location = location.substring(0, location.indexOf("/"));
     // location = location.substring(0, location.length-1);
-    socket = new WebSocket('wss://'+location+':443'+pathname);    
-    // socket = new WebSocket('ws://'+location+':80'+pathname);
+    // socket = new WebSocket('wss://'+location+':443'+pathname);    
+    socket = new WebSocket('ws://'+location+':80'+pathname);
 
     gameStartState = 0;
     rocket0 = [loadImage('assets/rocket0-t.png'), loadImage('assets/rocket0-b.png')]
@@ -526,6 +542,7 @@ let choices, alphabet, letters, answerArray, answerLetters, answer, points, used
 let word = [];
 let locations = [];
 let rockets = [];
+let displayRockets = [];
 var bg = [];
 let rocketsArray = [];
 var phaseReqs = [6, 6, 6, 6];
@@ -745,6 +762,10 @@ function setup() {
       };
     
     
+    for (let i = 0; i < 3; i++) {
+        displayRockets.push(new Rocket(i, width/2, height/2, 100/3, true, ""));
+    }
+
     alphabet = "abcdefghijklmnopqrstuvwxyz";
     letters = alphabet.split("");
     s = 55;
@@ -768,7 +789,6 @@ function setup() {
     // rockets[0].vy = 6;
     // rockets[1].vy = 5;
 
-
     for(let i = 0; i < 100; i++) {
         bg.push([random(width), random(height)]);
     }
@@ -791,19 +811,15 @@ function joinAnswer() {
     return s;
 }
 
-
 var phase, dotFill, blastoffTimer, scene, nameErrorTime;
 phase = dotFill = blastoffTimer = scene = nameErrorTime = 0;
 
 var username = "";
 var nameError = "";
 
-draw = function() {
-    if(nameErrorTime > 0) {
-        nameErrorTime --;
-    } else {
-        nameErrorTime = 0;
-    }
+var rocketChoice = 0;
+
+function draw() {
     if(scene == 0) {
         background(0);
         fill(255);
@@ -818,7 +834,6 @@ draw = function() {
         textSize(70);
         textAlign(CENTER, CENTER);
         text("Enter your name:", width/2, height/2-3*s);
-
 
         if(frameCount % 100 > 50) {
             fill(255);
@@ -835,9 +850,45 @@ draw = function() {
             fill(255, 0, 0, 255*nameErrorTime/100);
             textAlign(CENTER, BOTTOM);
             text(nameError, width/2, height/2-1.5*s);
+            nameErrorTime --;
+        } else {
+            nameErrorTime = 0;
         }
         
-    } else {
+    } else if(scene == 1) {
+        background(0);
+        fill(255);
+        noStroke();
+        for(let i = 0; i < bg.length; i++) {
+            bg[i][1] += 5;
+            bg[i][1] %= height;
+            ellipse(bg[i][0], bg[i][1], 2, 2);
+        }
+
+        push();
+        translate(0, s);
+        displayRockets[rocketChoice].display();
+        pop();
+
+        noStroke();
+        fill(255);
+        if(inTri(width/2-s*2, height/2-s/2, width/2-3*s, height/2, width/2-s*2, height/2+s/2)) {
+            fill(200);
+        }
+        triangle(width/2-s*2, height/2-s/2, width/2-3*s, height/2, width/2-s*2, height/2+s/2);
+
+        fill(255);
+        if(inTri(width/2+s*2, height/2-s/2, width/2+3*s, height/2, width/2+s*2, height/2+s/2)) {
+            fill(200);
+        }
+        triangle(width/2+s*2, height/2-s/2, width/2+3*s, height/2, width/2+s*2, height/2+s/2);
+
+        fill(255);
+        textSize(70);
+        textAlign(CENTER, CENTER);
+        text("Pick a Rocket", width/2, height/2-3*s);
+
+    } else if (scene == 2) {
         if(phase > 1) {
             background(0);
             // noFill();
@@ -999,6 +1050,7 @@ draw = function() {
         textSize(20);
         fill(255);
         textAlign(LEFT, TOP);
+
         for(let i = 0; i < leaderBoardNames.length; i++) {
             if(leaderBoardNames[i] == "loading...") {
                 let dots = "";
@@ -1013,6 +1065,11 @@ draw = function() {
                 text(leaderBoardNames[i] + ": " + lbPoints[i], 0, i*25);
             }
         }
+
+        textSize(40);
+        fill(255);
+        textAlign(RIGHT, TOP);
+        text(currentRoom, width, 0);
         if(blastoffTimer > 0 && phase == 0) {
             blastoffTimer-=0.2;
             fill(0, 0, 0, blastoffTimer*255/20);
@@ -1036,7 +1093,7 @@ draw = function() {
         }
     }
     
-};
+}
 
 function reset() {
     var w = choices[floor(random(choices.length))];
@@ -1077,7 +1134,18 @@ function triggerShake(error) {
 }
 
 function mouseReleased() {
-    if(word.length == 0 && rockets.length > 0 && rockets[0].name && rockets[0].name == username) {
+    if(scene == 1) {
+        if(inTri(width/2-s*2, height/2-s/2, width/2-3*s, height/2, width/2-s*2, height/2+s/2)) {
+            rocketChoice --;
+            if(rocketChoice < 0) {
+                rocketChoice = 2;
+            }
+        }
+        if(inTri(width/2+s*2, height/2-s/2, width/2+3*s, height/2, width/2+s*2, height/2+s/2)) {
+            rocketChoice ++;
+            rocketChoice %= 3;
+        }
+    } else if(scene == 2 && word.length == 0 && rockets.length > 0 && rockets[0].name && rockets[0].name == username) {
         if(isInside(width/2-1.5*s, height-2*s, 3*s, s)) {
             const data = JSON.stringify({type: 'startRound', data: null});
             socket.send(data);
@@ -1114,7 +1182,27 @@ function keyPressed() {
             socket.send(JSON.stringify(newMessage));
 
         }
-    } else if(word.length > 0) {
+    } else if(scene == 1) {
+
+        if(key === 'ArrowLeft') {
+            rocketChoice --;
+            if(rocketChoice < 0) {
+                rocketChoice = 2;
+            }
+        } else if(key === 'ArrowRight') {
+            rocketChoice ++;
+            rocketChoice %= 3;
+        }
+
+        if(keyCode == 13) {
+            if(rocketChoice !== 0) {
+                rockets[leadRocket] = new Rocket(rocketChoice, width/2, height/2, 100/3, true, username);
+                const data = {type: 'changeRocket', data: rocketChoice};
+                socket.send(JSON.stringify(data));
+            }
+            scene ++;
+        }
+    } else if(scene == 2 && word.length > 0) {
         if (keyCode >= 65 && keyCode <= 90 || keyCode === 8 || (keyCode >= 49 && keyCode <= 54)) {
             var letter = letters[keyCode - 65];
             for (var i = 0; i < word.length; i++) {
