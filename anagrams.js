@@ -148,7 +148,6 @@ function inCircle(x, y, s) {
 function signTri (x1, y1, x2, y2, x3, y3) {
     return (x1 - x3) * (y2 - y3) - (x2 - x3) * (y1 - y3);
 }
-
 function inTri (x1, y1, x2, y2, x3, y3) {
     const d1 = signTri(mouseX, mouseY, x1, y1, x2, y2);
     const d2 = signTri(mouseX, mouseY, x2, y2, x3, y3);
@@ -159,7 +158,6 @@ function inTri (x1, y1, x2, y2, x3, y3) {
 
     return !(has_neg && has_pos);
 }
-
 function scramble(word) {
     var scrambled = "";
     var word = word.split("");
@@ -171,7 +169,6 @@ function scramble(word) {
     }
     return scrambled;
 }
-
 function shuffleIcon(x, y, s) {
     push();
     translate(x-s/8, y);
@@ -202,6 +199,37 @@ function shuffleIcon(x, y, s) {
     pop();
 
 }
+function resetWord(word1) {
+    // var w = choices[floor(random(choices.length))];
+    // console.log(roundWords);
+    var w = word1;
+    // answers = allAnagrams(w);
+    // pointsPossible = totalPoints(answers);
+    w = scramble(w).split("");
+    
+    if(word.length == 0) {
+        word = new Array(6);
+        for(var i = 0; i < 6; i++) {
+            word[i] = new Letter(w[i], i*(s+10)+width/2-(5*(s+10))/2, height-2*s, s);
+        }
+        answerArray = [];
+    } else {
+        for(var i = 0; i < word.length; i++) {
+            word[i].letter = w[i];
+        }
+        for(var k = 0; k < answerArray.length; k++) {
+            if(answerArray[k] >= 0) {
+                word[answerArray[k]].move = true;
+                word[answerArray[k]].newPos.set(locations[answerArray[k]], height-2*s);
+            }
+        }
+    }
+    
+    used = [];
+    answer = "";
+    answerLetters = 0;
+
+}
 
 let right, wrong, tick;
 let images = []
@@ -209,17 +237,8 @@ var rocket0, rocket1, rocket2, gameStartState;
 var socket;
 var roundWords = [];
 var leadRocket = -1;
-var currentRoom = "";
-function preload() {
-    let location = window.location.href;
-    location = location.substring(location.indexOf("//")+2);
-    let pathname = location.substring(location.indexOf("/"));
-    currentRoom = pathname.substring(1);
-    location = location.substring(0, location.indexOf("/"));
-    // location = location.substring(0, location.length-1);
-    socket = new WebSocket('wss://'+location+':443'+pathname);    
-    // socket = new WebSocket('ws://'+location+':80'+pathname);
 
+function preload() {
     gameStartState = 0;
     rocket0 = [loadImage('assets/rocket0-t.png'), loadImage('assets/rocket0-b.png')]
     rocket1 = [loadImage('assets/rocket1-m.png'), loadImage('assets/rocket1-m2.png'), loadImage('assets/rocket1-l.png'), loadImage('assets/rocket1-r.png')]
@@ -545,47 +564,25 @@ let distance = 0;
 var beginAnimation = false;
 var endAnimation = false;
 
-function resetWord(word1) {
-    // var w = choices[floor(random(choices.length))];
-    // console.log(roundWords);
-    var w = word1;
-    // answers = allAnagrams(w);
-    // pointsPossible = totalPoints(answers);
-    w = scramble(w).split("");
-    
-    if(word.length == 0) {
-        word = new Array(6);
-        for(var i = 0; i < 6; i++) {
-            word[i] = new Letter(w[i], i*(s+10)+width/2-(5*(s+10))/2, height-2*s, s);
-        }
-        answerArray = [];
-    } else {
-        for(var i = 0; i < word.length; i++) {
-            word[i].letter = w[i];
-        }
-        for(var k = 0; k < answerArray.length; k++) {
-            if(answerArray[k] >= 0) {
-                word[answerArray[k]].move = true;
-                word[answerArray[k]].newPos.set(locations[answerArray[k]], height-2*s);
-            }
-        }
-    }
-    
-    used = [];
-    answer = "";
-    answerLetters = 0;
+var loc = window.location.href;
+loc = loc.substring(loc.indexOf("//")+2);
+var pathname = loc.substring(loc.indexOf("/"));
+loc = loc.substring(0, loc.indexOf("/"));
+var currentRoom = pathname.substring(1);
 
-}
 function setup() {
     createCanvas(document.body.clientWidth, window.innerHeight); 
     // pointsPossible = 0;
     // resetWord('');
     // rockets.push(new Rocket(1, 0, height/2, 100/3, true, null));
+    
+    // socket = new WebSocket('ws://'+loc+':80'+pathname);
+    socket = new WebSocket('wss://'+loc+':443'+pathname);   
 
-    // socket.onopen = (event) => {
-    //     const loaded = JSON.stringify( {type:'retrieve', data:null} );
-    //     socket.send(loaded);
-    // };
+    socket.onopen = (event) => {
+        const newMessage = { type : "retrieve", data: null };
+        socket.send(JSON.stringify(newMessage));    
+    };
 
     socket.onmessage = (event) => {
         const packet = JSON.parse(event.data);
@@ -612,7 +609,7 @@ function setup() {
                         break;
                     case 4:
                         //correct word
-
+    
                         if(phase == 0) {
                             blastoffTimer = 20;
                         } else {
@@ -658,7 +655,7 @@ function setup() {
             case 'updatePoints':
                 // const before = JSON.parse(JSON.stringify(lbPoints));
                 lbPoints = JSON.parse(packet.data);
-
+    
                 for(let i = 0; i < leaderBoardNames.length; i++) {
                     for(let j = 0; j < rockets.length; j++) {
                         if(rockets[j].name == leaderBoardNames[i]) {
@@ -676,7 +673,7 @@ function setup() {
                         }
                     }
                 }
-
+    
                 
                 break;
             case 'updateRockets':
@@ -696,9 +693,9 @@ function setup() {
                         rockets.push(new Rocket(rocketsArray[i], 0, height/2, 100/3, false, leaderBoardNames[i]));
                     }
                 }
-
+    
                 distance = width/(rockets.length + (rockets.length%2==0));
-
+    
                 for (let i = 0; i < rockets.length; i++) {
                     if(rockets[i].type != rocketsArray[i]) {
                         rockets[i] = new Rocket(rocketsArray[i], 0, height/2, 100/3, rockets[i].lead, leaderBoardNames[i]);
@@ -706,7 +703,7 @@ function setup() {
                             beginAnimation = false;   
                         }
                     }
-
+    
                     rockets[i].name = leaderBoardNames[i];
                     rockets[i].x = width/2 + distance * (i-~~(rockets.length/2));
                     
@@ -728,7 +725,7 @@ function setup() {
                     }
                     rockets[i].setup();
                 }
-
+    
                 break;
             case 'updateWords':
                 roundWords = JSON.parse(packet.data);
@@ -741,9 +738,9 @@ function setup() {
                         break;
                     }
                 }
-
+    
                 distance = width/(rockets.length - (rockets.length%2==0));
-
+    
                 for (let i = 0; i < rockets.length; i++) {
                     rockets[i].name = leaderBoardNames[i];
                     rockets[i].x = width/2 + distance * (i-~~(rockets.length/2));
@@ -761,11 +758,15 @@ function setup() {
                     }
                     rockets[i].setup();
                 }
-
+    
+                break;
+            case 'redirect':
+                print(true);
+                window.location.replace("http://" + loc);
                 break;
         }
-      };
     
+    };
     
     for (let i = 0; i < 3; i++) {
         displayRockets.push(new Rocket(i, width/2, height/2, 100/3, true, ""));
@@ -891,7 +892,7 @@ function draw() {
         fill(255);
         textSize(70);
         textAlign(CENTER, CENTER);
-        text("Pick a Rocket", width/2, height/2-3*s);
+        text("Choose a Rocket", width/2, height/2-3*s);
 
     } else if (scene == 2) {
         if(phase > 1 || (phase == 0 && rockets[leadRocket].y <= -20000)) {
@@ -1195,10 +1196,6 @@ function keyPressed() {
         } else if(keyCode == 13) {
             const namePacket = { type: 'name', data: username };
             socket.send(JSON.stringify(namePacket));
-
-            const newMessage = { type : "retrieve", data: null };
-            socket.send(JSON.stringify(newMessage));
-
         }
     } else if(scene == 1) {
 

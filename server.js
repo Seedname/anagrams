@@ -393,6 +393,7 @@ const alphabet = "abcdefghijklmnopqrstuvwxyz";
 wss.on('connection', (ws, req) => {
     const parsedUrl = url.parse(req.url);
     const usePath = parsedUrl.pathname !== "/";
+    let valid = true;
 
     if(usePath) {
         const room = sanitizeString(String(parsedUrl.pathname).substring(1));
@@ -409,14 +410,22 @@ wss.on('connection', (ws, req) => {
             ws.room = rooms[roomIndex];
             ws.room.onConnection(ws);
         } else {
-            console.log("Room " + room + " failed to connect");
-            ws.close();
+            valid = false;
         }
     }
 
     ws.on('message', (message) => {
         if(usePath) {
-            ws.room.onMessage(ws, message);
+
+            if(valid) {
+                ws.room.onMessage(ws, message);
+            } else {
+                const packet = JSON.parse(message);
+                if(packet.type == 'retrieve') {
+                    const data = {type: 'redirect', data: null};
+                    ws.send(JSON.stringify(data));   
+                }
+            }
         } else {
             const packet = JSON.parse(message);
     
@@ -435,10 +444,19 @@ wss.on('connection', (ws, req) => {
                     break;
                 case 'createRoom':
                     let room = "";
-                    for (let i = 0; i < 4; i++) {
-                        room += alphabet.charAt(~~(Math.random()*26)).toUpperCase();
+                    while (true) {
+                        room = "";
+                        for (let i = 0; i < 4; i++) {
+                            room += alphabet.charAt(~~(Math.random()*26)).toUpperCase();
+                        }
+                        for (let i = 0; i < banned.length; i++) {
+                            if(banned[i].length <= 4 && room.indexOf(banned[i]) >= 0) {
+                                continue;
+                            }
+                        }
+                        break;
                     }
- 
+                    
                     rooms.push(new Room(room));
                     
                     const change = { type: 'changeRoom', data: room };
