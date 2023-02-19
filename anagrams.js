@@ -145,7 +145,6 @@ function isInside(x, y, w , h) {
 function inCircle(x, y, s) {
     return dist(mouseX, mouseY, x, y) <= s/2;
 }
-
 function signTri (x1, y1, x2, y2, x3, y3) {
     return (x1 - x3) * (y2 - y3) - (x2 - x3) * (y1 - y3);
 }
@@ -324,8 +323,6 @@ function Rocket(type, x, y, s, lead, name) {
     this.setup = function() {
         switch (this.type) {
             case 0:
-                // this.offsets = [[0, -10.5*this.s/20-1.4*this.s], [0, 10.5*this.s/20-1.4*this.s]];
-
                 this.boosterPoses = [[this.x-4*this.s/20, height/2+this.s], [this.x+4*this.s/20, height/2+this.s]];
                 this.boosters = new Array(this.boosterPoses.length);
                 
@@ -333,12 +330,9 @@ function Rocket(type, x, y, s, lead, name) {
                     let pos = this.boosterPoses[i];
                     this.boosters[i] = new RocketNode(pos[0], pos[1], 10);
                 }
-                // this.boosters = [new RocketNode(this.x-100, this.y-s, 20)];
                 break;
             case 1:
-                // this.offsets = [[0, 10*this.s/20-4*this.s], [0, -34*this.s/20-4*this.s], [-27*this.s/20, 8*this.s/20-4*this.s], [27*this.s/20, 8*this.s/20-4*this.s]];
-
-                this.boosterPoses = [[this.x, height/2+68*s/20], [this.x-9*s/20,height/2+65*s/20], [this.x+9*s/20,height/2+65*s/20], [this.x-27*s/20, height/2+65*s/20], [this.x+27*s/20, height/2+65*s/20]];
+                this.boosterPoses = [[this.x, height/2+68*this.s/20], [this.x-9*this.s/20,height/2+65*this.s/20], [this.x+9*this.s/20,height/2+65*this.s/20], [this.x-27*this.s/20, height/2+65*this.s/20], [this.x+27*this.s/20, height/2+65*this.s/20]];
                 this.boosters = new Array(this.boosterPoses.length);
                 
                 for(let i = 0; i < this.boosterPoses.length; i++) {
@@ -347,9 +341,7 @@ function Rocket(type, x, y, s, lead, name) {
                 }
                 break;
             case 2:
-                // this.offsets = [[0, -39*s/20-5*s], [-15*s/20, 39*s/20-5*s], [15*s/20, 39*s/20-5*s]]
-
-                this.boosterPoses = [[this.x, height/2+80*s/20], [this.x+16*s/20, height/2+80*s/20], [this.x-16*s/20, height/2+80*s/20]];
+                this.boosterPoses = [[this.x, height/2+80*this.s/20], [this.x+16*this.s/20, height/2+80*this.s/20], [this.x-16*this.s/20, height/2+80*this.s/20]];
                 this.boosters = new Array(this.boosterPoses.length);
                 
                 for(let i = 0; i < this.boosterPoses.length; i++) {
@@ -442,15 +434,14 @@ function Rocket(type, x, y, s, lead, name) {
     this.display = function() {
         if(this.move) {
             let d = height/2-this.y - this.newPos;
-            // if (!this.lead) {
-            //     d -= height;
-            // }
-            // print(d);
-            let vy = d/100;
+            let vy = d/50;
             this.y += vy;
             this.vy = -2*vy;
             if(abs(d) < 1) {
                 this.move = false;
+                if (!endAnimation) {
+                    endAnimation = true;
+                }
             }
         }
 
@@ -551,6 +542,8 @@ var lbPoints = [];
 
 let planet = 0;
 let distance = 0;
+var beginAnimation = false;
+var endAnimation = false;
 
 function resetWord(word1) {
     // var w = choices[floor(random(choices.length))];
@@ -583,7 +576,6 @@ function resetWord(word1) {
     answerLetters = 0;
 
 }
-
 function setup() {
     createCanvas(document.body.clientWidth, window.innerHeight); 
     // pointsPossible = 0;
@@ -670,7 +662,9 @@ function setup() {
                 for(let i = 0; i < leaderBoardNames.length; i++) {
                     for(let j = 0; j < rockets.length; j++) {
                         if(rockets[j].name == leaderBoardNames[i]) {
-                            rockets[j].moveTo(lbPoints[i]*5);
+                            if(lbPoints[i] > 0) {
+                                rockets[j].moveTo(lbPoints[i]*5);
+                            }
                             if(rockets[j].phase < 3 && lbPoints[j] >= 10000) {
                                 rockets[j].phase = 3;
                                 rockets[j].strength = 0;
@@ -686,7 +680,6 @@ function setup() {
                 
                 break;
             case 'updateRockets':
-                // console.log(true);
                 rocketsArray = JSON.parse(packet.data);
                 
                 for (let i = 0; i < rocketsArray.length; i++) {
@@ -707,6 +700,13 @@ function setup() {
                 distance = width/(rockets.length + (rockets.length%2==0));
 
                 for (let i = 0; i < rockets.length; i++) {
+                    if(rockets[i].type != rocketsArray[i]) {
+                        rockets[i] = new Rocket(rocketsArray[i], 0, height/2, 100/3, rockets[i].lead, leaderBoardNames[i]);
+                        if (rockets[i].name == username) {
+                            beginAnimation = false;   
+                        }
+                    }
+
                     rockets[i].name = leaderBoardNames[i];
                     rockets[i].x = width/2 + distance * (i-~~(rockets.length/2));
                     
@@ -714,6 +714,11 @@ function setup() {
                         rockets[i].lead = true;
                         leadRocket = i;
                         rockets[i].x = width/2;
+                        if(!beginAnimation) {
+                            rockets[i].y = -40000-height/2;
+                            rockets[i].moveTo(0);
+                            beginAnimation = true;
+                        }
                     }
                 }
                 
@@ -889,27 +894,40 @@ function draw() {
         text("Pick a Rocket", width/2, height/2-3*s);
 
     } else if (scene == 2) {
-        if(phase > 1) {
+        if(phase > 1 || (phase == 0 && rockets[leadRocket].y <= -20000)) {
             background(0);
             // noFill();
             // stroke(dotFill);
             noStroke();
-            fill(dotFill);
-            if(dotFill < 255) { dotFill ++; }
+            
+            if(phase > 1) {
+                fill(dotFill);
+                if(dotFill < 255) { dotFill ++; }
+            } else {
+                fill(255);
+            }
             let num = 5;
             if (rockets.length > 0 && rockets.length == leaderBoardNames.length) {
-                num = max(5, rockets[leadRocket].vy);
+                if(phase > 1) {
+                    num = max(5, rockets[leadRocket].vy);
+                } else {
+                    // num = min(-5, -rockets[leadRocket].vy);
+                    // num = max(-10, rockets[leadRocket].vy/100);
+                    num = rockets[leadRocket].vy/30;
+                }
             }
             
             for(let i = 0; i < bg.length; i++) {
                 bg[i][1] += num;
                 bg[i][1] %= height;
+                if(bg[i][1] <= 0) {
+                    bg[i][1] = height;
+                }
                 ellipse(bg[i][0], bg[i][1], 2, 2);
                 // line(bg[i][0], bg[i][1], bg[i][0],  bg[i][1]+num/2.5, 2);
             }
             // noStroke();
         } else if(rockets.length > 0 && rockets.length == leaderBoardNames.length) {
-            
             if(-rockets[leadRocket].y/10000 < 1) {
                 for(let i = 0; i < 100; i++) {
                     let c = lerpColor(color(0, 150, 255), color(0, 255, 255), i/100 + rockets[leadRocket].y/10000)
@@ -924,7 +942,7 @@ function draw() {
                 let c = map(-rockets[leadRocket].y/10000-1, 0, 1, 255, 0);
                 fill(0, 150, 255,c);
                 noStroke();
-                if(c <= 1) {
+                if(c <= 1 && endAnimation) {
                     phase ++;
                     rockets[leadRocket].strength = 0;
                     resetWord(roundWords[phase]);
@@ -944,7 +962,7 @@ function draw() {
             push();
                 rockets[leadRocket].display();
                 for(let i = 0; i < rockets.length; i++) {
-                    if(rockets[i].phase == 0) {
+                    if(rockets[i].phase == 0 && endAnimation) {
                         rockets[i].y = height/2;
                     }
                     if(i != leadRocket) {
@@ -1196,7 +1214,7 @@ function keyPressed() {
 
         if(keyCode == 13) {
             if(rocketChoice !== 0) {
-                rockets[leadRocket] = new Rocket(rocketChoice, width/2, height/2, 100/3, true, username);
+                // rockets[leadRocket] = new Rocket(rocketChoice, width/2, height/2, 100/3, true, username);
                 const data = {type: 'changeRocket', data: rocketChoice};
                 socket.send(JSON.stringify(data));
             }
