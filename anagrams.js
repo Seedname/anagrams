@@ -576,8 +576,8 @@ function setup() {
     // resetWord('');
     // rockets.push(new Rocket(1, 0, height/2, 100/3, true, null));
     
-    // socket = new WebSocket('ws://'+loc+':80'+pathname);
-    socket = new WebSocket('wss://'+loc+':443'+pathname);   
+    socket = new WebSocket('ws://'+loc+':80'+pathname);
+    // socket = new WebSocket('wss://'+loc+':443'+pathname);   
 
     socket.onopen = (event) => {
         const newMessage = { type : "retrieve", data: null };
@@ -639,6 +639,9 @@ function setup() {
                         nameError = "Innapropriate Name";
                         nameErrorTime = 100;
                         break;
+                    case 6:
+                        nameError = "Invalid Name";
+                        nameErrorTime = 100;
                 }
                 break;                
             case 'updateNames':
@@ -1187,12 +1190,12 @@ function mouseReleased() {
 function keyPressed() {
     if(scene == 0) {
         if (keyCode >= 65 && keyCode <= 90 || keyCode === 8) {
-            if(keyCode != 8) {
+            if(keyCode == 8) {
+                username = username.substring(0, username.length-1);
+            } else if(username.length < 12) {
                 var letter = letters[keyCode - 65];
                 username += letter;
-            } else {
-                username = username.substring(0, username.length-1)
-            }
+            } 
         } else if(keyCode == 13) {
             const namePacket = { type: 'name', data: username };
             socket.send(JSON.stringify(namePacket));

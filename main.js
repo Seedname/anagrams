@@ -1,8 +1,17 @@
+// ledgibility
+// combos
+// ending
+// progress bar (altitude level)
+// audio countdown
+// fix copyright issues
+// fix audio stuff
+// 
+
 let loc = window.location.href;
 loc = loc.substring(loc.indexOf("//")+2);
 loc = loc.substring(0, loc.indexOf("/"));
-const socket = new WebSocket('wss://'+loc+':443'); 
-// const socket = new WebSocket('ws://'+loc+':80'); 
+// const socket = new WebSocket('wss://'+loc+':443'); 
+const socket = new WebSocket('ws://'+loc+':80'); 
 socket.onopen = (event) => {
     const loaded = JSON.stringify( {type:'sendRooms', data:null} );
     socket.send(loaded);
@@ -12,14 +21,6 @@ socket.onmessage = (event) => {
     const packet = JSON.parse(event.data);
 
     switch (packet.type) {
-        case 'message':
-            if(packet.data) {
-                // location.replace(window.location.href + code);
-            } else {
-                codeErrorTime = 100;
-                codeError = "Invalid Room Code";
-            }
-            break;
         case 'changeRoom':
             location.href = window.location.href + packet.data;
             break;
@@ -86,6 +87,3 @@ function createRoom() {
     const roomPacket = { type: 'createRoom', message: null };
     socket.send(JSON.stringify(roomPacket));
 }
-
-// const namePacket = { type: 'code', data: code };
-// socket.send(JSON.stringify(namePacket));
